@@ -1,9 +1,16 @@
-import './App.css';
-import {Login} from './Componets/Login/Login.jsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Login } from './Componets/Login/Login';
+
 function App() {
   return (
-    <Login/>
+    <Router>
+      <Routes>
+        <Route path="/Login" element={<Login/>} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+
