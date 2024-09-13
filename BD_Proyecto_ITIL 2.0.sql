@@ -28,6 +28,11 @@ CREATE TABLE USUARIO (
 	contrasena varchar(20) NOT NULL
 );
 
+
+/*
+Cuando se reciba el equipo, el encargado de recibir dara de alta el equipo
+Quien instale el equipo debera agregar la fecha de instalacion y el espacio en el que quedo
+*/
 -- Tabla: EQUIPO
 CREATE TABLE EQUIPO (
     id_equipo INT IDENTITY PRIMARY KEY NOT NULL,

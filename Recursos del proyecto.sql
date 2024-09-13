@@ -1,4 +1,12 @@
 
+ALTER TABLE USUARIO
+ADD permisos INT NULL;
+
+update usuario set permisos = 1 where id_usuario = 2
+update usuario set permisos = 2 where id_usuario = 1
+
+select * from USUARIO
+
 
 -- Insertar departamentos
 INSERT INTO DEPARTAMENTO (nombre, id_departamentoPadre, correo, telefono, ubicacion_dep)
@@ -8,11 +16,11 @@ INSERT INTO DEPARTAMENTO (nombre, id_departamentoPadre, correo, telefono, ubicac
 VALUES ('Sistemas y Computacion', 1, 'contacto@sistemas.com', '987-6543', 'Edificio A, Piso 1');
 
 -- Insertar usuarios
-INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena)
-VALUES ('Marisol', 'Manjarrez', 2, NULL, 'marisol.gomez@rrhh.com', '555-2222', '123');
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena,permisos)
+VALUES ('Marisol', 'Manjarrez', 2, NULL, 'marisol.gomez@rrhh.com', '555-2222', '123',2);
 
-INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena)
-VALUES ('Marcos', 'Rodriguez', 1, 1, 'marcos.perez@ti.com', '555-1111', '123');
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena,permisos)
+VALUES ('Marcos', 'Rodriguez', 1, 1, 'marcos.perez@ti.com', '555-1111', '123',1);
 
 
 select * from USUARIO

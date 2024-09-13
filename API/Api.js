@@ -11,7 +11,7 @@ app.use(express.json());
 const config = {
     user: 'sa',
     password: '1234',
-    server: 'LAPTOP-KREG9M40', // Ejemplo: localhost
+    server: 'localhost', // Ejemplo: localhost
     database: 'proyectoITIL',
     options: {
         encrypt: false, // Si usas Azure

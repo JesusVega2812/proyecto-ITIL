@@ -1,0 +1,9 @@
+
+De favor cuando haga commit tener esto en la app
+<Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/Login" />} />
+        <Route path="/Login" element={<Login/>} />
+      </Routes>
+</Router>
+---------------------------------------------------------------------------

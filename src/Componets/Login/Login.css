@@ -68,3 +68,6 @@ body{
 .sombra{
     box-shadow: 0px 0px 50px rgba(84, 84, 84, 0.74);
 }
+.tipo-letra-arial{
+    font-family: 'Verdana', sans-serif;
+}

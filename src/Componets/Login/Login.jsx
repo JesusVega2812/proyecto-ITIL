@@ -47,26 +47,26 @@ export const Login =() => {
             <div className='Login-div-IS'>
                 <img src={logo_tecnm} className='logo-IS' alt="" />
                 <br />
-                <span className='IS-nombres nito tam-letra-28px'>
+                <span className='IS-nombres nito tam-letra-28px tipo-letra-arial'>
                     SISTEMA CULIACÁN
                 </span>
                 <br />
-                <span className='IS-nombres tam-letra-25px'>
+                <span className='IS-nombres tam-letra-25px tipo-letra-arial'>
                     Inicio de Sesión
                 </span>
                 <div className='Login-div-credenciales margin-left-25px'>
-                    <label className='tam-letra-20px'>Usuario</label>
+                    <label className='tam-letra-20px tipo-letra-arial'>Usuario</label>
                     <br />
                     <input className='tam-input' placeholder='Usuario' value={usuario} onChange={(e) => setUsuario(e.target.value)}></input>
                     <p></p>
                 </div>
-                <div className='margin-left-25px'>
+                <div className='margin-left-25px tipo-letra-arial'>
                     <label className='tam-letra-20px'>Contraseña</label>
                     <br />
                     <input className='tam-input' placeholder='Contraseña' value={contra} onChange={(e) => setContra(e.target.value)} type='password'></input>
                 </div>
                 <div>
-                    <button className='margin-left-25px tam-btn color-azul color-blanco nito sombra-50px' onClick={handleValidar}>
+                    <button className='margin-left-25px tam-btn color-azul color-blanco nito sombra-50px tipo-letra-arial' onClick={handleValidar}>
                         Iniciar Sesión
                     </button>
                 </div>
