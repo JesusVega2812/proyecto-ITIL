@@ -11,13 +11,14 @@ app.use(express.json());
 const config = {
     user: 'sa',
     password: '1234',
-    server: 'localhost', // Ejemplo: localhost
+    server: 'LAPTOP-KREG9M40', // Ejemplo: localhost
     database: 'proyectoITIL',
     options: {
         encrypt: false, // Si usas Azure
         trustServerCertificate: true // Si usas SQL Server local
     }
 };
+
 
 // Conexión a la base de datos
 sql.connect(config, err => {
@@ -42,6 +43,7 @@ sql.connect(config, err => {
 
 //Inicio de sesion
 app.post('/Login', async(req,res) => {
+    console.log('holi');
     try {
         await sql.connect(config);
 
@@ -51,6 +53,7 @@ app.post('/Login', async(req,res) => {
         SELECT dbo.VerificarUsuario(${usuario},${contra}) AS EsValido;`
 
         const esValido = loginCheckResult.recordset[0].EsValido;
+        console.log(esValido);
         res.status(200).json({esValido});
     } catch (error) {
         console.log('error al verificar el inicio de sesion: ',error);
