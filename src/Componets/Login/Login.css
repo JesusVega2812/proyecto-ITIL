@@ -1,10 +1,12 @@
+
 body{
-    /* border: 1px solid red; */
-    font-size: 16px; /*1em*/
-    margin: 0px auto;  /*arriba-abajo, izq-der*/
+    /* font-size: 16px; 
+    margin: 0px auto; 
     max-width: 1430px;
-    margin: 0px auto;
+    margin: 0px auto;*/
+    width: 99%;
   }
+
 .Login-div-azul{
     padding-bottom: 500px;
     background-color: #043c64;
@@ -58,8 +60,9 @@ body{
     width: 584px;
     height: 33px;
     margin-top: 45px;
+    border-radius: 3px;
 }
-.color-azul{
+.color-boton-azul{
     background-color: #043c64;
 }
 .color-blanco{
@@ -70,4 +73,8 @@ body{
 }
 .tipo-letra-arial{
     font-family: 'Verdana', sans-serif;
+}
+button:hover {
+    background-color: #db5e15; /* Cambia el color de fondo al pasar el ratón sobre el botón */
+    cursor: pointer;
 }

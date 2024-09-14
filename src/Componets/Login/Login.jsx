@@ -2,12 +2,14 @@ import './Login.css';
 import { useState } from 'react';
 import axios from 'axios';
 import logo_tecnm from '../Resources/logo_tecnm.jpg'
+import { useNavigate } from "react-router-dom";
 
 
 export const Login =() => {
 
     const [usuario,setUsuario] = useState("");
     const [contra,setContra] = useState("");
+    const navigate = useNavigate();
     
     const handledformsubmit =(e) => {
         e.preventDefault();
@@ -28,13 +30,17 @@ export const Login =() => {
     const handleLogin =async() => {
         try {
             const response = await axios.post('http://localhost:3000/Login',{usuario: usuario,contra: contra});
-            if (response.data.esValido){
+            const resultado = response.data.esValido;
+            if (resultado){
                 alert('Bienvenido');
+                navigate('/Principal');
             }else{
                 alert('Usuario y/o Contraseña incorrectos');
             }
-            console.log(response.data);
-            console.log(response.data.esValido);
+            console.log(resultado);
+            console.log(resultado);
+
+
         } catch (error) {
             alert("Algo malo paso :(");  // Muestra el mensaje del error en una alerta
             console.log(error.message);
@@ -66,7 +72,7 @@ export const Login =() => {
                     <input className='tam-input' placeholder='Contraseña' value={contra} onChange={(e) => setContra(e.target.value)} type='password'></input>
                 </div>
                 <div>
-                    <button className='margin-left-25px tam-btn color-azul color-blanco nito sombra-50px tipo-letra-arial' onClick={handleValidar}>
+                    <button className='margin-left-25px tam-btn color-boton-azul color-blanco nito sombra-50px tipo-letra-arial' onClick={handleValidar}>
                         Iniciar Sesión
                     </button>
                 </div>
