@@ -53,3 +53,33 @@ BEGIN
     RETURN @esValido;
 END
 
+--------------Ultimos recursos a ejecutar -----------------------------
+--14/09/24
+create PROCEDURE InsertDepartamento
+    @nombre NVARCHAR(100),
+    @departamentoPadreNombre NVARCHAR(100),
+    @correo NVARCHAR(100),
+    @telefono NVARCHAR(20),
+    @ubicacion NVARCHAR(255)
+AS
+BEGIN
+    -- Variable para almacenar el ID del departamento padre
+    DECLARE @departamentoPadreID INT;
+
+    -- Buscar el ID del departamento padre basado en el nombre
+    SELECT @departamentoPadreID = id_departamento
+    FROM departamento
+    WHERE nombre = @departamentoPadreNombre;
+
+    -- Insertar un nuevo departamento
+    INSERT INTO departamento (nombre, id_departamentoPadre, correo, telefono, ubicacion_dep)
+    VALUES (@nombre, @departamentoPadreID, @correo, @telefono, @ubicacion);
+END;
+
+
+/*EXEC InsertDepartamento
+        @nombre = 'Mecanica',
+        @departamentoPadreNombre = 'Departamento Academicos',
+        @correo = 'meca@culiacan',
+        @telefono = '6677225544',
+        @ubicacion = null*/

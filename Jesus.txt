@@ -34,3 +34,7 @@ function Content() {
 export default App;
 
 De la 1 a la 31 en la APP.jsx
+
+-----------------------------------------------------------------------------------------------
+import { Departamento_Alta_Baja_Cambio } from './Componets/Departamentos/Departamento_Alta_Baja_Cambio.jsx';
+<Route path="/DAAE" element={<Departamento_Alta_Baja_Cambio/>} />

@@ -3,6 +3,10 @@ go
 USE proyectoITIL
 go
 
+/*
+Si el usuario pertenece al departamento de mantenimiento y equipos podra tener  
+*/
+
 -- Tabla: DEPARTAMENTO
 CREATE TABLE DEPARTAMENTO (
     id_departamento INT IDENTITY PRIMARY KEY NOT NULL,

@@ -1,7 +1,9 @@
 import './Header.css';
 import logo_culiacan from '../Resources/logo_tecnm_culiacan.jpg';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
+    const navigate = useNavigate();
     return(
         <div>
             <div className='div-nombre-logo'>

@@ -43,7 +43,7 @@ sql.connect(config, err => {
 
 //Inicio de sesion
 app.post('/Login', async(req,res) => {
-    console.log('holi');
+    
     try {
         await sql.connect(config);
 
@@ -58,6 +58,29 @@ app.post('/Login', async(req,res) => {
     } catch (error) {
         console.log('error al verificar el inicio de sesion: ',error);
         res.status(500).json({error: 'error al verificar inicio de sesion'});
+    }finally{
+        await sql.close();
+    }
+});
+
+//Inserta departamentos
+app.post('/AltaDepartamentos',async(req,res) => {
+    try{
+        console.log('holi');
+        await sql.connect(config);
+        const {nombre,departamentoPadre,correo,telefono,ubicacion} = req.body;
+        await sql.query`EXEC InsertDepartamento
+        @nombre = ${nombre},
+        @departamentoPadreNombre = ${departamentoPadre},
+        @correo = ${correo},
+        @telefono = ${telefono},
+        @ubicacion = ${ubicacion};`
+         // Enviar una respuesta de éxito
+         res.status(200).send('Departamento insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar el departamento:', error.message);
+        // Enviar una respuesta de error
+        res.status(500).send('Error al insertar el departamento');
     }finally{
         await sql.close();
     }
