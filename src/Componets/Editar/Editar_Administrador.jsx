@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Editar_Administrador.css';
-import { Login } from '../Login/Login'; // Asegúrate de que la ruta es correcta
+import { Departamento_Alta_Baja_Cambio } from '../Departamentos/Departamento_Alta_Baja_Cambio.jsx';
 
-export const Editar = () => {
-    const [selectedContent, setSelectedContent] = useState(<Login />);
+export const Editar_Administrador = () => {
+    const [selectedContent, setSelectedContent] = useState(<Departamento_Alta_Baja_Cambio />);
 
     const menuItems = [
-        { label: 'Departamento', content: <Login /> },
+        { label: 'Departamento', content: <Departamento_Alta_Baja_Cambio /> },
         { label: 'Usuario', content: 'Contenido para Item 2' },
         { label: 'Espacio', content: 'Contenido para Item 3' },
         { label: 'Equipo', content: 'Contenido para Item 4' }

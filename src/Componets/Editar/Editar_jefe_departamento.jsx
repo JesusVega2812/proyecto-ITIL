@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Login } from '../Login/Login'; // Asegúrate de que la ruta es correcta
 import './Editar_Administrador.css';
 
-export const Editar = () => {
+export const Editar_jefe_departamento = () => {
     const [selectedContent, setSelectedContent] = useState(<Login />);
 
     const menuItems = [

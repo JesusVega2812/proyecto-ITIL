@@ -57,6 +57,7 @@ export const Login =() => {
             const resultado = response.data.permisos;
 
             console.log(resultado);
+            alert(resultado);
 
             if (resultado>0){
                 localStorage.setItem('permisos', resultado);

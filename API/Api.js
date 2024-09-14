@@ -86,6 +86,27 @@ app.post('/AltaDepartamentos',async(req,res) => {
     }
 });
 
+// Permisos del usuario
+app.post('/Permisos', async(req,res) => {
+    try {
+        await sql.connect(config);
+
+        const {usuario} = req.body;
+
+        const permisosCheckResult = await sql.query`
+        SELECT dbo.VerificarPermisos(${usuario}) AS Permisos;`
+
+        const permisos = permisosCheckResult.recordset[0].Permisos;
+        console.log(permisos);
+        res.status(200).json({permisos});
+    } catch (error) {
+        console.log('error al verificar el inicio de sesion: ',error);
+        res.status(500).json({error: 'error al verificar inicio de sesion'});
+    }finally{
+        await sql.close();
+    }
+});
+
 app.listen(port, () => {
     console.log(`La API está escuchando en http://localhost:${port}`);
 });
