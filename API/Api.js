@@ -61,7 +61,7 @@ app.post('/Login', async(req,res) => {
     }finally{
         await sql.close();
     }
-});
+}); 
 
 app.listen(port, () => {
     console.log(`La API está escuchando en http://localhost:${port}`);

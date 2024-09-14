@@ -30,8 +30,11 @@ export const Login =() => {
     const handleLogin =async() => {
         try {
             const response = await axios.post('http://localhost:3000/Login',{usuario: usuario,contra: contra});
+            alert('Envio datos a la api');
             const resultado = response.data.esValido;
             if (resultado){
+                localStorage.setItem('usuario', usuario);
+                await handlePermisos();
                 alert('Bienvenido');
                 navigate('/Principal');
             }else{
@@ -43,10 +46,31 @@ export const Login =() => {
 
         } catch (error) {
             alert("Algo malo paso :(");  // Muestra el mensaje del error en una alerta
+            console.error("Error en la solicitud de inicio de sesión:", error.response ? error.response.data : error.message);
             console.log(error.message);
         }
     }
+    
+    const handlePermisos = async() => {
+        try{
+            const response = await axios.post('http://localhost:3000/Permisos',{usuario: usuario});
+            const resultado = response.data.permisos;
 
+            console.log(resultado);
+
+            if (resultado>0){
+                localStorage.setItem('permisos', resultado);
+            }else{
+                alert('No se pudo obtener sus permisos');
+            }
+            
+            console.log(resultado);
+        } catch (error) {
+            alert("Algo malo paso :( Permisos");  // Muestra el mensaje del error en una alerta
+            console.log(error.message);
+        }
+    }
+    
     return (
         <form className='formLogin' onSubmit={handledformsubmit}>
             <div className='Login-div-azul'></div>
