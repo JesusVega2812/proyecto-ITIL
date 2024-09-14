@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { Login } from './Componets/Login/Login';
 import { Header } from './Componets/Header/Header.jsx';
 import { Footer } from './Componets/Footer/Footer.jsx';
+// Importa el CSS de Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 export function App() {
   return (

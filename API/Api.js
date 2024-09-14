@@ -66,7 +66,7 @@ app.post('/Login', async(req,res) => {
 //Inserta departamentos
 app.post('/AltaDepartamentos',async(req,res) => {
     try{
-        console.log('holi');
+        
         await sql.connect(config);
         const {nombre,departamentoPadre,correo,telefono,ubicacion} = req.body;
         await sql.query`EXEC InsertDepartamento
@@ -81,6 +81,37 @@ app.post('/AltaDepartamentos',async(req,res) => {
         console.error('Error al insertar el departamento:', error.message);
         // Enviar una respuesta de error
         res.status(500).send('Error al insertar el departamento');
+    }finally{
+        await sql.close();
+    }
+});
+
+//Trae departamentos 
+app.get('/SelectDepartamentos', async(req,res) => {
+    try{
+        
+        await sql.connect(config);
+        const result = await sql.query(`select id_departamento, nombre from departamento`);
+        res.status(200).json(result.recordset);
+    }catch(error){
+        console.error('Error al traer los departamentos:', error.message);
+        // Enviar una respuesta de error
+        res.status(500).send('Error al traer los departamentos');
+    }finally{
+        await sql.close();
+    }
+});
+
+//Actualiza departamentos
+app.put('/ActualizaDepartamento', async(req,res) => {
+    const id = req.params.id;
+    const { nombre, correo, telefono, ubicacion } = req.body;
+    try{
+        await sql.connect(config);
+        await sql.query`UPDATE departamento SET nombre = ${nombre}, correo = ${correo}, telefono = ${telefono}, ubicacion = ${ubicacion} WHERE id = ${id}`;
+        res.status(200).send('Departamento actualizado exitosamente');
+    }catch(error){
+        res.status(500).send('Error al actualizar departamentos');
     }finally{
         await sql.close();
     }

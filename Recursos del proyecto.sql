@@ -76,10 +76,33 @@ BEGIN
     VALUES (@nombre, @departamentoPadreID, @correo, @telefono, @ubicacion);
 END;
 
+--------------------------ultimo ultimo 14/09/24 11:00 am----------------------
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos)
+VALUES ('Mirna', 'noseque', 1, 1, 'mirnuchis@ti.com', '555-3333', '123', 0);
 
-/*EXEC InsertDepartamento
-        @nombre = 'Mecanica',
-        @departamentoPadreNombre = 'Departamento Academicos',
-        @correo = 'meca@culiacan',
-        @telefono = '6677225544',
-        @ubicacion = null*/
+
+
+CREATE FUNCTION VerificarPermisos
+(
+    @usuario NVARCHAR(100)
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @permisos INT;
+
+    -- Inicializamos la variable de retorno
+    SET @permisos = NULL;
+
+    -- Verificamos si el usuario existe y obtenemos el valor de permisos
+    SELECT @permisos = permisos
+    FROM USUARIO
+    WHERE nombre+' '+apellido = @usuario
+
+    RETURN @permisos;
+END
+
+select dbo.VerificarPermisos ('Marisol Manjarrez')
+
+
+select * from DEPARTAMENTO

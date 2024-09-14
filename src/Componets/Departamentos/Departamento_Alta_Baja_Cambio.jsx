@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import './Departamento_Alta_Baja_Cambio.css';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 
@@ -12,6 +12,32 @@ export const Departamento_Alta_Baja_Cambio =() => {
     const [correo,setCorreo] = useState('');
     const [telefono,setTelefono] = useState('');
     const [ubicacion,setUbicacion] = useState(null);
+    const [departamentos,setDepartamentos] = useState([]);
+
+    useEffect(() => {
+        const obtenerDepartamentos = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/SelectDepartamentos');
+                setDepartamentos(response.data); // Guardar los departamentos en el estado
+            } catch (error) {
+                console.error('Error al obtener los departamentos cliente:', error);
+            }
+        };
+    
+        obtenerDepartamentos(); // Llamar a la función cuando el componente se monta
+    }, []); 
+
+    const handleListo = async () => {
+        //e.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+    
+        if (radioCheck === 'Agregar') {
+            await handleAgregar(); // Llamar a handleAgregar
+        } else if (radioCheck === 'Actualizar') {
+            await handleActualizar(); // Llamar a handleActualizar
+        } else if (radioCheck === 'Eliminar') {
+            //await handleEliminar(); // Asegúrate de definir handleEliminar si es necesario
+        }
+    };
 
     const handleAgregar = async(e) => {
         e.preventDefault(); // Asegúrate de que esto esté al principio para prevenir el comportamiento predeterminado del formulario
@@ -28,6 +54,24 @@ export const Departamento_Alta_Baja_Cambio =() => {
         console.log(resultado);
         alert('Departamento insertado exitosamente'); // Mensaje de éxito
         }catch(error){
+            alert("Hubo problemas");
+            console.log(error.message);
+        }
+    };
+
+    const handleActualizar = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.put(`http://localhost:3000/ActualizarDepartamento/${departamentoPadre}`, {
+                nombre: nombre,
+                correo: correo,
+                telefono: telefono,
+                ubicacion: ubicacion
+            });
+            const resultado = response.data;
+            console.log(resultado);
+            alert('Departamento actualizado exitosamente');
+        } catch (error) {
             alert("Hubo problemas");
             console.log(error.message);
         }
@@ -69,11 +113,11 @@ export const Departamento_Alta_Baja_Cambio =() => {
                 </div>
 
                 {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
-                    <select class="form-select" aria-label="Disabled select example" >
-                        <option selected>Selecciona el departamento</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <select className="form-select" aria-label="Select department" value={departamentoPadre} onChange={(e) => setDepartamentoPadre(e.target.value)}>
+                        <option value="">Selecciona el departamento</option>
+                        {departamentos.map((dep, index) => (
+                            <option key={dep.id} value={dep.id}>{dep.nombre}</option>
+                        ))}
                     </select>
                 )}
 
@@ -83,12 +127,13 @@ export const Departamento_Alta_Baja_Cambio =() => {
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="inputText" className="form-label">Departamento al que pertence</label>
-                    <select class="form-select" aria-label="Disabled select example" value={departamentoPadre} onChange={(e) => setDepartamentoPadre(e.target.value)}>
-                        <option selected>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label htmlFor="inputText" className="form-label">Departamento al que pertenece</label>
+                    <select className="form-select" value={departamentoPadre} onChange={(e) => setDepartamentoPadre(e.target.value)}>
+                        <option value="">Selecciona el departamento</option>
+                        {departamentos.map((dep, index) => (
+                            <option key={index} value={dep.nombre}>{dep.nombre}</option>
+                        ))}
+                        <option value="">No depende de otro departamento</option>
                     </select>
                 </div>
 
@@ -108,7 +153,7 @@ export const Departamento_Alta_Baja_Cambio =() => {
                 </div>
 
                 <div>
-                    <button  onClick={handleAgregar} className='margin-left-25px tam-btn color-boton-azul color-blanco nito sombra-50px tipo-letra-arial'>
+                    <button  onClick={handleListo} className='margin-left-25px tam-btn color-boton-azul color-blanco nito sombra-50px tipo-letra-arial'>
                         Listo
                     </button>
                 </div>
