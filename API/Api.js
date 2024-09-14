@@ -61,7 +61,7 @@ app.post('/Login', async(req,res) => {
     }finally{
         await sql.close();
     }
-});
+}); 
 
 //Inserta departamentos
 app.post('/AltaDepartamentos',async(req,res) => {

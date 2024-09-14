@@ -1,0 +1,24 @@
+.principal-admin-container {
+    display: flex;
+    flex-direction: column; /* Mantiene el hr y los botones en una columna */
+    align-items: center; /* Centra los elementos horizontalmente */
+    padding: 20px;
+}
+
+.hr {
+    width: 100%;
+    border: none;
+    border-top: 2px solid #ccc;
+    margin: 10px 0;
+}
+
+.principal-admin-buttons {
+    display: flex; /* Organiza los botones en una fila */
+    gap: 10px; /* Espacio entre los botones */
+    justify-content: center; /* Centra los botones horizontalmente */
+}
+
+.principal-admin-btn {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
