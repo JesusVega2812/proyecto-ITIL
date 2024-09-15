@@ -1,5 +1,61 @@
-.depCheck{
-    display: inline-block;
-    border: 1px red solid;
-    width: 500px;
+.background-half {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh; /* 50% de la altura de la ventana */
+    background-color: #2f6e9b; /* Cambia el color de fondo según lo necesites */
+    z-index: -1; /* Asegúrate de que el fondo esté detrás del formulario */
+}
+/* Centrar el formulario y ajustar el tamaño */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+}
+
+.form-wrapper {
+    background-color: #f8f9fa; /* Fondo claro para el formulario */
+    padding: 20px; /* Espacio alrededor del formulario */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    max-width: 400px; /* Ancho máximo del formulario */
+    width: 100%; /* Ancho completo para tamaños menores */
+}
+
+/* Estilo para los campos y etiquetas */
+.form-label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.form-control {
+    font-size: 14px;
+    padding: 8px;
+    margin-bottom: 10px; /* Espacio entre los campos */
+}
+
+.margin-top-20px {
+    margin-top: 20px;
+}
+
+/* Estilo para los botones */
+.button-container {
+    text-align: center; /* Centrar el botón */
+}
+
+.color-boton-azul {
+    padding: 8px 20px; /* Ajuste del tamaño del botón */
+    font-size: 14px;
+    cursor: pointer;
+}
+/* Estilo para el botón */
+.submit-btn {
+    width: 100%; /* Ancho igual al de los inputs */
+    height: 35px; /* Tamaño del botón */
+    border: none; /* Sin borde */
+    border-radius: 2px; /* Bordes redondeados */
+    cursor: pointer;
+    font-size: 14px;
 }

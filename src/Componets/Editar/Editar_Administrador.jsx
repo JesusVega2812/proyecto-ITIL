@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Editar_Administrador.css';
 import { Departamento_Alta_Baja_Cambio } from '../Departamentos/Departamento_Alta_Baja_Cambio.jsx';
+import { Usuario_Alta_Baja_Cambio } from '../Usuario/Usuario_Alta_Baja_Cambio.jsx'
 
 export const Editar_Administrador = () => {
-    const [selectedContent, setSelectedContent] = useState(<Departamento_Alta_Baja_Cambio />);
+    const [selectedContent, setSelectedContent] = useState('');
 
     const menuItems = [
         { label: 'Departamento', content: <Departamento_Alta_Baja_Cambio /> },
-        { label: 'Usuario', content: 'Contenido para Item 2' },
+        { label: 'Usuario', content: <Usuario_Alta_Baja_Cambio /> },
         { label: 'Espacio', content: 'Contenido para Item 3' },
         { label: 'Equipo', content: 'Contenido para Item 4' }
     ];
@@ -31,7 +32,6 @@ export const Editar_Administrador = () => {
                     </ul>
                 </nav>
                 <main className="col-md-9 col-lg-10 editar-content">
-                    <h1>Contenido Central</h1>
                     <div>{selectedContent}</div>
                 </main>
             </div>

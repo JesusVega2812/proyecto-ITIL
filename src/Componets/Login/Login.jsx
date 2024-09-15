@@ -59,7 +59,7 @@ export const Login =() => {
             console.log(resultado);
             alert(resultado);
 
-            if (resultado>=0){
+            if (resultado>0){
                 localStorage.setItem('permisos', resultado);
             }else{
                 alert('No se pudo obtener sus permisos');
