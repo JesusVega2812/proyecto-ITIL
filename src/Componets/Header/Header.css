@@ -1,7 +1,7 @@
 .div-nombre-logo{
     padding-left: 30px;
-    flex-direction: column; /* Coloca los textos uno debajo del otro */
-    text-align: left; /* Alinea el texto a la izquierda */
+    flex-direction: column;
+    text-align: left;
     margin-bottom: 50px;
     margin-top: 20px;
 }
@@ -13,8 +13,8 @@
 }
 .loco-culiacan{
     width: 85px;
-    position: absolute; /* Posiciona la imagen de manera absoluta dentro del contenedor */
-    right: 30px; /* Alinea la imagen al borde derecho del contenedor */
+    position: absolute;
+    right: 30px;
     top: 27px;
 }
 .div-inf-actual{
@@ -22,9 +22,9 @@
     padding-left: 30px;
     padding-right: 30px;
 
-    display: flex; /* Activa el diseño flexbox */
-    justify-content: space-between; /* Distribuye el espacio entre los divs */
-    align-items: center; /* Alinea verticalmente al centro */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .tam-letra-17px{
     font-size: 17px;

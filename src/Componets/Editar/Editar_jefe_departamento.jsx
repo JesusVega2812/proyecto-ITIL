@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Login } from '../Login/Login'; // Asegúrate de que la ruta es correcta
 import './Editar_Administrador.css';
+import { Espacios } from '../Espacios/Espacios.jsx';
 
 export const Editar_jefe_departamento = () => {
-    const [selectedContent, setSelectedContent] = useState(<Login />);
+    const [selectedContent, setSelectedContent] = useState('');
+    const navigate = useNavigate();
 
     const menuItems = [
-        { label: 'Espacio', content: <Login /> },
-        { label: 'Equipo', content: 'Contenido para Item 3' }
+        { label: 'HOME', 
+            action: () => navigate('/Principal')
+         },
+        { label: 'Espacio', content: <Espacios /> },
+        { label: 'Equipo', content: 'Esperelo PROOOOOOX, pa la siguiente' }
     ];
 
     return (
@@ -20,7 +25,13 @@ export const Editar_jefe_departamento = () => {
                             <li className="nav-item" key={index}>
                                 <button
                                     className="editar-nav-link btn"
-                                    onClick={() => setSelectedContent(item.content)}
+                                    onClick={() => {
+                                        if (item.action) {
+                                            item.action();
+                                        } else {
+                                            setSelectedContent(item.content);
+                                        }
+                                    }}
                                 >
                                     {item.label}
                                 </button>
@@ -29,7 +40,6 @@ export const Editar_jefe_departamento = () => {
                     </ul>
                 </nav>
                 <main className="col-md-9 col-lg-10 editar-content">
-                    <h1>Contenido Central</h1>
                     <div>{selectedContent}</div>
                 </main>
             </div>

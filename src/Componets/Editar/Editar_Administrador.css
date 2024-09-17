@@ -1,26 +1,21 @@
-/* Estilos para la barra lateral */
 .editar-sidebar {
-    height: 100vh; /* Ocupa toda la altura de la ventana */
+    height: 100vh; 
     padding: 20px;
-    background-color: #043c64; /* Fondo del menú lateral */
-    color: white; /* Color del texto en el menú lateral */
-    border-right: 1px solid #ddd; /* Línea de separación entre el menú y el contenido */
+    background-color: #043c64; 
+    color: white; 
+    border-right: 1px solid #ddd;
 }
-
 .editar-sidebar .editar-nav-link {
     border-radius: 0;
     margin-bottom: 5px;
-    background-color: #043c64; /* Fondo del botón igual al fondo del menú lateral */
-    color: white; /* Color del texto del botón */
+    background-color: #043c64; 
+    color: white; 
     text-align: left;
-    border: none; /* Quitar borde del botón */
+    border: none;
 }
-
 .editar-sidebar .editar-nav-link:hover {
-    background-color: #032a4c; /* Fondo al pasar el ratón sobre el ítem del menú */
+    background-color: #032a4c;
 }
-
-/* Estilos para el área de contenido */
 .editar-content {
     padding: 20px;
 }

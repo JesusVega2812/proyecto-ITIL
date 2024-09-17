@@ -1,24 +1,92 @@
 .principal-admin-container {
     display: flex;
-    flex-direction: column; /* Mantiene el hr y los botones en una columna */
-    align-items: center; /* Centra los elementos horizontalmente */
+    flex-direction: column; 
+    align-items: center;
     padding: 20px;
 }
-
 .hr {
     width: 100%;
     border: none;
     border-top: 2px solid #ccc;
     margin: 10px 0;
 }
-
 .principal-admin-buttons {
-    display: flex; /* Organiza los botones en una fila */
-    gap: 10px; /* Espacio entre los botones */
-    justify-content: center; /* Centra los botones horizontalmente */
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
-
 .principal-admin-btn {
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+.modal-dialog {
+    background-color: #fff;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    margin: auto;
+    padding: 1rem;
+}
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
+.modal-body {
+    padding: 1.25rem;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
+.modal-footer .btn {
+    margin-left: 0.5rem;
+}
+.modal-footer .btn:first-of-type {
+    margin-left: 0;
+}
+.input-container {
+    position: relative;
+}
+.input-container input[type="password"] {
+    padding-right: 4rem;
+}
+.input-container .show-password-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #007bff;
+    font-size: 0.9rem;
+    height: 2rem;
+    width: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
