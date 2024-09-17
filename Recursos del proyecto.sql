@@ -80,6 +80,89 @@ END;
 INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos)
 VALUES ('Mirna', 'noseque', 1, 1, 'mirnuchis@ti.com', '555-3333', '123', 0);
 
+---------------------------------------------------------------------------------------
+create PROCEDURE ActualizarDepartamento
+    @id_departamento INT,
+    @nombre NVARCHAR(100),
+    @correo NVARCHAR(100),
+    @telefono NVARCHAR(20),
+    @ubicacion_dep NVARCHAR(100),
+    @id_departamentoPadre INT -- Parámetro para el nombre del departamento padre
+AS
+BEGIN
+    -- Obtener el ID del departamento padre usando el nombre
+    --DECLARE @id_departamentoPadre INT;
+
+    --SELECT @id_departamentoPadre = id_departamento
+    ----FROM departamento
+    --WHERE nombre = @nombre_departamentoPadre;
+
+    -- Actualizar el departamento con los nuevos valores
+    UPDATE departamento
+    SET nombre = @nombre,
+        id_departamentoPadre = @id_departamentoPadre,
+        correo = @correo,
+        telefono = @telefono,
+        ubicacion_dep = @ubicacion_dep
+	WHERE id_departamento = @id_departamento;
+END;
+
+
+CREATE FUNCTION VerificarPermisos
+(
+    @usuario NVARCHAR(100)
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @permisos INT;
+
+    -- Inicializamos la variable de retorno
+    SET @permisos = NULL;
+
+    -- Verificamos si el usuario existe y obtenemos el valor de permisos
+    SELECT @permisos = permisos
+    FROM USUARIO
+    WHERE nombre+' '+apellido = @usuario
+
+    RETURN @permisos;
+END
+
+-----A PARTIR DE AQUÍ----------
+UPDATE USUARIO
+SET permisos = 3
+WHERE nombre = 'Mirna' AND apellido = 'noseque';
+
+
+DROP FUNCTION IF EXISTS dbo.VerificarUsuario;
+
+CREATE FUNCTION dbo.VerificarUsuario
+(
+    @usuario NVARCHAR(50),
+    @contra NVARCHAR(50)
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT 
+        CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM Usuario 
+                WHERE nombre + ' ' + apellido = @usuario 
+                AND Contrasena = @contra
+            ) THEN 1 
+            ELSE 0 
+        END AS EsValido,
+        u.id_usuario,
+        u.id_departamento_pertenece
+    FROM Usuario u
+    WHERE u.nombre + ' ' + u.apellido = @usuario 
+    AND u.Contrasena = @contra
+);
+
+select * from dbo.VerificarUsuario ('Marisol Manjarrez', '123')
 
 
 CREATE FUNCTION VerificarPermisos
@@ -104,5 +187,131 @@ END
 
 select dbo.VerificarPermisos ('Marisol Manjarrez')
 
+select nombre from departamento where id_departamento = 1
 
-select * from DEPARTAMENTO
+-- Insertar eficios
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio A', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio B', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio C', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio D', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio E', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio F', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio G', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio H', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio I', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio J', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio K', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio L', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio M', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio N', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio Ñ', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio O', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio P', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio Q', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio R', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio S', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio T', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio U', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio V', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio W', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio X', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio Y', 'investiga');
+
+INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
+values ('Edificio Z', 'investiga');
+
+
+-- Insertar tabla tipo_espacio
+INSERT INTO TIPO_ESPACIO(nombre)
+values('Aula');
+
+INSERT INTO TIPO_ESPACIO(nombre)
+values('Laboratorio');
+
+INSERT INTO TIPO_ESPACIO(nombre)
+values('Cubículo');
+
+
+--Consulta para traer los edificios
+select id_edificio, nombre from Edificio
+
+select * from ESPACIOS
+
+--Consulta para traer los edificios por departamento
+SELECT DISTINCT E.id_edificio, E.nombre
+FROM EDIFICIO E
+JOIN ESPACIOS ES ON E.id_edificio = ES.id_edificio
+WHERE ES.id_departamento = 1;
+
+select id_tipoespacio from ESPACIOS where id_edificio = 6
+ 
+ --Consulta para traer el tipo de espacio segun el edificio y departamento
+SELECT DISTINCT TE.id_tipoEspacio, TE.nombre
+FROM TIPO_ESPACIO TE
+JOIN ESPACIOS ES ON TE.id_tipoEspacio = ES.id_tipoEspacio
+WHERE ES.id_edificio = 6 AND ES.id_departamento = 1;
+
+--Consulta para traer el espacio segun el tipo de espacio, edificio y departamento
+SELECT ES.id_espacio, ES.nombre
+FROM ESPACIOS ES
+WHERE ES.id_tipoEspacio = 2 AND ES.id_edificio = 3 AND ES.id_departamento = 1;
+
+--Consulta para traer el espacio, capacidad, ubicacion y nombre segun el espacio
+select id_espacio, capacidad, ubicacion_esp, nombre
+from ESPACIOS
+where id_espacio = 9
+
+--Consulta para eliminar un espacio
+delete from ESPACIOS
+where id_espacio = 1
