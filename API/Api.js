@@ -76,7 +76,7 @@ app.post('/AltaDepartamentos',async(req,res) => {
         @telefono = ${telefono},
         @ubicacion = ${ubicacion};`
          // Enviar una respuesta de éxito
-         res.status(200).send('Departamento insertado exitosamente');
+        res.status(200).send('Departamento insertado exitosamente');
     }catch(error){
         console.error('Error al insertar el departamento:', error.message);
         // Enviar una respuesta de error
@@ -89,9 +89,8 @@ app.post('/AltaDepartamentos',async(req,res) => {
 //Trae departamentos 
 app.get('/SelectDepartamentos', async(req,res) => {
     try{
-        
         await sql.connect(config);
-        const result = await sql.query(`select id_departamento, nombre from departamento`);
+        const result = await sql.query(`select * from departamento`);
         res.status(200).json(result.recordset);
     }catch(error){
         console.error('Error al traer los departamentos:', error.message);
@@ -102,20 +101,163 @@ app.get('/SelectDepartamentos', async(req,res) => {
     }
 });
 
-//Actualiza departamentos
-app.put('/ActualizaDepartamento', async(req,res) => {
-    const id = req.params.id;
-    const { nombre, correo, telefono, ubicacion } = req.body;
-    try{
+//Trae el id del departamento padre
+// Ruta para obtener el ID del departamento padre según el nombre
+/*app.get('/ObtenerIdDepartamentoPadre/:departamentoPadre', async (req, res) => {
+    try {
         await sql.connect(config);
-        await sql.query`UPDATE departamento SET nombre = ${nombre}, correo = ${correo}, telefono = ${telefono}, ubicacion = ${ubicacion} WHERE id = ${id}`;
-        res.status(200).send('Departamento actualizado exitosamente');
-    }catch(error){
-        res.status(500).send('Error al actualizar departamentos');
-    }finally{
+        const { departamentoPadre } = req.params;
+        console.log("imprime en obtener id: ",{departamentoPadre});
+
+        // Consulta SQL para obtener el ID del departamento padre
+        //const result = await sql.query(`select id_departamento from departamento where nombre = ${departamentoPadre}`);
+       
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Definir el parámetro de entrada y ejecutar la consulta parametrizada
+        const result = await request
+            .input('departamentoPadre', sql.NVarChar, departamentoPadre) // Definir el parámetro limpio
+            .query('SELECT id_departamento FROM departamento WHERE nombre = @departamentoPadre');
+
+        console.log("Resultado de la consulta: ", result.recordset[0]);
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener el ID del departamento padre:', error.message);
+        res.status(500).send('Error al obtener el ID del departamento padre');
+    } finally {
         await sql.close();
     }
 });
+
+//Actualiza departamentos
+app.put('/ActualizarDepartamento', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_departamento, nombre, correo, telefono, ubicacion_dep, id_departamentoPadre } = req.body;
+
+        // Crear una nueva instancia de solicitud SQL para ejecutar el procedimiento almacenado
+        const request = new sql.Request();
+
+        // Ejecutar el procedimiento almacenado con los parámetros proporcionados
+        await request
+            .input('id_departamento', sql.Int, id_departamento)
+            .input('nombre', sql.NVarChar, nombre)
+            .input('correo', sql.NVarChar, correo)
+            .input('telefono', sql.NVarChar, telefono)
+            .input('ubicacion_dep', sql.NVarChar, ubicacion_dep)
+            .input('id_departamentoPadre', sql.Int, id_departamentoPadre)
+            .execute('ActualizarDepartamento'); // Ejecutar el procedimiento almacenado
+
+        res.status(200).send('Departamento actualizado exitosamente');
+    } catch (error) {
+        console.error('Error al actualizar el departamento:', error.message);
+        res.status(500).send('Error al actualizar el departamento');
+    } finally {
+        await sql.close();
+    }
+});*/
+app.get('/ObtenerIdDepartamentoPadre/:departamentoPadre', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { departamentoPadre } = req.params;
+        console.log("imprime en obtener id: ", { departamentoPadre });
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Definir el parámetro de entrada y ejecutar la consulta parametrizada
+        const result = await request
+            .input('departamentoPadre', sql.NVarChar, departamentoPadre) // Definir el parámetro limpio
+            .query('SELECT id_departamento FROM departamento WHERE nombre = @departamentoPadre');
+
+        console.log("Resultado de la consulta: ", result.recordset[0]);
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener el ID del departamento padre:', error.message);
+        res.status(500).send('Error al obtener el ID del departamento padre');
+    } finally {
+        await sql.close();
+    }
+});
+
+app.put('/ActualizarDepartamento', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_departamento, nombre, correo, telefono, ubicacion_dep, id_departamentoPadre } = req.body;
+
+        // Crear una nueva instancia de solicitud SQL para ejecutar el procedimiento almacenado
+        const request = new sql.Request();
+
+        // Ejecutar el procedimiento almacenado con los parámetros proporcionados
+        await request
+            .input('id_departamento', sql.Int, id_departamento)
+            .input('nombre', sql.NVarChar, nombre)
+            .input('correo', sql.NVarChar, correo)
+            .input('telefono', sql.NVarChar, telefono)
+            .input('ubicacion_dep', sql.NVarChar, ubicacion_dep)
+            .input('id_departamentoPadre', sql.Int, id_departamentoPadre)
+            .execute('ActualizarDepartamento'); // Ejecutar el procedimiento almacenado
+
+        res.status(200).send('Departamento actualizado exitosamente');
+    } catch (error) {
+        console.error('Error al actualizar el departamento:', error.message);
+        res.status(500).send('Error al actualizar el departamento');
+    } finally {
+        await sql.close();
+    }
+});
+
+app.delete('/EliminarDepartamento/:id', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id } = req.params;
+        console.log("Eliminando departamento con ID:", id);
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Ejecutar la consulta para eliminar el departamento
+        const result = await request
+            .input('id', sql.Int, id)
+            .query('DELETE FROM departamento WHERE id_departamento = @id');
+
+        if (result.rowsAffected[0] === 0) {
+            res.status(404).send('Departamento no encontrado');
+        } else {
+            res.status(200).send('Departamento eliminado exitosamente');
+        }
+    } catch (error) {
+        console.error('Error al eliminar el departamento:', error.message);
+        res.status(500).send('Error al eliminar el departamento');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+app.get('/TraeNombreDep/:id_departamentoPadre', async (req, res) => {
+    console.log('Conectado a SQL Server');
+    try {
+        await sql.connect(config);
+        const { id_departamentoPadre } = req.params; // Obtener el parámetro de la URL
+        console.log(id_departamentoPadre); // Corregido el nombre de la variable
+        const result = await sql.query`SELECT nombre FROM departamento WHERE id_departamento = ${id_departamentoPadre}`;
+        
+        console.log(result.recordset);
+        res.status(200).json(result.recordset[0]); 
+    } catch (error) {
+        console.error('Error al traer nombre del departamento', error.message);
+        res.status(500).send('Error al traer nombre del departamento');
+    } finally {
+        await sql.close();
+    }
+});
+
 
 // Permisos del usuario
 app.post('/Permisos', async(req,res) => {
