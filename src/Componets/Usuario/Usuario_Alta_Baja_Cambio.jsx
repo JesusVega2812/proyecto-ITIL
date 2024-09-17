@@ -22,13 +22,11 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 console.error('Error al obtener los usuarios:', error);
             }
         };
-
-        obtenerUsuarios(); // Llamar a la función cuando el componente se monta
+        obtenerUsuarios();
     }, []); 
 
     const handleListo = async (e) => {
-        e.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
-    
+        e.preventDefault();
         if (radioCheck === 'Agregar') {
             await handleAgregar(); // Llamar a handleAgregar
         //} else if (radioCheck === 'Actualizar') {

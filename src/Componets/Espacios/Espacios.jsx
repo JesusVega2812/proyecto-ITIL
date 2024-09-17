@@ -62,7 +62,6 @@ export const Espacios = () => {
                 }
             } catch (error) {
                 console.error('Error al obtener datos:', error);
-                alert('Error al obtener datos');
             }
         };
     
