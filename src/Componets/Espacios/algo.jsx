@@ -1,233 +1,306 @@
-import { useNavigate } from "react-router-dom";
-import './Departamento_Alta_Baja_Cambio.css';
+import '../Departamentos/Departamento_Alta_Baja_Cambio.css';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export const Departamento_Alta_Baja_Cambio = () => {
-
+export const Espacios = () => {
     const [radioCheck, setRadioCheck] = useState('Agregar');
     const [nombre, setNombre] = useState('');
-    const [departamentoPadre, setDepartamentoPadre] = useState('');
-    const [correo, setCorreo] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [ubicacion, setUbicacion] = useState(null);
-    const [departamentos, setDepartamentos] = useState([]);
-    const [departamento, setDepartamento] = useState('');
-    const [nomPadre, setNomPadre] = useState('Selecciona el departamento');
-    const [id, setId] = useState('');
+    const [tipoEspacio, setTipoEspacio] = useState('');
+    const [edificio, setEdificio] = useState('');
+    const [ubicacion, setUbicacion] = useState('');
+    const [capacidad, setCapacidad] = useState('');
+    const [departamentoPertenece, setDepartamentoPertenece] = useState('');
+
+    const [edificios, setEdificios] = useState([]);
+    const [tiposEspacios, setTiposEspacios] = useState([]);
+    const [nombresEspacio, setNombresEspacio] = useState([]);
 
     useEffect(() => {
-        const obtenerDepartamentos = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/SelectDepartamentos');
-                setDepartamentos(response.data);
-            } catch (error) {
-                console.error('Error al obtener los departamentos cliente:', error);
-            }
-        };
-    
-        obtenerDepartamentos();
-    }, []);
+        fetchDepartamento();
+    }, []); 
+
+    const fetchDepartamento = async () => {
+        try {
+            const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
+            const departamentoResponse = await axios.get(`http://localhost:3000/SelectDepartamento`, {
+                params: { id_pertenece: idDepartamentoPertenece },
+            });
+            setDepartamentoPertenece(departamentoResponse.data.result);
+        } catch (error) {
+            console.error('Error al obtener departamento:', error);
+        }
+    };
+
+    const fetchEdificios = async () => {
+        try {
+            const edificiosResponse = await axios.get(`http://localhost:3000/SelectEdificios`);
+            setEdificios(edificiosResponse.data.edificios || []);
+        } catch (error) {
+            console.error('Error al obtener edificios:', error);
+        }
+    };
+
+    const fetchTiposEspacios = async () => {
+        try {
+            const tiposEspaciosResponse = await axios.get(`http://localhost:3000/SelectTipoEspacios`);
+            setTiposEspacios(tiposEspaciosResponse.data.tipoEspacios || []);
+        } catch (error) {
+            console.error('Error al obtener tipos de espacios:', error);
+        }
+    };
+
+    const fetchEdificiosPorDepartamento = async () => {
+        try {
+            const filteredEdificiosResponse = await axios.get(`http://localhost:3000/SelectEdificiosPorDepartamento`, {
+                params: { id_departamento: localStorage.getItem('idDepartamentoPertenece') },
+            });
+            setEdificios(filteredEdificiosResponse.data.edificios || []);
+        } catch (error) {
+            console.error('Error al obtener edificios:', error);
+        }
+    };
+
+    const fetchTiposEspaciosPorEdificio = async (edificioId) => {
+        try {
+            const filteredEspaciosResponse = await axios.get(`http://localhost:3000/SelectEspaciosPorEdificio`, {
+                params: { id_edificio: edificioId, id_departamento: localStorage.getItem('idDepartamentoPertenece') },
+            });
+            setTiposEspacios(filteredEspaciosResponse.data.tiposEspacios || []);
+        } catch (error) {
+            console.error('Error al obtener tipos de espacios:', error);
+        }
+    };
+
+    const fetchNombresEspacio = async () => {
+        try {
+            const filteredNombreResponse = await axios.get(`http://localhost:3000/SelectNombrePorEspacios`, {
+                params: { id_tipoEspacio: tipoEspacio, id_edificio: edificio, id_departamento: localStorage.getItem('idDepartamentoPertenece') },
+            });
+            setNombresEspacio(filteredNombreResponse.data.nombresEspacio || []);
+        } catch (error) {
+            console.error('Error al obtener nombres de espacio:', error);
+        }
+    };
+
+    const fetchCapacidad = async () => {
+        try {
+            const filteredCapacidadResponse = await axios.get(`http://localhost:3000/SelectCapacidadNombre`, {
+                params: { id_espacio: nombre },
+            });
+            const { capacidad, ubicacion, nombreEspacio } = filteredCapacidadResponse.data;
+            localStorage.setItem('nombreEspacio', nombreEspacio);
+            localStorage.setItem('id_espacio', nombre);
+            setCapacidad(capacidad);
+            setUbicacion(ubicacion);
+        } catch (error) {
+            console.error('Error al obtener capacidad y ubicación:', error);
+        }
+    };
+
+    const handleRadioChange = async (event) => {
+        const valueCheck = event.target.value;
+        setRadioCheck(valueCheck);
+        
+        if (valueCheck === 'Agregar') {
+            await Promise.all([
+                fetchEdificios(), // Cargar todos los edificios
+                fetchTiposEspacios() // Cargar todos los tipos de espacios
+            ]);
+        } else if (['Actualizar', 'Eliminar'].includes(valueCheck)) {
+            await fetchEdificiosPorDepartamento(); // Cargar edificios por departamento cuando sea necesario
+        }
+
+        setNombre('');
+        setTipoEspacio('');
+        setEdificio('');
+        setUbicacion('');
+        setCapacidad('');
+
+    };
+
+    const handleEdificioChange = async (e) => {
+        const selectedEdificio = e.target.value;
+        setEdificio(selectedEdificio);
+        await fetchTiposEspaciosPorEdificio(selectedEdificio); // Cargar tipos de espacios para el edificio seleccionado
+    };
+
+    const handleTipoEspacioChange = async (e) => {
+        const selectedTipo = e.target.value;
+        setTipoEspacio(selectedTipo);
+        await fetchNombresEspacio(); // Cargar nombres de espacio para el tipo seleccionado
+    };
+
+    const handleNombreChange = async (e) => {
+        const selectedNombre = e.target.value;
+        setNombre(selectedNombre);
+        await fetchCapacidad(); // Cargar capacidad y ubicación para el espacio seleccionado
+    };
 
     const handleListo = async (e) => {
         e.preventDefault();
-    
         if (radioCheck === 'Agregar') {
-            handleAgregar();
+            await handleAgregar();
         } else if (radioCheck === 'Actualizar') {
-            handleActualizar();
+            await handleActualizar();
         } else if (radioCheck === 'Eliminar') {
             await handleEliminar();
         }
     };
 
-    const handleAgregar = async() => {
-        try {
-            const response = await axios.post('http://localhost:3000/AltaDepartamentos', {
-                nombre: nombre,
-                departamentoPadre: departamentoPadre,
-                correo: correo,
-                telefono: telefono,
-                ubicacion: ubicacion
-            });
-            const resultado = response.data;
-            console.log(resultado);
-            alert('Departamento insertado exitosamente');
-            window.location.reload();
-        } catch (error) {
-            alert("Hubo problemas");
-            console.log(error.message);
-        }
-    };
-
-    const handleActualizar = async () => {
-        try {
-            alert(departamentoPadre);
-            const response0 = await axios.get(`http://localhost:3000/ObtenerIdDepartamentoPadre/${departamentoPadre}`);
-            console.log('Respuesta de la API:', response0.data);
-            alert('123');
-            if (!response0.data || !response0.data.id_departamento) {
-                throw new Error('La respuesta de la API no contiene id_departamento');
-            }
-           
-            const idDepPadre = response0.data.id_departamento;
-            alert(`ID del departamento padre: ${idDepPadre}`);
-    
-            const response = await axios.put('http://localhost:3000/ActualizarDepartamento', {
-                id_departamento: id,
-                nombre: nombre,
-                correo: correo,
-                telefono: telefono,
-                ubicacion_dep: ubicacion,
-                id_departamentoPadre: idDepPadre
-            });
-    
-            const resultado = response.data;
-            console.log('Resultado de la actualización:', resultado);
-            alert('Departamento actualizado exitosamente');
-        } catch (error) {
-            console.error('Hubo problemas:', error.message);
-            alert('Hubo problemas al actualizar el departamento');
-        }
-    };
-    
     const handleEliminar = async () => {
-        if (!id) {
-            console.error('ID del departamento no definido');
-            alert('Por favor, selecciona un departamento para eliminar');
+        const id_espacio = localStorage.getItem('id_espacio');
+        if (!nombre || !tipoEspacio || !edificio || !capacidad) {
+            alert("Por favor, completa todos los campos");
             return;
         }
-    
         try {
-            alert(id);
-            const response = await axios.delete(`http://localhost:3000/EliminarDepartamento/${id}`);
-            console.log('Departamento eliminado:', response.data);
-            alert('Departamento eliminado exitosamente');
-            window.location.reload();
+            await axios.delete('http://localhost:3000/EliminaEspacio', {
+                params: { id_espacio }
+            });
+            alert('Espacio eliminado exitosamente');
         } catch (error) {
-            console.error('Error al eliminar el departamento:', error.message);
-            alert('Hubo problemas al eliminar el departamento');
+            console.error('Error al eliminar el espacio:', error.message);
+        }
+    }
+
+    const handleActualizar = async () => {
+        const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
+        const id_espacio = localStorage.getItem('id_espacio');
+        const nombreEspacio = localStorage.getItem('nombreEspacio');
+        if (!nombre || !tipoEspacio || !edificio || !capacidad) {
+            alert("Por favor, completa todos los campos");
+            return;
+        }
+        try {
+            await axios.put('http://localhost:3000/ActualizaEspacio', {
+                tipoEspacio,
+                edificio,
+                idDepartamentoPertenece,
+                ubicacion,
+                capacidad,
+                nombreEspacio,
+                id_espacio
+            });
+            alert('Espacio actualizado exitosamente');
+        } catch (error) {
+            alert('Hubo un problema al actualizar el espacio');
+            console.error('Error al actualizar el espacio:', error.message);
+        }
+    }
+
+    const handleAgregar = async (e) => {
+        if (e) e.preventDefault();
+        const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
+        if (!nombre || !tipoEspacio || !edificio || !capacidad) {
+            alert("Por favor, completa todos los campos");
+            return;
+        }
+        try {
+            await axios.post('http://localhost:3000/AltaEspacios', {
+                tipoEspacio,
+                edificio,
+                idDepartamentoPertenece,
+                ubicacion,
+                capacidad,
+                nombre
+            });
+            alert('Espacio agregado exitosamente');
+        } catch (error) {
+            alert("Hubo un problema al agregar el espacio");
+            console.error('Error al agregar el espacio:', error.message);
         }
     };
-    
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        setUbicacion(file);
-    };
-
-    const handleRadioChange = (event) => {
-        const valueCheck = event.target.value;
-        setRadioCheck(valueCheck);
-        console.log(valueCheck);
-        limpiar();
-    };
-
-    const handleSelectedCheck = async (e) => {
-        e.preventDefault();
-        const depSelect = departamentos.filter(dep => dep.nombre === e.target.value);
-        console.log(depSelect);
-        setDepartamento(e.target.value);
-    
-        if (depSelect.length > 0) {
-            setId(depSelect[0].id_departamento)
-            setNombre(depSelect[0].nombre);
-            setCorreo(depSelect[0].correo);
-            setTelefono(depSelect[0].telefono);
-            setUbicacion(depSelect[0].ubicacion);
-    
-            try {
-                const response = await axios.get(`http://localhost:3000/TraeNombreDep/${depSelect[0].id_departamentoPadre}`);
-                const nombreDepPadre = response.data.nombre || "No depende de otro departamento";
-                setDepartamentoPadre(nombreDepPadre);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error al obtener el nombre del departamento padre:', error);
-                setNomPadre("No depende de otro departamento");
-            }
-        }
-    };
-    
-   const limpiar = () => {
-        setNombre('');
-        setNomPadre('No depende de otro departamento');
-        setCorreo('');
-        setTelefono('');
-   }
 
     return (
-        <form className="form-container">
-            <div className='background-half'></div>
+        <>
+            <div className="background-half"></div>
+            <form className="form-container">
+                <div className="form-wrapper">
+                    <span className="d-block text-center nito tam-letra-28px tipo-letra-arial">Espacios</span>
 
-            <div className='form-wrapper'>
-                <span className="d-block text-center nito tam-letra-28px tipo-letra-arial">Departamento</span>
+                    <div className="depCheck margin-top-20px">
+                        {/* Radio buttons */}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Agregar" onChange={handleRadioChange} checked={radioCheck === 'Agregar'} />
+                            <label className="form-check-label" htmlFor="idRadioAgregar">Agregar</label>
+                        </div>
 
-                <div className="depCheck ">
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Agregar" onChange={handleRadioChange} checked={radioCheck === 'Agregar'} ></input>
-                        <label className="form-check-label" htmlFor="idRadioAgregar">Agregar</label>
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Actualizar" onChange={handleRadioChange} checked={radioCheck === 'Actualizar'} />
+                            <label className="form-check-label" htmlFor="idRadioActualizar">Actualizar</label>
+                        </div>
+
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Eliminar" onChange={handleRadioChange} checked={radioCheck === 'Eliminar'} />
+                            <label className="form-check-label" htmlFor="idRadioEliminar">Eliminar</label>
+                        </div>
                     </div>
 
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Actualizar" onChange={handleRadioChange} checked={radioCheck === 'Actualizar'}></input>
-                        <label className="form-check-label" htmlFor="idRadioActualizar">Actualizar</label>
+                    <div className="mb-3">
+                        <label htmlFor="inputText" className="form-label">Departamento</label>
+                        <input type="text" className="form-control" id="inputText" value={departamentoPertenece} readOnly />
                     </div>
-
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Eliminar" onChange={handleRadioChange} checked={radioCheck === 'Eliminar'}></input>
-                        <label className="form-check-label" htmlFor="idRadioEliminar">Eliminar</label>
-                    </div>
-                </div>
-
-                {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
-                    <div>
-                        <label htmlFor="inputText" className="form-label">Seleccione el departamento</label>
-                        <select className="form-select" aria-label="Select department" value={departamento} onChange={handleSelectedCheck}>
-                            <option value="selCheck">Selecciona el departamento</option>
-                            {departamentos.map((dep, index) => (
-                                <option key={dep.id} value={dep.id}>{dep.nombre}</option>
-                            ))}
+                    <div className="mb-3">
+                        <label htmlFor="inputText" className="form-label">Edificio</label>
+                        <select className="form-select" value={edificio} onChange={handleEdificioChange}>
+                            <option value="">Selecciona un Edificio</option>
+                            {Array.isArray(edificios) && edificios.length > 0 ? (
+                                edificios.map((edificio) => (
+                                    <option key={edificio.id_edificio} value={edificio.id_edificio}>{edificio.nombre}</option>
+                                ))
+                            ) : (
+                                <option value="">No hay edificios disponibles</option>
+                            )}
                         </select>
                     </div>
-                )}
-
-                {(radioCheck !== 'Eliminar') &&
-                    <div>
+                    <div className="mb-3">
+                        <label htmlFor="tipoEspacio" className="form-label">Tipo de Espacio</label>
+                        <select className="form-select" value={tipoEspacio} onChange={handleTipoEspacioChange}>
+                            <option value="">Selecciona un Tipo de Espacio</option>
+                            {Array.isArray(tiposEspacios) && tiposEspacios.length > 0 ? (
+                                tiposEspacios.map((tipo) => (
+                                    <option key={tipo.id_tipoEspacio} value={tipo.id_tipoEspacio}>{tipo.nombre}</option>
+                                ))
+                            ) : (
+                                <option value="">No hay tipos de espacio disponibles</option>
+                            )}
+                        </select>
+                    </div>
+                    {radioCheck === 'Agregar' ? (
                         <div className="mb-3">
-                            <label htmlFor="inputText" className="form-label">Departamento</label>
-                            <input type="text" className="form-control" id="inputText" placeholder="Ingresa el departamento aquí" value={nombre} onChange={(e) => setNombre(e.target.value)}></input>
+                            <label htmlFor="inputNombre" className="form-label">Nombre</label>
+                            <input type="text" className="form-control" id="inputNombre" placeholder="Ingresa el nombre aquí" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                         </div>
-
+                    ) : (
                         <div className="mb-3">
-                            <label htmlFor="inputText" className="form-label">Departamento al que pertenece</label>
-                            <select className="form-select" value={departamentoPadre} onChange={(e) => setDepartamentoPadre(e.target.value)}>
-                                <option value="" >No depende de otro departamento</option>
-                                {departamentos.map((dep, index) => (
-                                    <option key={index} value={dep.nombre}>{dep.nombre}</option>
-                                ))}
+                            <label htmlFor="inputNombre" className="form-label">Nombre</label>
+                            <select className="form-select" value={nombre} onChange={handleNombreChange}>
+                                <option value="">Selecciona un nombre</option>
+                                {Array.isArray(nombresEspacio) && nombresEspacio.length > 0 ? (
+                                    nombresEspacio.map((nombre) => (
+                                        <option key={nombre.id_espacio} value={nombre.id_espacio}>{nombre.nombre}</option>
+                                    ))
+                                ) : (
+                                    <option value="">No hay nombres disponibles</option>
+                                )}
                             </select>
                         </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="inputEmail" className="form-label">Correo Electrónico</label>
-                            <input type="email" className="form-control" id="inputEmail" placeholder="Ingresa el correo electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)}></input>
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="inputPhone" className="form-label">Teléfono</label>
-                            <input type="tel" className="form-control" id="inputPhone" placeholder="Ingresa el número de teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)}></input>
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="inputFile" className="form-label">Ubicación (Imagen)</label>
-                            <input type="file" className="form-control" id="inputFile" onChange={handleImageChange}></input>
-                        </div>
+                    )}
+                    <div className="mb-3">
+                        <label htmlFor="ubicacion" className="form-label">Ubicación</label>
+                        <input type="text" className="form-control" id="ubicacion" value={ubicacion} onChange={(e) => setUbicacion(e.target.value)} />
                     </div>
-                }
-
-                <div className="d-grid gap-2">
-                    <button className="btn btn-primary btn-lg" type="submit" onClick={handleListo}>Listo</button>
+                    <div className="mb-3">
+                        <label htmlFor="capacidad" className="form-label">Capacidad</label>
+                        <input type="number" className="form-control" id="capacidad" value={capacidad} onChange={(e) => setCapacidad(e.target.value)} />
+                    </div>
+                    <div className="button-container">
+                        <button onClick={handleListo} className='color-boton-azul submit-btn color-blanco'>
+                            Listo
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </>
     );
 };

@@ -184,19 +184,6 @@ export const Espacios = () => {
                         </div>
                     </div>
 
-                    {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
-                        <select className="form-select" value={edificio} onChange={(e) => setEdificio(e.target.value)}>
-                            <option value="">Selecciona un Edificio</option>
-                            {Array.isArray(edificios) && edificios.length > 0 ? (
-                                edificios.map((edificio) => (
-                                    <option key={edificio.id_edificio} value={edificio.id_edificio}>{edificio.nombre}</option>
-                                ))
-                            ) : (
-                                <option value="">No hay edificios disponibles</option>
-                            )}
-                        </select>
-                    )}
-
                     {/* QUE EL INPUT ESTE PREDETERMINADO SEGUN EL USUARIO QUE ESTA LOGEADO */}
                     <div className="mb-3">
                         <label htmlFor="inputText" className="form-label">Departamento</label>

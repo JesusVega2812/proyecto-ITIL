@@ -29,15 +29,11 @@ export const Login = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post('http://localhost:3000/Login', { usuario: usuario, contra: contra });
-            alert('Envio datos a la api');
             const { esValido, idUsuario, idDepartamentoPertenece} = response.data;
-            alert(`id usuario ${idUsuario}`)
             if (esValido) {
                 localStorage.setItem('usuario', usuario);
                 localStorage.setItem('idUsuario', idUsuario);
-                alert(`Si se guardo el id usuario es: ${idUsuario}`);
                 localStorage.setItem('idDepartamentoPertenece', idDepartamentoPertenece);
-                alert(`Si se guardo el id departamento que pertenece es: ${idDepartamentoPertenece}`);
                 await handlePermisos();
                 alert('Bienvenido');
                 navigate('/Principal');
@@ -56,7 +52,6 @@ export const Login = () => {
             const resultado = response.data.permisos;
 
             console.log(resultado);
-            alert(resultado);
 
             if (resultado > 0) {
                 localStorage.setItem('permisos', resultado);
@@ -64,7 +59,7 @@ export const Login = () => {
                 alert('No se pudo obtener sus permisos');
             }
         } catch (error) {
-            alert("Algo malo pasó :( Permisos");  // Muestra el mensaje del error en una alerta
+            alert("Algo malo pasó :( Permisos");
             console.log(error.message);
         }
     }

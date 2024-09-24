@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Editar_Administrador.css';
 import { Departamento_Alta_Baja_Cambio } from '../Departamentos/Departamento_Alta_Baja_Cambio.jsx';
 import { Usuario_Alta_Baja_Cambio } from '../Usuario/Usuario_Alta_Baja_Cambio.jsx'
-import { Espacios } from '../Espacios/Espacios.jsx';
+import { Edificios } from '../Edificios/Edificios.jsx';
 
 export const Editar_Administrador = () => {
     const [selectedContent, setSelectedContent] = useState('');
@@ -16,7 +16,7 @@ export const Editar_Administrador = () => {
           },
         { label: 'Departamento', content: <Departamento_Alta_Baja_Cambio /> },
         { label: 'Usuario', content: <Usuario_Alta_Baja_Cambio /> },
-        { label: 'Espacio', content: <Espacios /> },
+        { label: 'Edificio', content: 'JESUS A CHAMBEARRRR' },
         { label: 'Equipo', content: 'ESPERELO PROXIMAMENTEEEE' }
     ];
 
