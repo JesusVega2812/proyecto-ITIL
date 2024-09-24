@@ -16,7 +16,7 @@ export const Editar_Administrador = () => {
           },
         { label: 'Departamento', content: <Departamento_Alta_Baja_Cambio /> },
         { label: 'Usuario', content: <Usuario_Alta_Baja_Cambio /> },
-        { label: 'Edificio', content: 'JESUS A CHAMBEARRRR' },
+        { label: 'Edificio', content: < Edificios /> },
         { label: 'Equipo', content: 'ESPERELO PROXIMAMENTEEEE' }
     ];
 

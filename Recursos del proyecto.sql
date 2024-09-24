@@ -27,7 +27,7 @@ select * from USUARIO
 
 drop function VerificarUsuario
 
-CREATE FUNCTION VerificarUsuario
+/*CREATE FUNCTION VerificarUsuario
 (
     @usuario NVARCHAR(100),
     @contrasena NVARCHAR(20)
@@ -51,7 +51,7 @@ BEGIN
     END
 
     RETURN @esValido;
-END
+END*/
 
 --------------Ultimos recursos a ejecutar -----------------------------
 --14/09/24
@@ -108,7 +108,7 @@ BEGIN
 END;
 
 
-CREATE FUNCTION VerificarPermisos
+/*CREATE FUNCTION VerificarPermisos
 (
     @usuario NVARCHAR(100)
 )
@@ -126,7 +126,7 @@ BEGIN
     WHERE nombre+' '+apellido = @usuario
 
     RETURN @permisos;
-END
+END*/
 
 -----A PARTIR DE AQUÍ----------
 UPDATE USUARIO
@@ -164,6 +164,7 @@ RETURN
 
 select * from dbo.VerificarUsuario ('Marisol Manjarrez', '123')
 
+--drop function VerificarPermisos
 
 CREATE FUNCTION VerificarPermisos
 (
@@ -183,7 +184,7 @@ BEGIN
     WHERE nombre+' '+apellido = @usuario
 
     RETURN @permisos;
-END
+END;
 
 select dbo.VerificarPermisos ('Marisol Manjarrez')
 
@@ -315,3 +316,6 @@ where id_espacio = 9
 --Consulta para eliminar un espacio
 delete from ESPACIOS
 where id_espacio = 1
+
+
+select * from EDIFICIO
