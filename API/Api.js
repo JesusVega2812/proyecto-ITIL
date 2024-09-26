@@ -663,3 +663,73 @@ app.get('/SelectNombrePorEspaciosADMON', async(req,res) => {
         await sql.close();
     }
 });
+
+// Da de alta a Edificio
+app.post('/AltaEdificio', async(req, res) => {
+    try{
+        await sql.connect(config);
+        const{nombre, ubicacion_edificio} = req.body;
+        await sql.query`INSERT INTO EDIFICIO(nombre, ubicacion_edificio)
+            VALUES(${nombre}, ${ubicacion_edificio});
+            `;
+        res.status(200).send('Edificio insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar edificio:, ', error.message);
+        res.status(500).send('Error al insertar edificio');
+    }finally{
+        await sql.close();
+    }
+});
+
+// Actualizar datos de edificio
+app.put('/ActualizarEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_edificio, nombre, ubicacion_edificio} = req.body;
+
+        // Crear una nueva instancia de solicitud SQL para ejecutar el procedimiento almacenado
+        const request = new sql.Request();
+
+        // Ejecutar el procedimiento almacenado con los parámetros proporcionados
+        await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .input('nombre', sql.NVarChar, nombre)
+            .input('ubicacion_edificio', sql.NVarChar, ubicacion_edificio)
+            .execute('ActualizarEdificio'); // Ejecutar el procedimiento almacenado
+        res.status(200).send('Edificio actualizado exitosamente');
+    } catch (error) {
+        console.error('Error al actualizar el edificio:', error.message);
+        res.status(500).send('Error al actualizar el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+// Elimina un edificio
+app.delete('/EliminaEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const id_edificio = req.query.id_edificio;
+
+        // Usar consulta parametrizada para evitar inyección SQL
+        const result = await sql.query(`
+            delete from EDIFICIO
+            where id_edificio = @id_edificio;
+        `, {
+            id_edificio: sql.Int, value: id_edificio
+        });
+
+        if (result.rowsAffected[0] > 0) {
+            res.json({ success: true, message: 'Edificio eliminado correctamente' });
+        } else {
+            res.json({ success: false, message: 'No se encontró el edificio para eliminar' });
+        }
+    } catch (error) {
+        console.error('Error al eliminar el edificio:', error.message);
+        res.status(500).json({ success: false, message: 'Error al eliminar el edificio' });
+    } finally {
+        await sql.close();
+    }
+});
