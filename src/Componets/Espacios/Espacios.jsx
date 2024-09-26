@@ -126,7 +126,10 @@ export const Espacios = () => {
     const handleAgregar = async (e) => {
         if (e) e.preventDefault();
         const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
+<<<<<<< HEAD
         
+=======
+>>>>>>> Equipos_front
         if (!nombre || !tipoEspacio || !edificio || !capacidad) {
             alert("Por favor, completa todos los campos");
             return;

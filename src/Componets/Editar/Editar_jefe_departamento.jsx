@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Editar_Administrador.css';
 import { Espacios } from '../Espacios/Espacios.jsx';
+import { Equipos } from '../Equipos/Equipo.jsx';
 
 export const Editar_jefe_departamento = () => {
     const [selectedContent, setSelectedContent] = useState('');
@@ -13,7 +14,7 @@ export const Editar_jefe_departamento = () => {
             action: () => navigate('/Principal')
          },
         { label: 'Espacio', content: <Espacios /> },
-        { label: 'Equipo', content: 'Esperelo PROOOOOOX, pa la siguiente' }
+        { label: 'Equipo', content: <Equipos /> }
     ];
 
     return (
