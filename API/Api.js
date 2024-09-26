@@ -479,3 +479,113 @@ app.post('/Login', async (req, res) => {
         await sql.close();
     }
 });
+
+//-------------------------------------------------------------
+app.get('/SelectUsuario', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT id_usuario, nombre + \' \' + apellido AS Nombre, nombre, apellido,id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO where status = 1');        
+        const Usuario = result.recordset; 
+        res.status(200).json(Usuario); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Inserta Usuarios
+app.post('/AltaUsuarios',async(req,res) => {
+    try{
+        
+        await sql.connect(config);
+        const {nombre,apellido,departamento,jefe,correo,telefono,permisos,contrasenia} = req.body;
+        await sql.query`INSERT INTO usuario(nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status)
+            VALUES(${nombre}, ${apellido}, ${departamento}, ${jefe}, ${correo}, ${telefono}, ${contrasenia}, ${permisos}, ${1})`;
+         // Enviar una respuesta de éxito
+        res.status(200).send('Departamento insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar el departamento:', error.message);
+        // Enviar una respuesta de error
+        res.status(500).send('Error al insertar el departamento');
+    }finally{
+        await sql.close();
+    }
+});
+
+// Actualiza usuarios
+app.put('/ActualizaUsuarios', async (req, res) => {
+    const { id_usuario, nombre, apellido, departamento_pertenece, jefe, correo, telefono, permisos } = req.body;
+    console.log('Datos recibidos:', {
+        id_usuario,
+        nombre,
+        apellido,
+        departamento_pertenece,
+        jefe,
+        correo,
+        telefono,
+        permisos
+    });
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        request.input('id_usuario', sql.Int, id_usuario);
+        request.input('nombre', sql.VarChar, nombre);
+        request.input('apellido', sql.VarChar, apellido);
+        request.input('departamento_pertenece', sql.Int, departamento_pertenece);
+        request.input('jefe', sql.Int, jefe);
+        request.input('correo', sql.VarChar, correo);
+        request.input('telefono', sql.VarChar, telefono);
+        request.input('permisos', sql.Int, permisos);
+        const result = await request.query(`
+            UPDATE Usuario
+            SET nombre = @nombre,
+                apellido = @apellido,
+                id_departamento_pertenece = @departamento_pertenece,
+                id_jefe = @jefe,
+                correo = @correo,
+                telefono = @telefono,
+                permisos = @permisos
+            WHERE id_usuario = @id_usuario
+        `);
+        if (result.rowsAffected[0] > 0) {
+            res.json({ success: true, message: 'Usuario actualizado correctamente' });
+        } else {
+            res.json({ success: false, message: 'No se encontró el usuario para actualizar' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar el usuario:', error.message);
+        res.status(500).json({ success: false, message: 'Error al usuario el espacio' });
+    } finally {
+        await sql.close();
+    }
+});
+
+//Baja usuarios
+app.put('/BajaUsuarios', async (req,res) => {
+    const {id_usuario} = req.body;
+    const per = 0;
+    try{
+        await sql.connect(config);
+        const request = new sql.Request();
+        request.input('id_usuario', sql.Int, id_usuario);
+        request.input('status', sql.Bit, per);
+        const result = await request.query(`
+            UPDATE Usuario
+            SET status = @status
+            WHERE id_usuario = @id_usuario
+        `);
+        if (result.rowsAffected[0] > 0) {
+            res.json({ success: true, message: 'Usuario dado de baja correctamente' });
+        } else {
+            res.json({ success: false, message: 'No se encontró el usuario para actualizar' });
+        }
+    } catch (error) {
+        console.error('Error al dar de baja el usuario:', error.message);
+        res.status(500).json({ success: false, message: 'Error al usuario el espacio' });
+    } finally {
+        await sql.close();
+    }
+});

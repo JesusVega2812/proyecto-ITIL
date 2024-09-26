@@ -129,11 +129,11 @@ export const Departamento_Alta_Baja_Cambio = () => {
         setDepartamento(e.target.value);
     
         if (depSelect.length > 0) {
-            setId(depSelect[0].id_departamento)
-            setNombre(depSelect[0].nombre);
-            setCorreo(depSelect[0].correo);
-            setTelefono(depSelect[0].telefono);
-            setUbicacion(depSelect[0].ubicacion);
+            setId(depSelect[0].id_departamento || ' ');
+            setNombre(depSelect[0].nombre || ' ');
+            setCorreo(depSelect[0].correo || ' ');
+            setTelefono(depSelect[0].telefono || ' ');
+            setUbicacion(depSelect[0].ubicacion || ' ');
     
             try {
                 const response = await axios.get(`http://localhost:3000/TraeNombreDep/${depSelect[0].id_departamentoPadre}`);

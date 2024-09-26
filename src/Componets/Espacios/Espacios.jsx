@@ -91,6 +91,7 @@ export const Espacios = () => {
                 params: { id_espacio }
             });
             alert('Espacio eliminado exitosamente');
+            window.location.reload();
         }catch(error){
             console.error(error.message);
         }
@@ -125,9 +126,7 @@ export const Espacios = () => {
     const handleAgregar = async (e) => {
         if (e) e.preventDefault();
         const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
-        alert(`El id departamento es:  ${idDepartamentoPertenece}`);
-        alert(`El id edificio es:  ${edificio}`);
-        alert(`El id tipoEspacio es:  ${tipoEspacio}`);
+        
         if (!nombre || !tipoEspacio || !edificio || !capacidad) {
             alert("Por favor, completa todos los campos");
             return;
@@ -142,6 +141,7 @@ export const Espacios = () => {
                 nombre
             });
             alert('Espacio agregado exitosamente');
+            window.location.reload();
         } catch (error) {
             alert("Hubo un problema al agregar el espacio");
             console.error(error.message);

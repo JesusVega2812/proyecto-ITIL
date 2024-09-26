@@ -49,7 +49,7 @@ CREATE TABLE EQUIPO (
     id_modelo INT,
     --id_contratoSoporte INT,
 	id_garantia INT,
-	estado_equipo VARCHAR(20) --EN USO, REPARACION, YA NO SIRVE
+	estado_equipo VARCHAR(20) --EN USO, REPARACION, YA NO SIRVE, DISPONIBLE
 );
 
 -- Tabla: COMPUTADORA
