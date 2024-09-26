@@ -80,7 +80,6 @@ export const Equipos = () => {
     };
 
     const fetchEquipos = async (id_espacio, id_edificio, id_tipoEspacio) => {
-        alert(`Espacio: ${id_espacio}`)
         try {
             const response = await axios.get('http://localhost:3000/SelectEquiposPorEspacio', {
                 params: { id_espacio: id_espacio, id_edificio: id_edificio, id_tipoEspacio: id_tipoEspacio },
@@ -123,7 +122,6 @@ export const Equipos = () => {
             setEquipos([]);
         } else {
             setSelectedNombreEspacio(nombreEspacio);
-            alert(nombreEspacio.id_espacio)
             fetchEquipos(nombreEspacio.id_espacio, selectedEdificio.id_edificio, selectedTipoEspacio.id_tipoEspacio);
         }
     };

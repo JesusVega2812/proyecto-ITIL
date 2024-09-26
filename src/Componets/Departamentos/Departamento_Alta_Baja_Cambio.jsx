@@ -39,6 +39,8 @@ export const Departamento_Alta_Baja_Cambio = () => {
         } else if (radioCheck === 'Eliminar') {
             await handleEliminar();
         }
+        const response = await axios.get('http://localhost:3000/SelectDepartamentos');
+        setDepartamentos(response.data);
     };
 
     const handleAgregar = async() => {
@@ -62,16 +64,12 @@ export const Departamento_Alta_Baja_Cambio = () => {
 
     const handleActualizar = async () => {
         try {
-            alert(departamentoPadre);
             const response0 = await axios.get(`http://localhost:3000/ObtenerIdDepartamentoPadre/${departamentoPadre}`);
             console.log('Respuesta de la API:', response0.data);
-            alert('123');
             if (!response0.data || !response0.data.id_departamento) {
                 throw new Error('La respuesta de la API no contiene id_departamento');
             }
-           
             const idDepPadre = response0.data.id_departamento;
-            alert(`ID del departamento padre: ${idDepPadre}`);
     
             const response = await axios.put('http://localhost:3000/ActualizarDepartamento', {
                 id_departamento: id,
@@ -148,6 +146,7 @@ export const Departamento_Alta_Baja_Cambio = () => {
     };
     
    const limpiar = () => {
+        setDepartamento('Seleccione el departamento')
         setNombre('');
         setNomPadre('No depende de otro departamento');
         setCorreo('');

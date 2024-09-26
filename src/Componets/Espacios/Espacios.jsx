@@ -91,7 +91,6 @@ export const Espacios = () => {
                 params: { id_espacio }
             });
             alert('Espacio eliminado exitosamente');
-            window.location.reload();
         }catch(error){
             console.error(error.message);
         }
@@ -140,7 +139,6 @@ export const Espacios = () => {
                 nombre
             });
             alert('Espacio agregado exitosamente');
-            window.location.reload();
         } catch (error) {
             alert("Hubo un problema al agregar el espacio");
             console.error(error.message);

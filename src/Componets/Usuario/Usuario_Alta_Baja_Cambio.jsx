@@ -46,6 +46,10 @@ export const Usuario_Alta_Baja_Cambio = () => {
         } else if (radioCheck === 'Eliminar') {
             await handleBaja(); // Asegúrate de definir handleEliminar si es necesario
         }
+        const response = await axios.get('http://localhost:3000/SelectUsuario');
+        setUsuarios(response.data); // Guardar los usuarios en el estado
+        const response_ = await axios.get('http://localhost:3000/SelectDepartamentos');
+        setDepartamentos(response_.data);
     };
 
     const handleAgregar = async () => {
@@ -64,7 +68,6 @@ export const Usuario_Alta_Baja_Cambio = () => {
             const resultado = response.data;
             console.log(resultado);
             alert('Usuario agregado exitosamente'); // Mensaje de éxito
-            window.location.reload();
         } catch (error) {
             alert("Hubo problemas al agregar el usuario");
             console.log(error.message);
@@ -73,17 +76,19 @@ export const Usuario_Alta_Baja_Cambio = () => {
 
     const handleActualizar = async () => {
         try{
-            
+            console.log(usuSelected);
             const dep = departamentos.find(dep => dep.nombre === departamento);
             const jef = usuarios.find(j => j.Nombre === jefe);
+            const jefeId = jef ? jef.id_usuario : null;
+            console.log(jef)
             const perm = permisos.findIndex((per) => per === permiso)
-            console.log(perm + 1);
+            console.log(`Permisos ${perm + 1}`);
             const response =  await axios.put('http://localhost:3000/ActualizaUsuarios', {
                 id_usuario: usuSelected.id_usuario,
                 nombre: nombre,
                 apellido: apellido,
                 departamento_pertenece: dep.id_departamento,
-                jefe: jef.id_usuario,
+                jefe: jefeId,
                 correo: correo,
                 telefono: telefono,
                 permisos: perm + 1
@@ -101,7 +106,6 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 id_usuario: usuSelected.id_usuario
             })
             alert('Usuario dado de baja');
-            window.location.reload();
         }catch(error){
             alert("Hubo problemas al dar de baja el usuario");
             console.log(error.message);
