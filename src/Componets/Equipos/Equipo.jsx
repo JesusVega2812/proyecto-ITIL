@@ -115,13 +115,14 @@ export const Equipos = () => {
             fetchNombreEspacios(selectedEdificio.id_edificio, tipoEspacio.id_tipoEspacio);
         }
     };
-
+    
     const handleNombreEspacioSelect = (nombreEspacio) => {
         if (selectedNombreEspacio === nombreEspacio) {
             setSelectedNombreEspacio(null);
             setEquipos([]);
         } else {
             setSelectedNombreEspacio(nombreEspacio);
+            alert(nombreEspacio.id_espacio)
             fetchEquipos(nombreEspacio.id_espacio, selectedEdificio.id_edificio, selectedTipoEspacio.id_tipoEspacio);
         }
     };
