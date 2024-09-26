@@ -32,14 +32,14 @@ BEGIN
     -- Inicializamos la variable de retorno
     SET @esValido = 0;
 
-    -- Verificamos si el usuario existe y la contraseÒa es correcta
+    -- Verificamos si el usuario existe y la contrase√±a es correcta
     IF EXISTS (
         SELECT 1
         FROM USUARIO
         WHERE nombre+' '+apellido = @usuario AND contrasena = @contrasena
     )
     BEGIN
-        SET @esValido = 1; -- Usuario y contraseÒa v·lidos
+        SET @esValido = 1; -- Usuario y contrase√±a v√°lidos
     END
 
     RETURN @esValido;
@@ -77,7 +77,7 @@ create PROCEDURE ActualizarDepartamento
     @correo NVARCHAR(100),
     @telefono NVARCHAR(20),
     @ubicacion_dep NVARCHAR(100),
-    @id_departamentoPadre INT -- Par·metro para el nombre del departamento padre
+    @id_departamentoPadre INT -- Par√°metro para el nombre del departamento padre
 AS
 BEGIN
     -- Obtener el ID del departamento padre usando el nombre
@@ -118,7 +118,7 @@ BEGIN
     RETURN @permisos;
 END*/
 
------A PARTIR DE AQUÕ----------
+-----A PARTIR DE AQU√ç----------
 
 
 --drop function VerificarPermisos
@@ -191,7 +191,7 @@ INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
 values ('Edificio N', 'investiga');
 
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
-values ('Edificio —', 'investiga');
+values ('Edificio √ë', 'investiga');
 
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
 values ('Edificio O', 'investiga');
@@ -238,7 +238,7 @@ INSERT INTO TIPO_ESPACIO(nombre)
 values('Laboratorio');
 
 INSERT INTO TIPO_ESPACIO(nombre)
-values('CubÌculo');
+values('Cub√≠culo');
 
 
 --Consulta para traer los edificios
@@ -276,3 +276,17 @@ where id_espacio = 1
 
 
 select * from EDIFICIO
+
+--Procedimiento almacenado para actualizar datos de edificio
+create PROCEDURE ActualizarEdificio
+    @id_edificio INT,
+    @nombre NVARCHAR(100),
+    @ubicacion_edificio NVARCHAR(100)
+AS
+BEGIN
+    -- Actualizar el edificio con los nuevos valores
+    UPDATE EDIFICIO
+    SET nombre = @nombre,
+        ubicacion_edificio = @ubicacion_edificio
+	WHERE id_edificio = @id_edificio;
+END;
