@@ -1,0 +1,78 @@
+.equipos-container {
+    padding: 2%; /* Ajuste relativo al ancho de la pantalla */
+    max-width: 100%;
+    margin: 2% auto; /* Márgenes en porcentaje para adaptabilidad */
+    font-family: Arial, sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.equipos-title {
+    text-align: left;
+    margin-bottom: 2%;
+    font-size: 2vw; /* Tamaño de texto ajustado a la pantalla */
+}
+.equipos-edificio-list {
+    list-style-type: none;
+    padding: 0;
+}
+.equipos-edificio-item {
+    margin: 1% 0; /* Márgenes en porcentaje */
+    cursor: pointer;
+    padding: 1%; /* Ajuste proporcional */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    width: 100%;
+}
+.equipos-edificio-name {
+    font-weight: bold;
+    color: #043c64;
+    font-size: 1.8vw; /* Tamaño de texto ajustado */
+}
+.equipos-espacio-list {
+    list-style-type: none;
+    padding-left: 5%; /* Espaciado proporcional */
+}
+.equipos-espacio-item {
+    margin: 1% 0;
+    cursor: pointer;
+    padding: 0.5%;
+}
+.equipos-espacio-name {
+    color: #db5e15;
+    font-size: 1.6vw; /* Tamaño de texto ajustado */
+}
+.equipos-selected-space {
+    margin-top: 1%;
+    font-style: italic;
+    color: #6C757D;
+    padding: 1%;
+    border-top: 1px solid #ddd;
+}
+.equipos-lista-equipos {
+    margin-top: 1%;
+    list-style-type: none;
+    padding-left: 5%;
+}
+.equipos-equipo-item {
+    margin: 1% 0;
+    padding: 1%;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+}
+.equipos-select-button {
+    background-color: #db5e15;
+}
+.equipos-select-button:hover {
+    background-color: #7c0494;
+}
+.equipos-select-button {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 70px;
+    height: 30px;
+    margin-left: 5%;
+}
