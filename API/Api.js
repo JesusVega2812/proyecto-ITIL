@@ -484,7 +484,10 @@ app.post('/Login', async (req, res) => {
 app.get('/SelectEquiposPorEspacio', async (req, res) => {
     try{
         await sql.connect(config);
-        const { id_espacio, id_edificio, id_tipoEspacio } = req.query;
+        const id_espacio = req.query.id_espacio;
+        const id_edificio = req.query.id_edificio;
+        const id_tipoEspacio = req.query.id_tipoEspacio;
+
         console.log('idEspacio en equipo:', id_espacio);
         const checkEquiposEspacios = await sql.query(`
             SELECT id_equipo, numero_serie 
