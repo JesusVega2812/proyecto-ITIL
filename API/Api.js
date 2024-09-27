@@ -1006,7 +1006,7 @@ app.post('/AltaSwitch',async(req,res) => {
     }
 });
 
-//Inserta Switch
+//Inserta Router
 app.post('/AltaRouter',async(req,res) => {
     try{
         await sql.connect(config);
