@@ -6,18 +6,106 @@ import axios from "axios";
 export const EquipoBodega = () => {
     const [radioCheck, setRadioCheck] = useState('Agregar');
     const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
+    const [modelos, setModelos] = useState([]);
+    const [modelo,setModelo] = useState('');
+    const [estadosEquipo, setEstadosEquipo] = useState(['En uso','En reparacion','Ya no sirve','Disponible']);
+    const [estadoEquipo, setEstadoEquipo] = useState('Disponible');
+    const [computadoraTipos, setComputadoraTipos] = useState([]);
+    const [computadoraTipo, setComputadoraTipo] = useState('');
+    const [procesadores, setProcesadores] = useState([]);
+    const [procesador, setProcesador] = useState('');
+    const [graficas, setGraficas] = useState([]);
+    const [graficaSelected, setGraficaSelected] = useState('');
+    const [sistemas, setSistemas] = useState([]);
+    const [sistemaSelected, setSistemaSelected] = useState('');
+    const [confiRedes, setConfiRedes] = useState([]);
+    const [confiRed, setConfiRed] = useState('');
+    const [softwares, setSoftwares] = useState([]);
+    const [softwaresSelected, setSoftwaresSelected] = useState([]);
+    const [numeroSerie, setNumeroSerie] = useState('');
+    const [costoEquipo, setCostoEquipo] = useState('');
+    const [ram, setRAM] = useState('');
+    const [memoria, setMemoria] = useState('');
+
 
     useEffect(() => {
-        const obtenerDepartamentos = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/SelectDepartamentos');
-            } catch (error) {
-                console.error('Error al obtener los departamentos cliente:', error);
-            }
-        };
-    
-        obtenerDepartamentos();
+        selectModelo();
+        selectTipoComputadora();
+        selectProcesador();
+        selectGrafica();
+        selectSistemas();
+        selectConfiguracionRed();
+        selectSoftwares();
     }, []);
+
+    const selectSoftwares = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectSoftwares');
+            setSoftwares(response.data);
+        } catch (error) {
+            console.error('Error al obtener los softwares', error);
+        }
+    };
+
+    const selectConfiguracionRed = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/ConfiguracionRed');
+            setConfiRedes(response.data);
+            setConfiRed(response.data[0].id_tarjeta);
+        } catch (error) {
+            console.error('Error al obtener las configuraciones de red', error);
+        }
+    };
+
+    const selectSistemas = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectSistemasOperativos');
+            setSistemas(response.data);
+            setSistemaSelected(response.data[0].id_sistema);
+        } catch (error) {
+            console.error('Error al obtener los sistemas operativos', error);
+        }
+    };
+
+    const selectGrafica = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectGrafica');
+            setGraficas(response.data);
+            setGraficaSelected(response.data[0].id_tarjeta);
+        } catch (error) {
+            console.error('Error al obtener las tarjetas graficas', error);
+        }
+    };
+
+    const selectModelo = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectModelos');
+            setModelos(response.data);
+            setModelo(response.data[0].id_modelo);
+        } catch (error) {
+            console.error('Error al obtener loa modelos de equipos', error);
+        }
+    };
+
+    const selectTipoComputadora = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/selectTipoComputadora');
+            setComputadoraTipos(response.data);
+            setComputadoraTipo(response.data[0].id_tipoComputadora);
+        } catch (error) {
+            console.error('Error al obtener los tipo de computadora:', error);
+        }
+    };
+
+    const selectProcesador = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/selectProcesador');
+            setProcesadores(response.data);
+            setProcesador(response.data[0].id_procesador);
+        } catch (error) {
+            console.error('Error al obtener los procesadores:', error);
+        }
+    };
 
     const handleListo = async (e) => {
         e.preventDefault();
@@ -29,13 +117,30 @@ export const EquipoBodega = () => {
         } else if (radioCheck === 'Eliminar') {
             await handleEliminar();
         }
-        const response = await axios.get('http://localhost:3000/SelectDepartamentos');
+        //const response = await axios.get('http://localhost:3000/SelectDepartamentos');
        // setDepartamentos(response.data);
     };
 
     const handleAgregar = async() => {
         try {
-            const response = await axios.get('http://localhost:3000/SelectDepartamentos');
+            if(radioCheckEquipo === 'Computadora') {
+                const response = await axios.post('http://localhost:3000/AltaComputadora', {
+                    numeroSerie: numeroSerie,
+                    costo: costoEquipo,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    tipo: computadoraTipo,
+                    procesador: procesador,
+                    RAM: ram,
+                    memoria: memoria,
+                    tarjetaGrafica: graficaSelected,
+                    sistemaOperativo: sistemaSelected,
+                    tarjetaRed: confiRed,
+                    softwares: softwaresSelected
+                });
+            }
+            alert('Equipo insertado exitosamente');
             limpiar();
         } catch (error) {
             alert("Hubo problemas al agregar equipo");
@@ -76,6 +181,11 @@ export const EquipoBodega = () => {
         }
     };
 
+    const handleSelectedCheck = async (e) => {
+        e.preventDefault();
+
+    };
+
     const handleRadioChange = (event) => {
         const valueCheck = event.target.value;
         setRadioCheck(valueCheck);
@@ -90,6 +200,24 @@ export const EquipoBodega = () => {
         limpiar();
     };
     
+    const handleSelectedComSer = (event) => {
+
+    };
+
+    const handleCheckboxChange = (id) => {
+        const seleccionados = []
+        if (softwaresSelected.includes(id)) {
+            // Si ya está seleccionado, lo quitamos
+            setSoftwaresSelected(softwaresSelected.filter((selectedId) => selectedId !== id));
+            
+        } else {
+            // Si no está seleccionado, lo agregamos
+            setSoftwaresSelected([...softwaresSelected, id]);
+        }
+        console.log(softwaresSelected);
+        
+    };
+
    const limpiar = () => {
         //setDepartamento('Seleccione el departamento')
         //setDepartamentoPadre('Seleccione el departamento');
@@ -150,29 +278,33 @@ export const EquipoBodega = () => {
                 <div className="EquipoBodega-form-columns">
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Número de serie</label>
-                        <input type="text" className="form-control" id="inputText" placeholder="Ingresa el número de serie aquí"></input>
+                        <input value={numeroSerie} onChange={(e) => setNumeroSerie(e.target.value)} type="text" className="form-control" id="inputText" placeholder="Ingresa el número de serie aquí"></input>
                     </div>
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Costo</label>
-                        <input type="text" className="form-control" id="inputText" placeholder="Ingresa el costo aquí (00.00)"></input>
+                        <input value={costoEquipo} onChange={(e) => setCostoEquipo(e.target.value)} type="text" className="form-control" id="inputText" placeholder="Ingresa el costo aquí (00.00)"></input>
                     </div>
 
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Modelo</label>
-                        <select className="form-select" >
-                            <option value="" ></option>
+                        <select className="form-select" value={modelo} onChange={(e) => setModelo(e.target.value)} >  
+                            {modelos.map((mod, index) => (
+                                <option key={mod.id} value={mod.id_modelo}>{mod.nombre}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Garantia</label>
                         <select className="form-select" >
-                            <option value="" ></option>
+                            <option value="" >No hay garantia</option>
                         </select>
                     </div>
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Estado equipo</label>
-                        <select className="form-select" >
-                            <option value="" ></option>
+                        <select className="form-select" value={estadoEquipo} onChange={(e) => setEstadoEquipo(e.target.value)}>
+                            {estadosEquipo.map((est, index) => (
+                                <option key={index} value={est}>{est}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -182,8 +314,10 @@ export const EquipoBodega = () => {
                     <div className='EquipoBodega-form-columns'>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tipo de computadora</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={computadoraTipo} onChange={(e) => setComputadoraTipo(e.target.value)}>
+                                {computadoraTipos.map((tipo, index) =>(
+                                    <option key={tipo.id_tipoComputadora} value={tipo.id_tipoComputadora} >{tipo.nombre}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -193,49 +327,64 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Procesador</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={procesador} onChange={(e) => setProcesador(e.target.value)}>
+                                {procesadores.map((pro, index) => (
+                                    <option value={pro.id_procesador} key={pro.id_procesador} >{`${pro.modelo}, ${pro.fabricante}`}</option>
+                                ))}
                             </select>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Memoria RAM</label>
-                            <input type="text" className="form-control" placeholder="Ingresa la memoria ram"></input>
+                            <input value={ram} onChange={(e) => setRAM(e.target.value)}  type="text" className="form-control" placeholder="Capacidad en GB"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Almacenamiento</label>
-                            <input type="text" className="form-control" placeholder="Ingresa el almacenamiento"></input>
+                            <input value={memoria} onChange={(e) => setMemoria(e.target.value)}  type="text" className="form-control" placeholder="Capacidad en GB"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tarjeta Gráfica</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={graficaSelected} onChange={(e) => setGraficaSelected(e.target.value)}>
+                                {graficas.map((gra,index) => (
+                                    <option value={gra.id_tarjeta} key={gra.id_tarjeta} >{`${gra.modelo}, ${gra.fabricante}`}</option>
+                                ))}
                             </select>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Sistema Operativo</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={sistemaSelected} onChange={(e) => setSistemaSelected(e.target.value)}>
+                                {sistemas.map((sis,index) => (
+                                    <option value={sis.id_sistema} key={sis.id_sistema} >{`${sis.nombre}, ${sis.version_}, con ${sis.interfaz}`}</option>
+                                ))}
                             </select>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Configuración red</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={confiRed} onChange={(e) => setConfiRed(e.target.value)}>
+                                {confiRedes.map((conf,index) => (
+                                    <option value={conf.id_tarjeta} key={conf.id_tarjeta} >{`${conf.modelo}, ${conf.fabricante}`}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
                 )}
 
                 {(radioCheckEquipo === 'Computadora') && (
-                    <div className='EquipoBodega-form-columns'>
-                        <label className='form-label'>Softwares</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Default checkbox
+                    <div>
+                    {softwares.map((software) => (
+                        <div className="form-check" key={software.id_software}>
+                            <input 
+                                className="form-check-input" 
+                                type="checkbox" 
+                                value={software.id_software}
+                                //checked={softwaresSelected.includes(software.id_software)}
+                                onChange={() => handleCheckboxChange(software.id_software)}
+                            />
+                            <label className="form-check-label" htmlFor={software.id_software}>
+                                {`${software.nombre}, ${software.version_}`}
                             </label>
                         </div>
-                    </div>
+                    ))}
+                </div>
                 )}
 
                 {(radioCheckEquipo === 'Impresora') && (

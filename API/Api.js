@@ -734,3 +734,151 @@ app.delete('/EliminaEdificio', async (req, res) => {
         await sql.close();
     }
 });
+
+//-------------------------------------------------------------------------
+//Desmadre de equipos
+//Trae los modelos de equipos
+app.get('/SelectModelos', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from Modelo');        
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae los tipos de computadoras
+app.get('/selectTipoComputadora', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from Tipo_Computadora');       
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae los procesadores
+app.get('/selectProcesador', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from Procesador');       
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae las tarjetas graficas
+app.get('/SelectGrafica', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from Tarjeta_Grafica');       
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al obtener las tarjetas graficas', error.message);
+        res.status(500).send('Error al obtener las tarjetas graficas');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae los sistemas operativos
+app.get('/SelectSistemasOperativos', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from sistema_operativo');    
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al obtener los sietamas operativos', error.message);
+        res.status(500).send('Error al obtener los sietamas operativos');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae las configuraciones de red
+app.get('/ConfiguracionRed', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from tarjeta_red');    
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al obtener las configuraciones de red', error.message);
+        res.status(500).send('Error al obtener las configuraciones de red');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae los softwares
+app.get('/SelectSoftwares', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('SELECT * from software');    
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al obtener las los softwares', error.message);
+        res.status(500).send('Error al obtener los softwares');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Inserta Computadora
+app.post('/AltaComputadora',async(req,res) => {
+    try{
+        
+        await sql.connect(config);
+        const {numeroSerie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares} = req.body;
+    
+        // Puedes hacer lo que necesites con los datos extraídos, como guardarlos en una base de datos
+        console.log('Datos recibidos:', {
+            numeroSerie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares
+        });
+        // Inserción en la tabla 'equipo'
+    await sql.query`INSERT INTO equipo(numero_serie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjeta_grafica, sistema_operativo, tarjeta_red) VALUES (
+    ${numeroSerie}, ${costo}, ${modelo}, ${garantia}, ${estado}, ${tipo}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed})`;// Enviar una respuesta de éxito
+        res.status(200).send('Departamento insertado exitosamente');
+
+        // Obtener el id de la última computadora insertada
+    const computadoraId = result.recordset[0].id;
+
+    // Insertar en la tabla SOFTWARE_COMPUTADORA
+    if (softwares && softwares.length > 0) {
+        for (const softwareId of softwares) {
+            await sql.query`INSERT INTO SOFTWARE_COMPUTADORA (
+                id_software,
+                id_computadora
+            ) VALUES (
+                ${softwareId},
+                ${computadoraId}
+            );`;
+        }
+    }
+    res.status(200).send('Equipo insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar el departamento:', error.message);
+        // Enviar una respuesta de error
+        res.status(500).send('Error al insertar el departamento');
+    }finally{
+        await sql.close();
+    }
+});
