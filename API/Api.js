@@ -390,6 +390,7 @@ app.post('/AltaEspacios', async(req, res) => {
     }
 });
 
+
 // Actualiza espacios
 app.put('/ActualizaEspacio', async (req, res) => {
     const { tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombreEspacio, id_espacio } = req.body;

@@ -10,6 +10,7 @@ import { Principal_otro } from './Componets/Principal/Principal_otro.jsx';
 import { EquipoBodega } from './Componets/Equipos/Equipo_bodega.jsx'
 // Importa el CSS de Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Edificios } from './Componets/Edificios/Edificios.jsx';
 
 
 export function App() {
@@ -53,7 +54,7 @@ function Content() {
           {!hideHeaderFooter && renderHeader()}
           <Routes>
               <Route path="/" element={<Navigate to="/Login" />} />
-              <Route path="/Login" element={<Login />} />
+              <Route path="/Login" element={<Login />} /> //Modificar para acceder a otro componente
               <Route path="/Principal" element={renderComponent()} />
               <Route path="/Editar_Administrador" element={<Editar_Administrador />} />
               <Route path="/Editar_jefe_departamento" element={<Editar_jefe_departamento />} />
