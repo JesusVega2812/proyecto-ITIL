@@ -11,7 +11,6 @@ BEGIN
     SET nombre = @nombre,
         ubicacion_edificio = @ubicacion_edificio
 	WHERE id_edificio = @id_edificio;
-	WHERE id_edificio = @id_edificio;
 END;
 
 -- Insertar eficios

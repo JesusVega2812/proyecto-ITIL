@@ -24,35 +24,4 @@ UPDATE USUARIO
 SET permisos = 3
 WHERE nombre = 'Mirna' AND apellido = 'noseque';
 
-
-DROP FUNCTION IF EXISTS dbo.VerificarUsuario;
-
-CREATE FUNCTION dbo.VerificarUsuario
-(
-    @usuario NVARCHAR(50),
-    @contra NVARCHAR(50)
-)
-RETURNS TABLE
-AS
-RETURN
-(
-    SELECT 
-        CASE 
-            WHEN EXISTS (
-                SELECT 1 
-                FROM Usuario 
-                WHERE nombre + ' ' + apellido = @usuario 
-                AND Contrasena = @contra
-            ) THEN 1 
-            ELSE 0 
-        END AS EsValido,
-        u.id_usuario,
-        u.id_departamento_pertenece
-    FROM Usuario u
-    WHERE u.nombre + ' ' + u.apellido = @usuario 
-    AND u.Contrasena = @contra
-);
-
-select * from dbo.VerificarUsuario ('Marisol Manjarrez', '123')
-
 select * from USUARIO

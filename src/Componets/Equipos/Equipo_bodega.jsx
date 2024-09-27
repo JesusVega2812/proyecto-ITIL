@@ -372,6 +372,7 @@ export const EquipoBodega = () => {
 
                 {(radioCheckEquipo === 'Computadora') && (
                     <div>
+                    <label htmlFor="inputText" className="form-label margin-top-sfw">Softwares</label>
                     {softwares.map((software) => (
                         <div className="form-check" key={software.id_software}>
                             <input 
