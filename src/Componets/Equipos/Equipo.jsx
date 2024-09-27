@@ -11,6 +11,10 @@ export const Equipos = () => {
     const [selectedNombreEspacio, setSelectedNombreEspacio] = useState([]);
     const [equipos, setEquipos] = useState([]);
     const [departamentoPertenece, setDepartamentoPertenece] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
+    const [nombreEquipo, setNombreEquipo] = useState([]);
+    const [claveEquipo, setClaveEquipo] = useState('');
 
 
     const permisos = localStorage.getItem('permisos');
@@ -126,6 +130,37 @@ export const Equipos = () => {
         }
     };
 
+    const handleNewEquipo = () => {
+        setShowModal(true);
+    };
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    const handleRadioChangeEquipo = (event) => {
+        const valueCheckEquipo = event.target.value;
+        setRadioCheckEquipo(valueCheckEquipo);
+        console.log(valueCheckEquipo);
+        limpiar();
+    };
+
+    const handleValidar = (event) => {
+        event.preventDefault();
+        if(nombreEquipo || claveEquipo){
+            alert('Necesita completar los campos');
+            return;
+        }
+        handleGuardarCambios();
+    }
+
+    const handleGuardarCambios = (event) => {
+        event.preventDefault();
+    }
+
+    const limpiar = () => {
+        
+    }
+
     return (
         <div className="equipos-container">
             <h1 className="equipos-title">Gestión de Equipos </h1>
@@ -154,7 +189,7 @@ export const Equipos = () => {
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
                                                                         <>
-                                                                            <button className="equipos-select-button">New</button>
+                                                                            <button className="equipos-select-button" onClick={handleNewEquipo}>New</button>
                                                                             <ul className="equipos-lista-equipos">
                                                                                 {Array.isArray(equipos) && equipos.length > 0 ? (
                                                                                     equipos.map((equipo) => (
@@ -190,6 +225,63 @@ export const Equipos = () => {
                     <span>No hay edificios disponibles</span>
                 )}
             </ul>
+            {showModal && (
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Equipo</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="mb-3">
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Computadora" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Computadora'} ></input>
+                                            <label className="form-check-label" htmlFor="idRadioAgregar">Computadora</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Impresora" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Impresora'}></input>
+                                            <label className="form-check-label" htmlFor="idRadioActualizar">Impresora</label>
+                                        </div>
+
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Servidor" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Servidor'}></input>
+                                            <label className="form-check-label" htmlFor="idRadioEliminar">Servidor</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Switch" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Switch'}></input>
+                                            <label className="form-check-label" htmlFor="idRadioEliminar">Switch</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Router" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Router'}></input>
+                                            <label className="form-check-label" htmlFor="idRadioEliminar">Router</label>
+                                        </div>
+                                        <div className="form-check form-check-inline">
+                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Escaner" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Escaner'}></input>
+                                            <label className="form-check-label" htmlFor="idRadioEliminar">Escaner</label>
+                                        </div>
+
+                                        <div className="input-container">
+                                            <label htmlFor="inputText" className="form-label">Selecciona el equipo</label>
+                                            <select className="form-select" >
+                                                <option value="" ></option>
+                                            </select>
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="inputText" className="form-label">Clave del equipo</label>
+                                            <input type="text" className="form-control" id="inputText" placeholder="Ingresa la clave aquí" value={claveEquipo} onChange={(e) => setClaveEquipo(e.target.value)}></input>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
+                                <button type="button" className="btn btn-primary" onClick={handleValidar}>Guardar Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );    
 };
