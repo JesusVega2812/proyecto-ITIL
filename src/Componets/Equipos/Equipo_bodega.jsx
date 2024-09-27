@@ -138,6 +138,8 @@ export const EquipoBodega = () => {
                     sistemaOperativo: sistemaSelected,
                     tarjetaRed: confiRed,
                     softwares: softwaresSelected
+                    //Se ocupa mandar el id usuario, el que esta logeado y la fecha de compra, la actual
+                    //Pero ya queria mimir no peye ser
                 });
             }
             alert('Equipo insertado exitosamente');

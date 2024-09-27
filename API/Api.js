@@ -847,19 +847,24 @@ app.post('/AltaComputadora',async(req,res) => {
     try{
         
         await sql.connect(config);
-        const {numeroSerie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares} = req.body;
+        const {numeroSerie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares, fechaCompra, idUsuario} = req.body;
     
         // Puedes hacer lo que necesites con los datos extraídos, como guardarlos en una base de datos
         console.log('Datos recibidos:', {
             numeroSerie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares
         });
-        // Inserción en la tabla 'equipo'
-    await sql.query`INSERT INTO equipo(numero_serie, costo, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjeta_grafica, sistema_operativo, tarjeta_red) VALUES (
-    ${numeroSerie}, ${costo}, ${modelo}, ${garantia}, ${estado}, ${tipo}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed})`;// Enviar una respuesta de éxito
-        res.status(200).send('Departamento insertado exitosamente');
+       // Inserción en la tabla EQUIPO
+        const resultEquipo = await sql.query`INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
+        VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${idUsuario}, ${modelo}, ${garantia}, ${estado})
+        RETURNING id_equipo;`;
 
-        // Obtener el id de la última computadora insertada
-    const computadoraId = result.recordset[0].id;
+        // Obtener el ID del equipo insertado
+        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
+        // Inserción en la tabla COMPUTADORA
+        await sql.query`INSERT INTO COMPUTADORA (id_computadora, id_tipoComputadora, procesador, memoria_RAM, almacenamiento, tarjeta_grafica, sistema_operativo, configuracion_red)
+        VALUES (${idEquipoInsertado}, ${tipo}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed});`;
+
+        res.status(200).send('Departamento insertado exitosamente');
 
     // Insertar en la tabla SOFTWARE_COMPUTADORA
     if (softwares && softwares.length > 0) {
@@ -869,7 +874,7 @@ app.post('/AltaComputadora',async(req,res) => {
                 id_computadora
             ) VALUES (
                 ${softwareId},
-                ${computadoraId}
+                ${idEquipoInsertado}
             );`;
         }
     }
