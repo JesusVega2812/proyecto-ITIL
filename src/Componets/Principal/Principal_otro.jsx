@@ -14,6 +14,11 @@ export const Principal_otro = () => {
         navigate('/Principal');
     }
 
+    const handleEquipoBodega = (e) => {
+        e.preventDefault();
+        navigate('/EquipoBodega')
+    }
+
     const handleCerrarSesion = (e) => {
         e.preventDefault();
         localStorage.removeItem('idUsuario');
@@ -66,7 +71,7 @@ export const Principal_otro = () => {
             <div className="principal-admin-buttons">
                 <button type="button" className="btn btn-light principal-admin-btn" onClick={handleHomeClick}>Inicio</button>
                 <button type="button" className="btn btn-danger principal-admin-btn">Nueva Solicitud</button>
-                <button type="button" className="btn btn-primary principal-admin-btn">Computo</button>
+                <button type="button" className="btn btn-primary principal-admin-btn" onClick={handleEquipoBodega}>Computo</button>
                 <button type="button" className="btn btn-success principal-admin-btn" onClick={handleChangePasswordClick}>Contraseña</button>
                 <button type="button" className="btn btn-info principal-admin-btn" onClick={handleCerrarSesion}>Cerrar Sesión</button>
             </div>

@@ -91,6 +91,7 @@ export const Espacios = () => {
                 params: { id_espacio }
             });
             alert('Espacio eliminado exitosamente');
+            limpiar();
         }catch(error){
             console.error(error.message);
         }
@@ -116,6 +117,7 @@ export const Espacios = () => {
                 id_espacio
             });
             alert('Espacio actualizado exitosamente');
+            limpiar();
         }catch(error){
             alert('Hubo un problema al actualizar el espacio');
             console.error(error.message);
@@ -139,6 +141,7 @@ export const Espacios = () => {
                 nombre
             });
             alert('Espacio agregado exitosamente');
+            limpiar();
         } catch (error) {
             alert("Hubo un problema al agregar el espacio");
             console.error(error.message);
@@ -148,13 +151,17 @@ export const Espacios = () => {
     const handleRadioChange = (event) => {
         const valueCheck = event.target.value;
         setRadioCheck(valueCheck);
+        limpiar();
+        console.log(valueCheck);
+    };
+
+    const limpiar = () => {
         setNombre('');
         setTipoEspacio('');
         setEdificio('');
         setUbicacion('');
         setCapacidad('');
-        console.log(valueCheck);
-    };
+    }
 
     return (
         <>

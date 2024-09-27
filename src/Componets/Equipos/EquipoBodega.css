@@ -1,0 +1,44 @@
+.EquipoBodega-form-container {
+    max-width: 100%; /* Asegura que el formulario ocupe el ancho completo */
+    margin: 0 auto;
+    padding: 5%; /* Ajusta el padding en porcentajes */
+    display: flex;
+    flex-direction: column;
+}
+
+.EquipoBodega-form-wrapper {
+    background-color: #f9f9f9;
+    padding: 5%; /* Ajusta el padding a un porcentaje para que sea flexible */
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Configura el formulario en tres columnas usando CSS Grid */
+.EquipoBodega-form-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual ancho */
+    gap: 3%; /* Espaciado entre las columnas */
+}
+
+/* Ajusta los select e inputs para que ocupen todo el ancho de la columna */
+.EquipoBodega-column .form-select, 
+.EquipoBodega-column .form-control {
+    width: 100%; /* El campo ocupará todo el ancho de la columna */
+}
+
+/* Para los checks de tipo radio, alineación en fila */
+.EquipoBodega-radio-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 5%; /* Ajuste flexible en porcentaje */
+}
+
+.EquipoBodega-radio-group .form-check {
+    margin-right: 2%; /* Ajuste flexible en porcentaje */
+}
+
+/* Ajusta el espaciado y los tamaños */
+.EquipoBodega-mb-3 {
+    margin-bottom: 5%; /* Espaciado en porcentaje para mayor flexibilidad */
+}

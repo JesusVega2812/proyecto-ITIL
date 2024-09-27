@@ -7,6 +7,7 @@ import {Editar_jefe_departamento} from './Componets/Editar/Editar_jefe_departame
 import {Editar_Administrador} from './Componets/Editar/Editar_Administrador.jsx';
 import { Principal_administrador } from './Componets/Principal/Principal_administrador.jsx';
 import { Principal_otro } from './Componets/Principal/Principal_otro.jsx';
+import { EquipoBodega } from './Componets/Equipos/Equipo_bodega.jsx'
 // Importa el CSS de Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -56,6 +57,7 @@ function Content() {
               <Route path="/Principal" element={renderComponent()} />
               <Route path="/Editar_Administrador" element={<Editar_Administrador />} />
               <Route path="/Editar_jefe_departamento" element={<Editar_jefe_departamento />} />
+              <Route path="/EquipoBodega" element={<EquipoBodega />} />
           </Routes>
           {!hideHeaderFooter && <Footer />}
       </>

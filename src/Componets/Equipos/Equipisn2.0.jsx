@@ -1,3 +1,5 @@
+//para ponerlo en incidencia
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Equipo.css';
@@ -5,10 +7,13 @@ import './Equipo.css';
 export const Equipos = () => {
     const [edificios, setEdificios] = useState([]);
     const [selectedEdificio, setSelectedEdificio] = useState(null);
-    const [selectedEspacio, setSelectedEspacio] = useState(null);
-    const [espaciosPorEdificio, setEspaciosPorEdificio] = useState({});
-    const [nombresPorEspacio, setNombresPorEspacio] = useState({});
-    const [equiposPorEspacio, setEquiposPorEspacio] = useState({});
+    const [tiposEspacios, setTiposEspacios] = useState([]);
+    const [selectedTipoEspacio, setSelectedTipoEspacio] = useState(null);
+    const [nombresEspacio, setNombresEspacio] = useState([]);
+    const [selectedNombreEspacio, setSelectedNombreEspacio] = useState([]);
+    const [equipos, setEquipos] = useState([]);
+    const [departamentoPertenece, setDepartamentoPertenece] = useState('');
+
 
     const permisos = localStorage.getItem('permisos');
     const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
@@ -16,28 +21,40 @@ export const Equipos = () => {
     useEffect(() => {
         const fetchEdificios = async () => {
             try {
-                const response = await axios.get(permisos === '1' 
-                    ? 'http://localhost:3000/SelectEdificios' 
-                    : 'http://localhost:3000/SelectEdificiosPorDepartamento', 
-                    { params: { id_departamento: idDepartamentoPertenece } }
-                );
-                setEdificios(response.data.edificios);
+                if(permisos === '1'){
+                    const response = await axios.get('http://localhost:3000/SelectEdificios');
+                    setEdificios(response.data.edificios);
+                }else{
+                    const response = await axios.get('http://localhost:3000/SelectEdificiosPorDepartamento',
+                       {params: { id_departamento: idDepartamentoPertenece }}
+                    )
+                    setEdificios(response.data.edificios);
+                }
+                const departamentoResponse = await axios.get(`http://localhost:3000/SelectDepartamento`, {
+                    params: { id_pertenece: idDepartamentoPertenece },
+                });
+                setDepartamentoPertenece(departamentoResponse.data.result);
             } catch (err) {
                 alert('Error al cargar los edificios');
                 console.error(err);
             }
-        };
-
+        }; 
         fetchEdificios();
     }, [permisos, idDepartamentoPertenece]);
 
-    const fetchEspacios = async (idEdificio) => {
+    const fetchEspacios = async (id_edificio) => {
         try {
             if (permisos === '2') {
                 const response = await axios.get('http://localhost:3000/SelectEspaciosPorEdificio', {
-                    params: { id_edificio: idEdificio, id_departamento: idDepartamentoPertenece },
+                    params: { id_edificio: id_edificio, id_departamento: idDepartamentoPertenece },
                 });
-                return response.data.tiposEspacios || [];
+                setTiposEspacios(response.data.tiposEspacios || []);
+            }
+            else{
+                const response = await axios.get('http://localhost:3000/SelectEspaciosPorEdificioADMON', {
+                    params: {id_edificio: id_edificio},
+                });
+                setTiposEspacios(response.data.tiposEspacios || []);
             }
         } catch (err) {
             alert('Error al cargar los espacios');
@@ -45,139 +62,136 @@ export const Equipos = () => {
         }
     };
 
-    const fetchNombreEspacios = async (idEdificio, idEspacio) => {
+    const fetchNombreEspacios = async (id_edificio, idTipoEspacio) => {
         try {
-            const response = await axios.get('http://localhost:3000/SelectNombrePorEspacios', {
-                params: { id_tipoEspacio: idEspacio, id_edificio: idEdificio, id_departamento: idDepartamentoPertenece },
-            });
-            return response.data.nombresEspacio || [];
+            if(permisos === '2'){
+                const response = await axios.get('http://localhost:3000/SelectNombrePorEspacios', {
+                    params: { id_tipoEspacio: idTipoEspacio, id_edificio: id_edificio, id_departamento: idDepartamentoPertenece },
+                });
+                setNombresEspacio(response.data.nombresEspacio || []);
+            }else{
+                const response = await axios.get('http://localhost:3000/SelectNombrePorEspaciosADMON', {
+                    params: { id_tipoEspacio: idTipoEspacio, id_edificio: id_edificio},
+                });
+                setNombresEspacio(response.data.nombresEspacio || []);
+            }
         } catch (err) {
             alert('Error al cargar los nombres de los espacios');
             console.error(err);
         }
     };
 
-    const fetchEquipos = async (idEspacio) => {
+    const fetchEquipos = async (id_espacio, id_edificio, id_tipoEspacio) => {
         try {
             const response = await axios.get('http://localhost:3000/SelectEquiposPorEspacio', {
-                params: { id_espacio: idEspacio },
+                params: { id_espacio: id_espacio, id_edificio: id_edificio, id_tipoEspacio: id_tipoEspacio },
             });
-            setEquiposPorEspacio(prev => ({
-                ...prev,
-                [idEspacio]: response.data.equipos || [],
-            }));
+            setEquipos(response.data.equipos);
+            
         } catch (err) {
             console.error(err);
         }
     };
 
-    const handleEdificioSelect = async (edificio) => {
-        if (selectedEdificio && selectedEdificio.id === edificio.id) {
+    const handleEdificioSelect = (edificio) => {
+        if (selectedEdificio === edificio) {
             setSelectedEdificio(null);
-            setSelectedEspacio(null);
-            setEspaciosPorEdificio({});
-            setNombresPorEspacio({});
-            setEquiposPorEspacio({});
+            setTiposEspacios([]);
+            setSelectedTipoEspacio(null);
+            setNombresEspacio([]);
+            setSelectedNombreEspacio(null);
         } else {
             setSelectedEdificio(edificio);
-            setSelectedEspacio(null);
-            const espaciosObtenidos = await fetchEspacios(edificio.id_edificio);
-            setEspaciosPorEdificio(prevState => ({
-                ...prevState,
-                [edificio.id_edificio]: espaciosObtenidos
-            }));
+            fetchEspacios(edificio.id_edificio);
         }
     };
 
-    const handleEspacioSelect = async (espacio) => {
-        if (selectedEspacio && selectedEspacio.id_tipoEspacio === espacio.id_tipoEspacio) {
-            setSelectedEspacio(null);
-            setNombresPorEspacio(prev => ({ ...prev, [espacio.id_tipoEspacio]: [] }));
+    const handleTipoEspacioSelect = (tipoEspacio) => {
+        if (selectedTipoEspacio === tipoEspacio) {
+            setSelectedTipoEspacio(null);
+            setNombresEspacio([]);
+            setSelectedNombreEspacio(null);
+            setEquipos([]);
         } else {
-            setSelectedEspacio(espacio);
-
-            // Obtener los nombres de los espacios seleccionados
-            const nombresObtenidos = await fetchNombreEspacios(selectedEdificio.id_edificio, espacio.id_tipoEspacio);
-            setNombresPorEspacio(prevState => ({
-                ...prevState,
-                [espacio.id_tipoEspacio]: nombresObtenidos
-            }));
-
-            // Cargar equipos para el espacio seleccionado
-            await fetchEquipos(espacio.id_tipoEspacio);
+            setSelectedTipoEspacio(tipoEspacio);
+            fetchNombreEspacios(selectedEdificio.id_edificio, tipoEspacio.id_tipoEspacio);
         }
     };
-
-    const handleNombreEspacioClick = (nombreEspacio) => {
-        // Puedes agregar lógica aquí si necesitas manejar algo al hacer clic en un nombre de espacio.
-        console.log('Nombre del espacio seleccionado:', nombreEspacio);
+    
+    const handleNombreEspacioSelect = (nombreEspacio) => {
+        if (selectedNombreEspacio === nombreEspacio) {
+            setSelectedNombreEspacio(null);
+            setEquipos([]);
+        } else {
+            setSelectedNombreEspacio(nombreEspacio);
+            fetchEquipos(nombreEspacio.id_espacio, selectedEdificio.id_edificio, selectedTipoEspacio.id_tipoEspacio);
+        }
     };
-
-    const equipos = selectedEspacio ? equiposPorEspacio[selectedEspacio.id_tipoEspacio] || [] : [];
 
     return (
         <div className="equipos-container">
-            <h1 className="equipos-title">Equipos</h1>
+            <h1 className="equipos-title">Gestión de Equipos </h1>
             <ul className="equipos-edificio-list">
-                {edificios.map((edificio) => (
-                    <li key={edificio.id_edificio} className="equipos-edificio-item">
-                        <span 
-                            onClick={() => handleEdificioSelect(edificio)} 
-                            className="equipos-edificio-name"
-                        >
-                            {edificio.nombre}
-                        </span>
-                        {selectedEdificio && selectedEdificio.id === edificio.id && (
-                            <ul className="equipos-espacio-list">
-                                {espaciosPorEdificio[edificio.id_edificio]?.map((espacio) => (
-                                    <li key={espacio.id_tipoEspacio} className="equipos-espacio-item">
-                                        <span 
-                                            onClick={() => handleEspacioSelect(espacio)} 
-                                            className="equipos-espacio-name"
-                                        >
-                                            {espacio.nombre}
-                                        </span>
-                                        {selectedEspacio && selectedEspacio.id_tipoEspacio === espacio.id_tipoEspacio && (
-                                            <ul className="equipos-nombres-list">
-                                                {nombresPorEspacio[espacio.id_tipoEspacio]?.length > 0 ? (
-                                                    nombresPorEspacio[espacio.id_tipoEspacio].map((nombreEspacio, idx) => (
-                                                        <li key={idx} className="equipos-nombre-item">
-                                                            <span 
-                                                                className="equipos-nombre-name"
-                                                                onClick={() => handleNombreEspacioClick(nombreEspacio)}
-                                                            >
-                                                                {nombreEspacio.nombre}
-                                                            </span>
-                                                        </li>
-                                                    ))
-                                                ) : (
-                                                    <li>No hay nombres de espacio disponibles.</li>
+                {Array.isArray(edificios) && edificios.length > 0 ? (
+                    edificios.map((edificio) => (
+                        <li key={edificio.id_edificio} className="equipos-edificio-item">
+                            <div className="equipos-edificio-name" onClick={() => handleEdificioSelect(edificio)} >
+                                {edificio.nombre}
+                            </div>
+                            {selectedEdificio && selectedEdificio.id_edificio === edificio.id_edificio && (
+                                <ul className="equipos-espacio-list">
+                                    {Array.isArray(tiposEspacios) && tiposEspacios.length > 0 ? (
+                                        tiposEspacios.map((tipoEspacio) => (
+                                            <li key={tipoEspacio.id_tipoEspacio} className="equipos-espacio-item">
+                                                <div className="equipos-espacio-name" onClick={() => handleTipoEspacioSelect(tipoEspacio)}>
+                                                    {tipoEspacio.nombre}
+                                                </div>
+                                                {selectedTipoEspacio && selectedTipoEspacio.id_tipoEspacio === tipoEspacio.id_tipoEspacio && (
+                                                    <ul className="equipos-nombres-list">
+                                                        {Array.isArray(nombresEspacio) && nombresEspacio.length > 0 ? (
+                                                            nombresEspacio.map((nombreEspacio) => (
+                                                                <li key={nombreEspacio.id_espacio} className="equipos-nombre-item">
+                                                                    <div className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
+                                                                        {nombreEspacio.nombre}
+                                                                    </div>
+                                                                    {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
+                                                                        <>
+                                                                            <button className="equipos-select-button">New</button>
+                                                                            <ul className="equipos-lista-equipos">
+                                                                                {Array.isArray(equipos) && equipos.length > 0 ? (
+                                                                                    equipos.map((equipo) => (
+                                                                                        <li key={equipo.id_equipo} className="equipos-equipo-item">
+                                                                                            <div className="equipos-equipo-name">
+                                                                                                {equipo.numero_serie}
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    ))
+                                                                                ) : (
+                                                                                    <span>No hay equipos disponibles</span>
+                                                                                )}
+                                                                            </ul>
+                                                                        </>
+                                                                    )}     
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <span>No hay nombres de espacios disponibles</span>
+                                                        )}
+                                                    </ul>
                                                 )}
-                                                <button className="equipos-select-button">+</button>
-                                                <ul className="equipos-lista-equipos">
-                                                    {equipos.length > 0 ? (
-                                                        equipos.map((equipo) => (
-                                                            <li key={equipo.id_equipo} className="equipos-equipo-item">
-                                                                <span className="equipos-equipo-name">
-                                                                    {equipo.nombre}
-                                                                </span>
-                                                                <button className="equipos-edit-button">Actualizar</button>
-                                                                <button className="equipos-delete-button">Eliminar</button>
-                                                            </li>
-                                                        ))
-                                                    ) : (
-                                                        <li>No hay equipos disponibles.</li>
-                                                    )}
-                                                </ul>
-                                            </ul>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </li>
-                ))}
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <span>No hay tipos de espacios disponibles</span>
+                                    )}
+                                </ul>
+                            )}
+                        </li>
+                    ))
+                ) : (
+                    <span>No hay edificios disponibles</span>
+                )}
             </ul>
         </div>
-    );
+    );    
 };

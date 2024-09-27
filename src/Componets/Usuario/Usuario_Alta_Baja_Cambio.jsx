@@ -68,6 +68,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
             const resultado = response.data;
             console.log(resultado);
             alert('Usuario agregado exitosamente'); // Mensaje de éxito
+            limpiar();
         } catch (error) {
             alert("Hubo problemas al agregar el usuario");
             console.log(error.message);
@@ -94,6 +95,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 permisos: perm + 1
             })
             alert('Usuario actualizado');
+            limpiar();
         }catch(error){
             alert("Hubo problemas al actualizar el usuario");
             console.log(error.message);
@@ -106,6 +108,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 id_usuario: usuSelected.id_usuario
             })
             alert('Usuario dado de baja');
+            limpiar();
         }catch(error){
             alert("Hubo problemas al dar de baja el usuario");
             console.log(error.message);

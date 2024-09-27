@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import './Departamento_Alta_Baja_Cambio.css';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -55,7 +54,7 @@ export const Departamento_Alta_Baja_Cambio = () => {
             const resultado = response.data;
             console.log(resultado);
             alert('Departamento insertado exitosamente');
-            window.location.reload();
+            limpiar();
         } catch (error) {
             alert("Hubo problemas");
             console.log(error.message);
@@ -83,6 +82,7 @@ export const Departamento_Alta_Baja_Cambio = () => {
             const resultado = response.data;
             console.log('Resultado de la actualización:', resultado);
             alert('Departamento actualizado exitosamente');
+            limpiar();
         } catch (error) {
             console.error('Hubo problemas:', error.message);
             alert('Hubo problemas al actualizar el departamento');
@@ -97,11 +97,10 @@ export const Departamento_Alta_Baja_Cambio = () => {
         }
     
         try {
-            alert(id);
             const response = await axios.delete(`http://localhost:3000/EliminarDepartamento/${id}`);
             console.log('Departamento eliminado:', response.data);
             alert('Departamento eliminado exitosamente');
-            window.location.reload();
+            limpiar();
         } catch (error) {
             console.error('Error al eliminar el departamento:', error.message);
             alert('Hubo problemas al eliminar el departamento');
@@ -147,6 +146,7 @@ export const Departamento_Alta_Baja_Cambio = () => {
     
    const limpiar = () => {
         setDepartamento('Seleccione el departamento')
+        setDepartamentoPadre('Seleccione el departamento');
         setNombre('');
         setNomPadre('No depende de otro departamento');
         setCorreo('');
