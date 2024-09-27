@@ -26,17 +26,61 @@ export const EquipoBodega = () => {
     const [costoEquipo, setCostoEquipo] = useState('');
     const [ram, setRAM] = useState('');
     const [memoria, setMemoria] = useState('');
-
+    const [tipoImpresoras, setTipoImpresoras] = useState([]);
+    const [tipoImpresora, setTipoImpresora] = useState('');
+    const [resolucion, setResolucion] = useState('');
+    const [velocidad, setVelocidad] = useState('');
+    const [conectividad, setConectividad] = useState('');
+    const [numPuertos, setnumPuertos] = useState('');
+    const [velocidad_backplane, setVelocidadBlackplane] = useState('');
+    const [tipoSwitch, settipoSwitch] = useState('');
+    const [capacidad, setCapacidad] = useState('');
+    const [consEnergia, setconsEnergia] = useState('');
+    const [tipo_conexion, settipo_conexion] = useState('');
+    const [soportes_vpn, setsoportes_vpn] = useState(['Sí', 'No']);
+    const [soporte_vpn, setsoporte_vpn] = useState('No');
+    const [numGigFas, setnumGigFas] = useState('');
+    const [numSeriales, setnumSeriales] = useState('');
+    const [frecuencia, setFrecuencia] = useState('');
+    const [protocolos, setProtocolos] = useState('');
+    const [tipoEscaners, settipoEscaners] = useState([]);
+    const [tipoEscaner, settipoEscaner] = useState('');
 
     useEffect(() => {
+        //Equipo
         selectModelo();
+        //Computadora
         selectTipoComputadora();
+        //Computadora y Servidor
         selectProcesador();
         selectGrafica();
         selectSistemas();
         selectConfiguracionRed();
         selectSoftwares();
+        //Impresora
+        selectTipoImpresora();
+        //Escaner
+        selectTipoEscaner();
     }, []);
+
+    const selectTipoEscaner = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectTipoEscaner');
+            settipoEscaners(response.data);
+            settipoEscaner(response.data[0].id_tipoEscaner);
+        }catch(error){
+            console.error('Error al obtener los tipos de escaner', error);
+        }
+    }
+    const selectTipoImpresora = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectTipoImpresora');
+            setTipoImpresoras(response.data);
+            setTipoImpresora(response.data[0].id_tipoImpresora);
+        } catch(error){
+            console.error('Error al obtener los tipos de impresoras', error);
+        }
+    };
 
     const selectSoftwares = async () => {
         try {
@@ -121,15 +165,31 @@ export const EquipoBodega = () => {
        // setDepartamentos(response.data);
     };
 
+    const getFormattedDate = () => {
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getFullYear();
+    
+        return `${month}-${day}-${year}`;
+    };
+    
+
     const handleAgregar = async() => {
         try {
+            const id_usuario = localStorage.getItem("idUsuario");
+            const fechaActual = getFormattedDate();
+
             if(radioCheckEquipo === 'Computadora') {
                 const response = await axios.post('http://localhost:3000/AltaComputadora', {
                     numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
                     costo: costoEquipo,
+                    id_usuario: id_usuario,
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    //computadora
                     tipo: computadoraTipo,
                     procesador: procesador,
                     RAM: ram,
@@ -137,11 +197,102 @@ export const EquipoBodega = () => {
                     tarjetaGrafica: graficaSelected,
                     sistemaOperativo: sistemaSelected,
                     tarjetaRed: confiRed,
+                    //software-computadora
                     softwares: softwaresSelected
-                    //Se ocupa mandar el id usuario, el que esta logeado y la fecha de compra, la actual
-                    //Pero ya queria mimir no peye ser
                 });
             }
+            
+            if(radioCheckEquipo === 'Servidor'){
+                const response = await axios.post('http://localhost:3000/AltaServidor', {
+                    numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
+                    costo: costoEquipo,
+                    id_usuario: id_usuario,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    //servidor
+                    procesador: procesador,
+                    RAM: ram,
+                    memoria: memoria,
+                    tarjetaGrafica: graficaSelected,
+                    sistemaOperativo: sistemaSelected,
+                    tarjetaRed: confiRed
+                });
+            }
+
+            if(radioCheckEquipo === 'Impresora'){
+                const response = await axios.post('http://localhost:3000/AltaImpresora', {
+                    numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
+                    costo: costoEquipo,
+                    id_usuario: id_usuario,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    //impresora
+                    tipoImpresora: tipoImpresora,
+                    resolucion: resolucion,
+                    velocidad: velocidad,
+                    conectividad: conectividad
+                });
+            }
+
+            if(radioCheckEquipo === 'Switch'){
+                const response = await axios.post('http://localhost:3000/AltaSwitch', {
+                    numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
+                    costo: costoEquipo,
+                    id_usuario: id_usuario,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    //Switch
+                    numPuertos: numPuertos,
+                    velocidad_backplane: velocidad_backplane,
+                    tipoSwitch: tipoSwitch,
+                    capacidad: capacidad,
+                    consEnergia: consEnergia
+                });
+            }
+
+            if(radioCheckEquipo === 'Router'){
+                const valorSoporteVPN = soporte_vpn === 'Sí' ? 1 : 0;
+                const response = await axios.post('http://localhost:3000/AltaRouter', {
+                    numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
+                    costo: costoEquipo,
+                    id_usuario: id_usuario,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    //Router
+                    tipo_conexion: tipo_conexion,
+                    soporte_vpn: valorSoporteVPN,
+                    numGigFas: numGigFas,
+                    numSeriales: numSeriales,
+                    frecuencia: frecuencia,
+                    protocolos: protocolos,
+                    capacidad: capacidad,
+                    consEnergia: consEnergia
+                });
+            }
+
+            if(radioCheckEquipo === 'Escaner'){
+                const response = await axios.post('http://localhost:3000/AltaEscaner', {
+                    numeroSerie: numeroSerie,
+                    fechaCompra: fechaActual,
+                    costo: costoEquipo,
+                    id_usuario: id_usuario,
+                    modelo: modelo,
+                    garantia: null,
+                    estado: estadoEquipo,
+                    //Escaner
+                    velocidad: velocidad,
+                    tipoEscaner: tipoEscaner
+                });
+            }
+
             alert('Equipo insertado exitosamente');
             limpiar();
         } catch (error) {
@@ -394,17 +545,19 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tipo de impresora</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={tipoImpresora} onChange={(e) => setTipoImpresora(e.target.value)}>
+                                {tipoImpresoras.map((timpr,index) => (
+                                    <option value={timpr.id_tipoImpresora} key={timpr.id_tipoImpresora} > {timpr.nombre} </option>
+                                ))}
                             </select>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Resolución</label>
-                            <input type="text" className="form-control"  placeholder="Ingresa la resolución"></input>
+                            <input value={resolucion} onChange={(e) => setResolucion(e.target.value)} type="text" className="form-control"  placeholder="Ingresa la resolución"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText"className="form-label">Conectividad</label>
-                            <input type="text" className="form-control" placeholder="Ingresa la conectividad"></input>
+                            <input value={conectividad} onChange={(e) => setConectividad(e.target.value)} type="text" className="form-control" placeholder="Ingresa la conectividad"></input>
                         </div>
                     </div>
                 )}
@@ -413,15 +566,15 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Números de puertos</label>
-                            <input type="number" className="form-control"  placeholder="Ingresa los números de puertos"></input>
+                            <input value={numPuertos} onChange={(e) => setnumPuertos(e.target.value)} type="number" className="form-control"  placeholder="Ingresa los números de puertos"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label for="decimalInput" className="form-label">Velocidad</label>
-                            <input type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la velocidad' />
+                            <input value={velocidad_backplane} onChange={(e) => setVelocidadBlackplane(e.target.value)} type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la velocidad' />
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tipo de switch</label>
-                            <input type="text" className="form-control" placeholder="Ingresa el tipo de switch"></input>
+                            <input value={tipoSwitch} onChange={(e) => settipoSwitch(e.target.value)} type="text" className="form-control" placeholder="Ingresa el tipo de switch"></input>
                         </div>
                     </div>
                 )}
@@ -430,30 +583,32 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tipo de conexión</label>
-                            <input type="text" className="form-control" placeholder="Ingresa el tipo de conexión"></input>
+                            <input value={tipo_conexion} onChange={(e) => settipo_conexion(e.target.value)} type="text" className="form-control" placeholder="Ingresa el tipo de conexión"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             {/* (SI O NO) */}
                             <label htmlFor="inputText" className="form-label">Soporte VPN</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={soporte_vpn} onChange={(e) => setsoporte_vpn(e.target.value)}>
+                                {soportes_vpn.map((sop, index) => (
+                                    <option key={index} value={sop} > {sop} </option>
+                                ))}
                             </select>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Números de interfases Giga fast</label>
-                            <input type="number" className="form-control"  placeholder="Ingresa los números de interfases Giga fast"></input>
+                            <input value={numGigFas} onChange={(e) => setnumGigFas(e.target.value)} type="number" className="form-control"  placeholder="Ingresa los números de interfases Giga fast"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Números de Seriales</label>
-                            <input type="number" className="form-control"  placeholder="Ingresa los números de seriales"></input>
+                            <input value={numSeriales} onChange={(e) => setnumSeriales(e.target.value)} type="number" className="form-control"  placeholder="Ingresa los números de seriales"></input>
                         </div>
                         <div className="EquipoBodega-column">
                             <label for="decimalInput" className="form-label">Frecuencia ruta</label>
-                            <input type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la frecuencia ruta' />
+                            <input value={frecuencia} onChange={(e) => setFrecuencia(e.target.value)} type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la frecuencia ruta' />
                         </div>
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Protocolos ruta</label>
-                            <input type="text" className="form-control" placeholder="Ingresa los protocolos ruta"></input>
+                            <input value={protocolos} onChange={(e) => setProtocolos(e.target.value)} type="text" className="form-control" placeholder="Ingresa los protocolos ruta"></input>
                         </div>
                     </div>
                 )}
@@ -462,11 +617,11 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label for="decimalInput" className="form-label">Capacidad</label>
-                            <input type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la capacidad' />
+                            <input value={capacidad} onChange={(e) => setCapacidad(e.target.value)} type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa la capacidad' />
                         </div>
                         <div className="EquipoBodega-column">
                             <label for="decimalInput" className="form-label">Consumo de energía</label>
-                            <input type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa el consumo de energía' />
+                            <input value={consEnergia} onChange={(e) => setconsEnergia(e.target.value)} type="number" className="form-control" id="decimalInput" name="decimalInput" step="0.01" placeholder='Ingresa el consumo de energía' />
                         </div>
                     </div>
                 )}
@@ -475,8 +630,10 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Tipo de Escaner</label>
-                            <select className="form-select" >
-                                <option value="" ></option>
+                            <select className="form-select" value={tipoEscaner} onChange={(e) => settipoEscaner(e.target.value)}>
+                                {tipoEscaners.map((tesc, index) => (
+                                    <option value={tesc.id_tipoEscaner} key={tesc.id_tipoEscaner} >{tesc.nombre}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -486,7 +643,7 @@ export const EquipoBodega = () => {
                     <div className="EquipoBodega-form-columns">
                         <div className="EquipoBodega-column">
                             <label htmlFor="inputText" className="form-label">Velocidad</label>
-                            <input type="text" className="form-control" placeholder="Ingresa la velocidad"></input>
+                            <input value={velocidad} onChange={(e) => setVelocidad(e.target.value)} type="text" className="form-control" placeholder="Ingresa la velocidad"></input>
                         </div>
                     </div>
                 )}

@@ -60,5 +60,34 @@ AND id_espacio IN (
     AND id_edificio = 1
 );
 
+-------------------------------------------------------------
+--27 de Septiembre 2024, agregar equipo
+DECLARE @InsertedIds TABLE (id_equipo INT);
 
+INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
+OUTPUT INSERTED.id_equipo INTO @InsertedIds
+VALUES (1234, '09-27-2024', 234, 1, 6, null, 'Disponible');
 
+SELECT id_equipo FROM @InsertedIds;
+
+--Para que agarre mas valor monetario
+ALTER TABLE EQUIPO
+ALTER COLUMN valor_compra numeric(8,2);
+
+select * from EQUIPO
+
+select * from COMPUTADORA
+
+select * from SOFTWARE_COMPUTADORA
+
+select * from SERVIDOR
+
+select * from TIPO_IMPRESORA
+
+select * from IMPRESORA
+
+select * from SWITCH
+
+select * from ROUTER
+
+select * from ESCANER
