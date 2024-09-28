@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export const EquipoBodega = () => {
-    const [radioCheck, setRadioCheck] = useState('Agregar');
     const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
     const [modelos, setModelos] = useState([]);
     const [modelo,setModelo] = useState('');
@@ -153,16 +152,7 @@ export const EquipoBodega = () => {
 
     const handleListo = async (e) => {
         e.preventDefault();
-    
-        if (radioCheck === 'Agregar') {
-            handleAgregar();
-        } else if (radioCheck === 'Actualizar') {
-            handleActualizar();
-        } else if (radioCheck === 'Eliminar') {
-            await handleEliminar();
-        }
-        //const response = await axios.get('http://localhost:3000/SelectDepartamentos');
-       // setDepartamentos(response.data);
+        handleAgregar();
     };
 
     const getFormattedDate = () => {
@@ -174,11 +164,11 @@ export const EquipoBodega = () => {
         return `${month}-${day}-${year}`;
     };
     
-
     const handleAgregar = async() => {
         try {
             const id_usuario = localStorage.getItem("idUsuario");
             const fechaActual = getFormattedDate();
+            let id = '';
 
             if(radioCheckEquipo === 'Computadora') {
                 const response = await axios.post('http://localhost:3000/AltaComputadora', {
@@ -200,6 +190,7 @@ export const EquipoBodega = () => {
                     //software-computadora
                     softwares: softwaresSelected
                 });
+                id = response.data.id; 
             }
             
             if(radioCheckEquipo === 'Servidor'){
@@ -219,6 +210,7 @@ export const EquipoBodega = () => {
                     sistemaOperativo: sistemaSelected,
                     tarjetaRed: confiRed
                 });
+                id = response.data.id; 
             }
 
             if(radioCheckEquipo === 'Impresora'){
@@ -236,6 +228,7 @@ export const EquipoBodega = () => {
                     velocidad: velocidad,
                     conectividad: conectividad
                 });
+                id = response.data.id; 
             }
 
             if(radioCheckEquipo === 'Switch'){
@@ -254,6 +247,7 @@ export const EquipoBodega = () => {
                     capacidad: capacidad,
                     consEnergia: consEnergia
                 });
+                id = response.data.id;
             }
 
             if(radioCheckEquipo === 'Router'){
@@ -276,6 +270,7 @@ export const EquipoBodega = () => {
                     capacidad: capacidad,
                     consEnergia: consEnergia
                 });
+                id = response.data.id; 
             }
 
             if(radioCheckEquipo === 'Escaner'){
@@ -291,9 +286,11 @@ export const EquipoBodega = () => {
                     velocidad: velocidad,
                     tipoEscaner: tipoEscaner
                 });
+                id = response.data.id; 
             }
+            const response = await axios.get(`http://localhost:3000/NombreEquipo?id_equipo=${id}`);
 
-            alert('Equipo insertado exitosamente');
+            alert(`Equipo ${response.data.Nombre} insertado exitosamente`);
             limpiar();
         } catch (error) {
             alert("Hubo problemas al agregar equipo");
@@ -301,60 +298,11 @@ export const EquipoBodega = () => {
         }
     };
 
-    const handleActualizar = async () => {
-        try {
-            const response = await axios.put('http://localhost:3000/ActualizarDepartamento', {
-                /*id_departamento: id,
-                nombre: nombre,
-                correo: correo,
-                telefono: telefono,
-                ubicacion_dep: ubicacion,
-                id_departamentoPadre: idDepPadre*/
-            });
-    
-            const resultado = response.data;
-            console.log('Resultado de la actualización:', resultado);
-            alert('Equipo actualizado exitosamente');
-            limpiar();
-        } catch (error) {
-            console.error('Hubo problemas:', error.message);
-            alert('Hubo problemas al actualizar el equipo');
-        }
-    };
-    
-    const handleEliminar = async () => {
-        try {
-            const response = await axios.delete(`http://localhost:3000/EliminarDepartamento/`);
-            console.log('Departamento eliminado:', response.data);
-            alert('Equipo eliminado exitosamente');
-            limpiar();
-        } catch (error) {
-            console.error('Error al eliminar el equipo:', error.message);
-            alert('Hubo problemas al eliminar el equipo');
-        }
-    };
-
-    const handleSelectedCheck = async (e) => {
-        e.preventDefault();
-
-    };
-
-    const handleRadioChange = (event) => {
-        const valueCheck = event.target.value;
-        setRadioCheck(valueCheck);
-        console.log(valueCheck);
-        limpiar();
-    };
-
     const handleRadioChangeEquipo = (event) => {
         const valueCheckEquipo = event.target.value;
         setRadioCheckEquipo(valueCheckEquipo);
         console.log(valueCheckEquipo);
         limpiar();
-    };
-    
-    const handleSelectedComSer = (event) => {
-
     };
 
     const handleCheckboxChange = (id) => {
@@ -385,21 +333,6 @@ export const EquipoBodega = () => {
             <div className='background-half'></div>
             <div className='EquipoBodega-form-wrapper'>
                 <span className="d-block text-center nito tam-letra-28px tipo-letra-arial">Equipo</span>
-                <div className="EquipoBodega-radio-group ">
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Agregar" onChange={handleRadioChange} checked={radioCheck === 'Agregar'} ></input>
-                        <label className="form-check-label" htmlFor="idRadioAgregar">Agregar</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Actualizar" onChange={handleRadioChange} checked={radioCheck === 'Actualizar'}></input>
-                        <label className="form-check-label" htmlFor="idRadioActualizar">Actualizar</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Eliminar" onChange={handleRadioChange} checked={radioCheck === 'Eliminar'}></input>
-                        <label className="form-check-label" htmlFor="idRadioEliminar">Eliminar</label>
-                    </div>
-                </div>
-                <hr />
                 <div className="EquipoBodega-radio-group ">
                     <div className="form-check form-check-inline">
                         <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Computadora" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Computadora'} ></input>

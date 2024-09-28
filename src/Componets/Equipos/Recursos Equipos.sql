@@ -91,3 +91,130 @@ select * from SWITCH
 select * from ROUTER
 
 select * from ESCANER
+
+---------------------------------------------------------------------------
+--Agrega el atributo CLAVE a EQUIPO
+ALTER TABLE EQUIPO
+ADD CLAVE VARCHAR(20) NULL;
+
+--Agrega el atributo NOMBRE a EQUIPO
+ALTER TABLE EQUIPO
+ADD NOMBRE VARCHAR(20) NULL;
+
+-- Crear el trigger que inserta en EQUIPO cuando se inserta una computadora
+CREATE TRIGGER TR_InsertarEnEquipoDeComputadora
+ON COMPUTADORA
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_computadora INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_computadora = id_computadora FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'COMP' + CAST(@id_computadora AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_computadora
+END;
+
+-- Crear el trigger que inserta en EQUIPO cuando se inserta una impresora
+CREATE TRIGGER TR_InsertarEnEquipoDeImpresora
+ON IMPRESORA
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_impresora INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_impresora = id_impresora FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'IMPR' + CAST(@id_impresora AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_impresora
+END;
+
+-- Crear el trigger que inserta en EQUIPO cuando se inserta una servidor
+CREATE TRIGGER TR_InsertarEnEquipoDeServidor
+ON SERVIDOR
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_servidor INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_servidor = id_servidor FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'SERV' + CAST(@id_servidor AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_servidor
+END;
+
+-- Crear el trigger que inserta en EQUIPO cuando se inserta una switch
+CREATE TRIGGER TR_InsertarEnEquipoDeSwitch
+ON SWITCH
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_switch INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_switch = id_switch FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'SWIT' + CAST(@id_switch AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_switch
+END;
+
+CREATE TRIGGER TR_InsertarEnEquipoDeRouter
+ON Router
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_router INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_router = id_router FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'ROUT' + CAST(@id_router AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_router
+END;
+
+CREATE TRIGGER TR_InsertarEnEquipoDeEscaner
+ON ESCANER
+AFTER INSERT
+AS
+BEGIN
+    -- Declaramos una variable para almacenar el id_computadora del registro insertado
+    DECLARE @id_escaner INT;
+    DECLARE @nombre NVARCHAR(20);
+
+    -- Obtenemos el id_computadora del registro insertado
+    SELECT @id_escaner = id_escaner FROM INSERTED;
+
+    -- Concatenamos el id_computadora con una cadena y lo asignamos a id_equipo
+    SET @nombre = 'ESCA' + CAST(@id_escaner AS NVARCHAR(10));
+
+    -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
+    UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_escaner
+END;

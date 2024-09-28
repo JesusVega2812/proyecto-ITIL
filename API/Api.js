@@ -891,7 +891,8 @@ app.post('/AltaComputadora',async(req,res) => {
                 );`;
             }
         }
-        res.status(200).send('Equipo insertado exitosamente');
+        console.log(idEquipoInsertado)
+        res.status(200).json({id: idEquipoInsertado});
     }catch(error){
         console.error('Error al insertar el equipo-computadora:', error.message);
         // Enviar una respuesta de error
@@ -926,7 +927,7 @@ app.post('/AltaServidor',async(req,res) => {
         await sql.query`INSERT INTO SERVIDOR (id_servidor, procesador, memoria_RAM, almacenamiento, tarjeta_grafica, sistema_operativo, configuracion_red)
         VALUES (${idEquipoInsertado}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed});`;
 
-        res.status(200).send('Equipo insertado exitosamente');
+        res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-servidor:', error.message);
         // Enviar una respuesta de error
@@ -961,7 +962,7 @@ app.post('/AltaImpresora',async(req,res) => {
         await sql.query`INSERT INTO IMPRESORA (id_impresora, id_tipoImpresora, resolucion, velocidad_impresion, conectividad)
         VALUES (${idEquipoInsertado}, ${tipoImpresora}, ${resolucion}, ${velocidad}, ${conectividad});`;
 
-        res.status(200).send('Equipo insertado exitosamente');
+        res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-impresora:', error.message);
         // Enviar una respuesta de error
@@ -996,7 +997,7 @@ app.post('/AltaSwitch',async(req,res) => {
         await sql.query`INSERT INTO SWITCH (id_switch, numero_puertos, velocidad_backplane, tipo_switch, capacidad_switching, consumo_energia)
         VALUES (${idEquipoInsertado}, ${numPuertos}, ${velocidad_backplane}, ${tipoSwitch}, ${capacidad}, ${consEnergia});`;
 
-        res.status(200).send('Equipo insertado exitosamente');
+        res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-switch:', error.message);
         // Enviar una respuesta de error
@@ -1030,7 +1031,7 @@ app.post('/AltaRouter',async(req,res) => {
         await sql.query`INSERT INTO ROUTER (id_router, tipo_conexion, soporte_vpn, numero_interfaces_giga_fast, numero_seriales, frecuencia_ruta, protocolos_ruta, capacidad_ruta, consumo_energia)
         VALUES (${idEquipoInsertado}, ${tipo_conexion}, ${soporte_vpn}, ${numGigFas}, ${numSeriales}, ${frecuencia}, ${protocolos}, ${capacidad}, ${consEnergia});`;
 
-        res.status(200).send('Equipo insertado exitosamente');
+        res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-router:', error.message);
         // Enviar una respuesta de error
@@ -1064,12 +1065,26 @@ app.post('/AltaEscaner',async(req,res) => {
         await sql.query`INSERT INTO ESCANER (id_escaner, velocidad, id_tipoEscaner)
         VALUES (${idEquipoInsertado}, ${velocidad}, ${tipoEscaner});`;
 
-        res.status(200).send('Equipo insertado exitosamente');
+        res.status(200).send(idEquipoInsertado);
     }catch(error){
         console.error('Error al insertar el equipo-escaner:', error.message);
         // Enviar una respuesta de error
         res.status(500).send('Error al insertar el equipo-escaner');
     }finally{
+        await sql.close();
+    }
+});
+
+app.get('/NombreEquipo', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const id_equipo = req.query.id_equipo;  // Cambiado a req.query
+        const result = await sql.query(`SELECT Nombre FROM Equipo WHERE id_equipo = ${id_equipo}`);
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al traer el nombre del equipo: ', error.message);
+        res.status(500).send('Error al traer el nombre del equipo');
+    } finally {
         await sql.close();
     }
 });
