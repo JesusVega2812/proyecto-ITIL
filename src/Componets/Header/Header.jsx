@@ -6,17 +6,20 @@ import { useNavigate } from 'react-router-dom';
 export const Header = () => {
     const [usuario, setUsuario] = useState('');
     const navigate = useNavigate();
+    const [permisos, setPermisos] = useState('');
 
     useEffect(() => {
-        // Obtener el usuario almacenado en localStorage
-        const storedUsuario = localStorage.getItem('usuario'); // Asegúrate de que 'usuario' es la clave correcta
+        const storedUsuario = localStorage.getItem('usuario');
+        const storedPermisos = localStorage.getItem('permisos');
         if (storedUsuario) {
             setUsuario(storedUsuario);
+        }
+        if (storedPermisos) {
+            setPermisos(storedPermisos);
         }
     }, []);
 
     const handleEditarPermisos = () => {
-        const permisos = localStorage.getItem('permisos');
         if(permisos === '1'){
             navigate('/Editar_Administrador');
         }else if(permisos === '2'){
@@ -24,7 +27,11 @@ export const Header = () => {
         }else{
             alert('Permisos no validos para editar');
         }
-    }
+    };
+
+    const handleAdministrador = () => {
+        navigate('/Principal_administrador');
+    };
 
     return (
         <div>
@@ -42,6 +49,9 @@ export const Header = () => {
                 </div>
                 <div className='div-usuario-header'>
                     <button className='tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleEditarPermisos}>&#x1f589;</button>
+                    {permisos === '1' && (
+                            <button className='tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleAdministrador}>Administración</button>
+                    )}
                     <span>Usuario: </span>
                     <span>{usuario}</span>
                 </div>

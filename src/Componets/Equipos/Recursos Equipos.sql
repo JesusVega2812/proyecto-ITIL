@@ -286,7 +286,7 @@ SELECT id_equipo, clave
 select * from equipo
 
 -------------------------29/SEP/2024--------------------------------------
-
-
 SELECT * FROM EQUIPO
 SELECT * FROM COMPUTADORA
+
+select * from usuario

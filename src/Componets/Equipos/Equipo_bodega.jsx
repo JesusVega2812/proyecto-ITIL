@@ -2,6 +2,7 @@ import '../Departamentos/Departamento_Alta_Baja_Cambio.css';
 import './EquipoBodega.css'
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export const EquipoBodega = () => {
     const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
@@ -44,6 +45,8 @@ export const EquipoBodega = () => {
     const [protocolos, setProtocolos] = useState('');
     const [tipoEscaners, settipoEscaners] = useState([]);
     const [tipoEscaner, settipoEscaner] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         //Equipo
@@ -319,6 +322,11 @@ export const EquipoBodega = () => {
         
     };
 
+    const handleCerrar = (e) => {
+        e.preventDefault();
+        navigate('/Principal');
+    };
+
    const limpiar = () => {
         //setDepartamento('Seleccione el departamento')
         //setDepartamentoPadre('Seleccione el departamento');
@@ -332,6 +340,7 @@ export const EquipoBodega = () => {
         <form className="EquipoBodega-form-container">
             <div className='background-half'></div>
             <div className='EquipoBodega-form-wrapper'>
+                <button type="button" class="btn-close" aria-label="Close" onClick={handleCerrar}></button>
                 <span className="d-block text-center nito tam-letra-28px tipo-letra-arial">Equipo</span>
                 <div className="EquipoBodega-radio-group ">
                     <div className="form-check form-check-inline">

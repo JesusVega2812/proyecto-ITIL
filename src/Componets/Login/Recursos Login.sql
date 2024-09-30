@@ -31,7 +31,7 @@ go
 
 select * from USUARIO
 
-select * from dbo.VerificarUsuario ('Jesus Vega', '123')
+select * from dbo.VerificarUsuario ('Marisol Manjarrez', '123')
 go
 
 CREATE FUNCTION VerificarPermisos

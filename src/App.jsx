@@ -8,7 +8,6 @@ import {Editar_Administrador} from './Componets/Editar/Editar_Administrador.jsx'
 import { Principal_administrador } from './Componets/Principal/Principal_administrador.jsx';
 import { Principal_otro } from './Componets/Principal/Principal_otro.jsx';
 import { EquipoBodega } from './Componets/Equipos/Equipo_bodega.jsx'
-// Importa el CSS de Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Edificios } from './Componets/Edificios/Edificios.jsx';
 
@@ -39,10 +38,10 @@ function Content() {
   };
 
   const renderHeader = () => {
-    if (location.pathname === '/Principal') {
+    if (location.pathname === '/Principal' || location.pathname === '/Principal_administrador') {
       if (permisos === '1' || permisos === '2') {
           return <Header />;
-      } else if (permisos === '3') {
+      } else if (permisos === '3' || permisos === '4') {
           return <Header_sin_editar />;
       }
     }
@@ -55,7 +54,8 @@ function Content() {
           <Routes>
               <Route path="/" element={<Navigate to="/Login" />} />
               <Route path="/Login" element={<Login />} /> //Modificar para acceder a otro componente
-              <Route path="/Principal" element={renderComponent()} />
+              <Route path="/Principal" element={< Principal_otro/>} />
+              <Route path="/Principal_administrador" element={< Principal_administrador/>} />
               <Route path="/Editar_Administrador" element={<Editar_Administrador />} />
               <Route path="/Editar_jefe_departamento" element={<Editar_jefe_departamento />} />
               <Route path="/EquipoBodega" element={<EquipoBodega />} />

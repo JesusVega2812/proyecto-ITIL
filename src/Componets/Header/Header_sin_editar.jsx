@@ -6,8 +6,7 @@ export const Header_sin_editar = () => {
     const [usuario, setUsuario] = useState('');
 
     useEffect(() => {
-        // Obtener el usuario almacenado en localStorage
-        const storedUsuario = localStorage.getItem('usuario'); // Asegúrate de que 'usuario' es la clave correcta
+        const storedUsuario = localStorage.getItem('usuario');
         if (storedUsuario) {
             setUsuario(storedUsuario);
         }

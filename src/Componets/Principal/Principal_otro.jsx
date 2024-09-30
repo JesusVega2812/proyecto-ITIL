@@ -1,42 +1,46 @@
 import './Principal_administrador.css';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export const Principal_otro = () => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [contrasenia, setContrasenia] = useState('');
+    const [permisos, setPermisos] = useState('');
+
+    useEffect(() => {
+        const storedPermisos = localStorage.getItem('permisos');
+        if (storedPermisos) {
+            setPermisos(storedPermisos);
+        }
+    }, []);
 
     const handleHomeClick = (e) => {
         e.preventDefault();
         navigate('/Principal');
-    }
-
-    const handleEquipoBodega = (e) => {
-        e.preventDefault();
-        navigate('/EquipoBodega')
-    }
+    };
 
     const handleCerrarSesion = (e) => {
         e.preventDefault();
         localStorage.removeItem('idUsuario');
         localStorage.removeItem('idDepartamentoPertenece');
+        localStorage.removeItem('permisos');
         navigate('/Login');
-    }
+    };
 
     const handleChangePasswordClick = () => {
         setShowModal(true);
-    }
+    };
 
     const handleCloseModal = () => {
         setShowModal(false);
-    }
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
-    }
+    };
 
     const handleValidar = (e) => {
         e.preventDefault();
@@ -45,7 +49,7 @@ export const Principal_otro = () => {
             return;
         }
         handleGuardarCambios();
-    } 
+    };
 
     const handleGuardarCambios = async() => {
         const idUsuario = localStorage.getItem('idUsuario');
@@ -65,13 +69,21 @@ export const Principal_otro = () => {
         }
     };
 
+    const handleEquipo = () => {
+        navigate('/EquipoBodega');
+    };
+
     return (
         <div className="principal-admin-container">
-            <hr className="hr" /> {/* Línea horizontal */}
+            <hr className="hr" />
             <div className="principal-admin-buttons">
                 <button type="button" className="btn btn-light principal-admin-btn" onClick={handleHomeClick}>Inicio</button>
+                {(permisos === '1' || permisos === '4') && (
+                    <button className="btn btn-primary principal-admin-btn" onClick={handleEquipo}>Equipo</button>
+
+                )}
                 <button type="button" className="btn btn-danger principal-admin-btn">Nueva Solicitud</button>
-                <button type="button" className="btn btn-primary principal-admin-btn" onClick={handleEquipoBodega}>Computo</button>
+                <button type="button" className="btn btn-warning principal-admin-btn">Computo</button>
                 <button type="button" className="btn btn-success principal-admin-btn" onClick={handleChangePasswordClick}>Contraseña</button>
                 <button type="button" className="btn btn-info principal-admin-btn" onClick={handleCerrarSesion}>Cerrar Sesión</button>
             </div>
