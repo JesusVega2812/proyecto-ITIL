@@ -65,10 +65,13 @@ export const Departamento_Alta_Baja_Cambio = () => {
         try {
             const response0 = await axios.get(`http://localhost:3000/ObtenerIdDepartamentoPadre/${departamentoPadre}`);
             console.log('Respuesta de la API:', response0.data);
+            let idDepPadre = '';
             if (!response0.data || !response0.data.id_departamento) {
-                throw new Error('La respuesta de la API no contiene id_departamento');
+                idDepPadre = null;
+                //throw new Error('La respuesta de la API no contiene id_departamento');
+            }else{
+                idDepPadre = response0.data.id_departamento;
             }
-            const idDepPadre = response0.data.id_departamento;
     
             const response = await axios.put('http://localhost:3000/ActualizarDepartamento', {
                 id_departamento: id,

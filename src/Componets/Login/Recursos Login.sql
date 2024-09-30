@@ -2,7 +2,7 @@ use proyectoITIL
 go
 DROP FUNCTION IF EXISTS dbo.VerificarUsuario;
 
-CREATE FUNCTION dbo.VerificarUsuario
+ALTER FUNCTION dbo.VerificarUsuario
 (
     @usuario NVARCHAR(50),
     @contra NVARCHAR(50)
@@ -17,7 +17,7 @@ RETURN
                 SELECT 1 
                 FROM Usuario 
                 WHERE nombre + ' ' + apellido = @usuario 
-                AND Contrasena = @contra
+                AND Contrasena = @contra and status = 1
             ) THEN 1 
             ELSE 0 
         END AS EsValido,
@@ -28,7 +28,10 @@ RETURN
     AND u.Contrasena = @contra
 );
 go
-select * from dbo.VerificarUsuario ('Marisol Manjarrez', '123')
+
+select * from USUARIO
+
+select * from dbo.VerificarUsuario ('Jesus Vega', '123')
 go
 
 CREATE FUNCTION VerificarPermisos

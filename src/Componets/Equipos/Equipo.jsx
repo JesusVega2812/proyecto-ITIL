@@ -223,6 +223,34 @@ export const Equipos = () => {
             });
             if (response.data.success) {
                 alert('El equipo fue dado de alta en el espacio correctamente');
+                handleCloseModal();
+                fetchEquipos(selectedIdEspacio,selectedEdificio.id_edificio,selectedTipoEspacio.id_tipoEspacio);
+
+                switch (radioCheckEquipo) {
+                    case 'Computadora':
+                        selectComputadora();
+                        break;
+                    case 'Impresora':
+                        selectImpresora();
+                        break;
+                    case 'Servidor':
+                        selectServidor();
+                        break;
+                    case 'Switch':
+                        selectSwitch();
+                        break;
+                    case 'Router':
+                        selectRouter();
+                        break;
+                    case 'Escaner':
+                        selectEscaner();
+                        break;
+                    default:
+                        return;
+                }
+                setClaveEquipo('');
+
+
             } else {
                 alert('No se pudo dar de alta el equipo en el espacio.');
             }

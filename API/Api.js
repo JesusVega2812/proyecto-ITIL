@@ -327,25 +327,6 @@ app.get('/SelectTipoEspacios', async(req,res) => {
     }
 });
 
-// Trae la capacidad y la ubicacion segun el nombre del espacio
-/*
-app.get('/SelectCapacidadNombre', async(req,res) => {
-    try{
-        await sql.connect(config);
-        const id_espacio = req.query.id_espacio;
-        console.log('idEspacio ', id_espacio);
-        const checkCapacidadUbicacionEspacio = await sql.query(`select id_espacio, capacidad, ubicacion_esp, nombre from ESPACIOS where id_espacio = ${id_espacio}`);
-        const result = checkCapacidadUbicacionEspacio.recordset[0];
-        console.log('capacidaaaaaad: ', result);
-        res.status(200).json({capacidad: result.capacidad, ubicacion: result.ubicacion_esp, nombreEspacio: result.nombre});
-    }catch(error){
-        console.error('Error al traer la capacidad y ubicacion: ', error.message);
-        res.status(500).json.send('Error al traer la capacidad y la ubicacion');
-    }finally{
-        await sql.close();
-    }
-});
-*/
 app.get('/SelectCapacidadNombre', async (req, res) => {
     try {
         await sql.connect(config);

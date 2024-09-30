@@ -284,3 +284,9 @@ SELECT id_equipo, clave
                 AND id_edificio = 1)
 
 select * from equipo
+
+-------------------------29/SEP/2024--------------------------------------
+
+
+SELECT * FROM EQUIPO
+SELECT * FROM COMPUTADORA

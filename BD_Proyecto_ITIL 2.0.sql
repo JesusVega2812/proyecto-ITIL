@@ -52,6 +52,7 @@ CREATE TABLE EQUIPO (
 	estado_equipo VARCHAR(20) --EN USO, REPARACION, YA NO SIRVE, DISPONIBLE
 );
 
+--drop table computadora
 -- Tabla: COMPUTADORA
 CREATE TABLE COMPUTADORA (
     id_computadora INT IDENTITY PRIMARY KEY NOT NULL,
@@ -460,6 +461,7 @@ ADD CONSTRAINT FK_PartesReemplazadas_Parte FOREIGN KEY (id_parte) REFERENCES PAR
 ALTER TABLE PARTES_REEMPLAZADAS
 ADD CONSTRAINT FK_PartesReemplazadas_Historial FOREIGN KEY (id_historial) REFERENCES HISTORIAL_INCIDENCIAS(id_historial);
 
+--------------------------------------------------------------------------------------------------------------------------------------------
 -- Computadora: La llave primaria de COMPUTADORA es una clave foránea de EQUIPO
 ALTER TABLE COMPUTADORA
 ADD CONSTRAINT FK_COMPUTADORA_EQUIPO

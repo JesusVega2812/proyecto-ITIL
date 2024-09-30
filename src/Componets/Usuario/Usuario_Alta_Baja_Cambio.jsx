@@ -251,10 +251,9 @@ export const Usuario_Alta_Baja_Cambio = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="inputJefe" className="form-label">Permisos</label>
+                                <label htmlFor="inputJefe" className="form-label">Tipo de usuario</label>
                                 <select className="form-select" id="inputJefe" value={permiso} onChange={(e) => setPermiso(e.target.value)}
                                 >
-                                    <option value="">Permisos</option>
                                     {permisos.map((per, index) => (
                                         <option key={index} value={per}>{per}</option>
                                     ))}
