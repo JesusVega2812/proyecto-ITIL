@@ -218,3 +218,69 @@ BEGIN
     -- Insertamos el registro en la tabla EQUIPO con el id_equipo modificado
     UPDATE EQUIPO SET NOMBRE = @nombre where id_equipo = @id_escaner
 END;
+
+---------------- 28 de Septiembre de 2024 ------------------
+select id_equipo, nombre from EQUIPO
+where id_espacio is null and estado_equipo = 'disponible'
+
+select id_computadora from COMPUTADORA
+select * from EQUIPO
+
+SELECT e.id_equipo, e.nombre
+FROM EQUIPO e
+JOIN COMPUTADORA c ON e.id_equipo = c.id_computadora
+WHERE e.id_espacio IS NULL 
+AND e.estado_equipo = 'disponible';
+
+SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN IMPRESORA i ON e.id_equipo = i.id_impresora
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+
+SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN SERVIDOR s ON e.id_equipo = s.id_servidor
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+
+SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN SWITCH s ON e.id_equipo = s.id_switch
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+
+SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN ROUTER r ON e.id_equipo = r.id_router
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+
+SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN ESCANER es ON e.id_equipo = es.id_escaner
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+
+
+UPDATE EQUIPO
+            SET id_espacio = @nombre,
+                fecha_instalacion = @apellido,
+                id_usuario = @departamento_pertenece,
+                estado_equipo = 'En uso',
+                correo = @correo,
+                CLAVE = @telefono
+            WHERE id_equipo = @id_usuario
+
+select * from EQUIPO
+
+SELECT id_equipo, clave 
+            FROM EQUIPO 
+            WHERE id_espacio = 23
+            AND id_espacio IN (
+                SELECT id_espacio 
+                FROM ESPACIOS 
+                WHERE id_tipoEspacio = 1
+                AND id_edificio = 1)
+
+select * from equipo

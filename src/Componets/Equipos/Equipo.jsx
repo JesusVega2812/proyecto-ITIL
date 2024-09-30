@@ -15,10 +15,23 @@ export const Equipos = () => {
     const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
     const [nombreEquipo, setNombreEquipo] = useState([]);
     const [claveEquipo, setClaveEquipo] = useState('');
-
+    const [computadoras, setComputadoras] = useState([]);
+    const [computadora, setComputadora] = useState('');
+    const [impresoras, setImpresoras] = useState([]);
+    const [impresora, setImpresora] = useState('');
+    const [servidores, setServidores] = useState([]);
+    const [servidor, setServidor] = useState('');
+    const [swits, setSwits] = useState([]);
+    const [swit, setSwit] = useState('');
+    const [routers, setRouters] = useState([]);
+    const [router, setRouter] = useState('');
+    const [escaners, setEscaners] = useState([]);
+    const [escaner, setEscaner] = useState('');
+    const [selectedIdEspacio, setSelectedIdEspacio] = useState(null);
 
     const permisos = localStorage.getItem('permisos');
     const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
+    const id_usuario = localStorage.getItem('idUsuario');
 
     useEffect(() => {
         const fetchEdificios = async () => {
@@ -42,6 +55,14 @@ export const Equipos = () => {
             }
         }; 
         fetchEdificios();
+
+        selectComputadora();
+        selectImpresora();
+        selectServidor();
+        selectSwitch();
+        selectRouter();
+        selectEscaner();
+
     }, [permisos, idDepartamentoPertenece]);
 
     const fetchEspacios = async (id_edificio) => {
@@ -123,11 +144,14 @@ export const Equipos = () => {
     const handleNombreEspacioSelect = (nombreEspacio) => {
         if (selectedNombreEspacio === nombreEspacio) {
             setSelectedNombreEspacio(null);
+            setSelectedIdEspacio(null);
             setEquipos([]);
         } else {
             setSelectedNombreEspacio(nombreEspacio);
+            setSelectedIdEspacio(nombreEspacio.id_espacio);
             fetchEquipos(nombreEspacio.id_espacio, selectedEdificio.id_edificio, selectedTipoEspacio.id_tipoEspacio);
         }
+        localStorage.setItem('id_espacio', nombreEspacio.id_espacio);
     };
 
     const handleNewEquipo = () => {
@@ -146,20 +170,133 @@ export const Equipos = () => {
 
     const handleValidar = (event) => {
         event.preventDefault();
-        if(nombreEquipo || claveEquipo){
+        if(!claveEquipo){
             alert('Necesita completar los campos');
             return;
         }
         handleGuardarCambios();
     }
 
-    const handleGuardarCambios = (event) => {
-        event.preventDefault();
-    }
+    const getFormattedDate = () => {
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getFullYear();
+    
+        return `${month}-${day}-${year}`;
+    };
+
+    const handleGuardarCambios = async () => {
+        const fechaActual = getFormattedDate();
+        let id_equipo;
+        switch (radioCheckEquipo) {
+            case 'Computadora':
+                id_equipo = computadora;
+                break;
+            case 'Impresora':
+                id_equipo = impresora;
+                break;
+            case 'Servidor':
+                id_equipo = servidor;
+                break;
+            case 'Switch':
+                id_equipo = swit;
+                break;
+            case 'Router':
+                id_equipo = router;
+                break;
+            case 'Escaner':
+                id_equipo = escaner;
+                break;
+            default:
+                alert('Por favor, selecciona un tipo de equipo válido.');
+                return;
+        }
+    
+        try {
+            const response = await axios.put('http://localhost:3000/AltaEquipoEnEspacio', {
+                id_equipo: id_equipo,
+                id_espacio: selectedIdEspacio,
+                fecha_instalacion: fechaActual,
+                id_usuario: id_usuario,
+                clave: claveEquipo 
+            });
+            if (response.data.success) {
+                alert('El equipo fue dado de alta en el espacio correctamente');
+            } else {
+                alert('No se pudo dar de alta el equipo en el espacio.');
+            }
+        } catch (error) {
+            console.error('Error al intentar agregar el equipo en el espacio:', error);
+            alert('Hubo un error al intentar agregar el equipo en el espacio');
+        }
+    };
 
     const limpiar = () => {
         
+    };
+
+    const selectComputadora = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectComputadora');
+            setComputadoras(response.data);
+            setComputadora(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener las computadoras', error);
+        }
     }
+
+    const selectImpresora = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectImpresora');
+            setImpresoras(response.data);
+            setImpresora(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener las impresoras', error);
+        }
+    }
+
+    const selectServidor = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectServidor');
+            setServidores(response.data);
+            setServidor(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener los servidores', error);
+        }
+    }
+
+    const selectSwitch = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectSwitch');
+            setSwits(response.data);
+            setSwit(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener los switch', error);
+        }
+    }
+
+    const selectRouter = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectRouter');
+            setRouters(response.data);
+            setRouter(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener los routers', error);
+        }
+    }
+
+    const selectEscaner = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectEscaner');
+            setEscaners(response.data);
+            setEscaner(response.data[0].id_equipo);
+        }catch(error){
+            console.error('Error al obtener los escaners', error);
+        }
+    }
+
+    
 
     return (
         <div className="equipos-container">
@@ -195,7 +332,7 @@ export const Equipos = () => {
                                                                                     equipos.map((equipo) => (
                                                                                         <li key={equipo.id_equipo} className="equipos-equipo-item">
                                                                                             <div className="equipos-equipo-name">
-                                                                                                {equipo.numero_serie}
+                                                                                                {equipo.clave}
                                                                                             </div>
                                                                                         </li>
                                                                                     ))
@@ -260,16 +397,65 @@ export const Equipos = () => {
                                             <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Escaner" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Escaner'}></input>
                                             <label className="form-check-label" htmlFor="idRadioEliminar">Escaner</label>
                                         </div>
-
+                                        
                                         <div className="input-container">
                                             <label htmlFor="inputText" className="form-label">Selecciona el equipo</label>
-                                            <select className="form-select" >
-                                                <option value="" ></option>
-                                            </select>
+                                            
+                                            {(radioCheckEquipo === 'Computadora') && (
+                                                <select className="form-select" value={computadora} onChange={(e) => setComputadora(e.target.value)}>
+                                                    {computadoras.map((comp, index) => (
+                                                        <option value={comp.id_equipo} key={comp.id_equipo} > {comp.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
+
+                                            {(radioCheckEquipo === 'Impresora') && (
+                                                <select className="form-select" value={impresora} onChange={(e) => setImpresora(e.target.value)}>
+                                                    {impresoras.map((imp, index) => (
+                                                        <option value={imp.id_equipo} key={imp.id_equipo} > {imp.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
+
+                                            {(radioCheckEquipo === 'Servidor') && (
+                                                <select className="form-select" value={servidor} onChange={(e) => setServidor(e.target.value)}>
+                                                    {servidores.map((serv, index) => (
+                                                        <option value={serv.id_equipo} key={serv.id_equipo} > {serv.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
+
+                                            {(radioCheckEquipo === 'Switch') && (
+                                                <select className="form-select" value={swit} onChange={(e) => setSwit(e.target.value)}>
+                                                    {swits.map((swi, index) => (
+                                                        <option value={swi.id_equipo} key={swi.id_equipo} > {swi.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
+
+                                            {(radioCheckEquipo === 'Router') && (
+                                                <select className="form-select" value={router} onChange={(e) => setRouter(e.target.value)}>
+                                                    {routers.map((rou, index) => (
+                                                        <option value={rou.id_equipo} key={rou.id_equipo} > {rou.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
+
+                                            {(radioCheckEquipo === 'Escaner') && (
+                                                <select className="form-select" value={escaner} onChange={(e) => setEscaner(e.target.value)}>
+                                                    {escaners.map((esc, index) => (
+                                                        <option value={esc.id_equipo} key={esc.id_equipo} > {esc.nombre}</option>
+                                                    ))}   
+                                                </select>
+                                            )}
                                         </div>
+
                                         <div className="mb-3">
                                             <label htmlFor="inputText" className="form-label">Clave del equipo</label>
                                             <input type="text" className="form-control" id="inputText" placeholder="Ingresa la clave aquí" value={claveEquipo} onChange={(e) => setClaveEquipo(e.target.value)}></input>
+                                            <label htmlFor="" className='equipo-clave-letrapequena'>Edificio, nombre del espacio, tipo de equipo: C, I,  Se, Sw, R, E , número de equipo de ese tipo en ese espacio.
+                                                Por ejemplo: "EASAC01" 
+                                            </label>
                                         </div>
                                     </div>
                                 </form>

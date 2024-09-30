@@ -603,7 +603,7 @@ app.get('/SelectEquiposPorEspacio', async (req, res) => {
 
         console.log('idEspacio en equipo:', id_espacio);
         const checkEquiposEspacios = await sql.query(`
-            SELECT id_equipo, numero_serie 
+            SELECT id_equipo, clave 
             FROM EQUIPO 
             WHERE id_espacio = ${id_espacio}
             AND id_espacio IN (
@@ -613,7 +613,7 @@ app.get('/SelectEquiposPorEspacio', async (req, res) => {
                 AND id_edificio = ${id_edificio}
             );
         `);
-        console.log('numero_serie:', checkEquiposEspacios.recordset[0].numero_serie);
+        console.log('clave:', checkEquiposEspacios.recordset[0].clave);
         res.status(200).json({equipos: checkEquiposEspacios.recordset})
     } catch (error) {
         console.error('Error al obtener los equipos:', error.message);
@@ -1084,6 +1084,160 @@ app.get('/NombreEquipo', async (req, res) => {
     } catch (error) {
         console.error('Error al traer el nombre del equipo: ', error.message);
         res.status(500).send('Error al traer el nombre del equipo');
+    } finally {
+        await sql.close();
+    }
+});
+
+//------------28 de Septiembre-------------
+
+//Trae las computadoras
+app.get('/SelectComputadora', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN COMPUTADORA c ON e.id_equipo = c.id_computadora
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener las computadoras', error.message);
+        res.status(500).send('Error al obtener los computadoras');
+    }
+});
+
+//Trae las impresoras
+app.get('/selectImpresora', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN IMPRESORA i ON e.id_equipo = i.id_impresora
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener las impresoras', error.message);
+        res.status(500).send('Error al obtener los impresoras');
+    }
+});
+
+//Trae los servidores
+app.get('/selectServidor', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN SERVIDOR s ON e.id_equipo = s.id_servidor
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los servidores', error.message);
+        res.status(500).send('Error al obtener los servidores');
+    }
+});
+
+//Trae los switch
+app.get('/selectSwitch', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN SWITCH s ON e.id_equipo = s.id_switch
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los switch', error.message);
+        res.status(500).send('Error al obtener los switch');
+    }
+});
+
+//Trae los routers
+app.get('/selectRouter', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN ROUTER r ON e.id_equipo = r.id_router
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los routers', error.message);
+        res.status(500).send('Error al obtener los routes');
+    }
+});
+
+//Trae los escaner
+app.get('/selectEscaner', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT e.id_equipo, e.nombre
+            FROM EQUIPO e
+            JOIN ESCANER es ON e.id_equipo = es.id_escaner
+            WHERE e.id_espacio IS NULL 
+            AND e.estado_equipo = 'disponible'
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los escaners', error.message);
+        res.status(500).send('Error al obtener los escaners');
+    }
+});
+
+// Alta equipo en espacio
+app.put('/AltaEquipoEnEspacio', async (req, res) => {
+    const { id_equipo, id_espacio, fecha_instalacion, id_usuario, clave } = req.body;
+
+    console.log('Datos recibidos:', {
+        id_equipo, id_espacio, fecha_instalacion, id_usuario, clave
+    });
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        request.input('id_espacio', sql.Int, id_espacio);
+        request.input('fecha_instalacion', sql.DateTime, fecha_instalacion);
+        request.input('id_usuario', sql.Int, id_usuario);
+        request.input('clave', sql.VarChar, clave);
+        request.input('id_equipo', sql.Int, id_equipo);
+        const result = await request.query(`
+            UPDATE EQUIPO
+            SET id_espacio = @id_espacio,
+                fecha_instalacion = @fecha_instalacion,
+                id_usuario = @id_usuario,
+                estado_equipo = 'En uso',
+                CLAVE = @clave
+            WHERE id_equipo = @id_equipo
+        `)
+
+        if (result.rowsAffected[0] > 0) {
+            res.json({ success: true, message: 'Equipo dado de alta en espacio' });
+        } else {
+            res.json({ success: false, message: 'No se encontró el equipo para actualizar' });
+        }
+    } catch (error) {
+        console.error('Error al dar de alta el equipo en el espacio:', error.message);
+        res.status(500).json({ success: false, message: 'Error al dar de alta el equipo en el usuario' });
     } finally {
         await sql.close();
     }
