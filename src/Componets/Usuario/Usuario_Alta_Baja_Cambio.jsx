@@ -46,6 +46,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
         } else if (radioCheck === 'Eliminar') {
             await handleBaja(); // Asegúrate de definir handleEliminar si es necesario
         }
+
         const response = await axios.get('http://localhost:3000/SelectUsuario');
         setUsuarios(response.data); // Guardar los usuarios en el estado
         const response_ = await axios.get('http://localhost:3000/SelectDepartamentos');
