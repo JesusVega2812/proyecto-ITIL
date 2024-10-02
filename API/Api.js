@@ -239,7 +239,7 @@ app.get('/SelectDepartamento', async (req, res) => {
 app.get('/SelectEdificios', async(req,res) => {
     try{
         await sql.connect(config);
-        const checkEdificio = await sql.query(`select id_edificio, nombre from Edificio`);
+        const checkEdificio = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
         res.status(200).json({edificios: checkEdificio.recordset});
     }catch(error){
         console.error('Error al traer los edificios:', error.message);
@@ -709,28 +709,82 @@ app.put('/ActualizarEdificio', async (req, res) => {
 });
 
 // Elimina un edificio
-app.delete('/EliminaEdificio', async (req, res) => {
+app.put('/EliminaEdificio', async (req, res) => {
     try {
         await sql.connect(config);
-        const id_edificio = req.query.id_edificio;
 
-        // Usar consulta parametrizada para evitar inyección SQL
-        const result = await sql.query(`
-            delete from EDIFICIO
-            where id_edificio = @id_edificio;
-        `, {
-            id_edificio: sql.Int, value: id_edificio
-        });
+        // Extraer parámetros del body
+        const { id_edificio } = req.body;
 
+        if (!id_edificio) {
+            return res.status(400).send('El id_edificio es requerido');
+        }
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Ejecutar la actualización para eliminar lógicamente el edificio
+        const result = await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .execute('BajaEdificio');
+
+        // Comprobar si se actualizó algún registro
         if (result.rowsAffected[0] > 0) {
-            res.json({ success: true, message: 'Edificio eliminado correctamente' });
+            res.status(200).send('Edificio eliminado lógicamente exitosamente');
         } else {
-            res.json({ success: false, message: 'No se encontró el edificio para eliminar' });
+            res.status(404).send('No se encontró el edificio para eliminar');
         }
     } catch (error) {
-        console.error('Error al eliminar el edificio:', error.message);
-        res.status(500).json({ success: false, message: 'Error al eliminar el edificio' });
+        console.error('Error al eliminar lógicamente el edificio:', error.message);
+        res.status(500).send('Error al eliminar lógicamente el edificio');
     } finally {
         await sql.close();
-    }
+    }
+});
+
+
+//Trae edificios
+app.get('/SelectEdificiosPorEstatus', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
+        console.log('Edificios obtenidos:', result.recordset);
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al traer los edificios:', error.message);
+        res.status(500).send('Error al traer los edificios');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+
+//Trae ubicacion de edificio
+app.get('/TraeUbicacionEdificio/:id_edificio', async (req, res) => {
+    console.log('Conectado a SQL Server');
+    try {
+        await sql.connect(config);
+        const { id_edificio } = req.params;
+        console.log('ID del edificio:', id_edificio);
+        
+        // Realizar la consulta SQL
+        const result = await sql.query`SELECT ubicacion_edificio FROM edificio WHERE id_edificio = ${id_edificio} AND estatus = 1`;
+        
+        // Verificar si se encontró el edificio
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Edificio no encontrado' });
+        }
+
+        console.log('Resultado de la consulta:', result.recordset[0]);
+        
+        // Devolver la ubicación del edificio
+        res.status(200).json(result.recordset[0]); 
+
+    } catch (error) {
+        console.error('Error al traer ubicacion del edificio:', error.message);
+        res.status(500).send('Error al traer ubicacion del edificio');
+    } finally {
+        await sql.close();
+    }
 });

@@ -1,9 +1,130 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import '../Edificios/Edificios.css';
+******************************API******************************
+// Da de alta a Edificio
+app.post('/AltaEdificio', async(req, res) => {
+    try{
+        await sql.connect(config);
+        const{nombre, ubicacion_edificio} = req.body;
+        await sql.query`INSERT INTO EDIFICIO(nombre, ubicacion_edificio)
+            VALUES(${nombre}, ${ubicacion_edificio});
+            `;
+        res.status(200).send('Edificio insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar edificio:, ', error.message);
+        res.status(500).send('Error al insertar edificio');
+    }finally{
+        await sql.close();
+    }
+});
 
-export const Edificios = () => {
-    const [radioCheck, setRadioCheck] = useState('Agregar');
+// Actualizar datos de edificio
+app.put('/ActualizarEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_edificio, nombre, ubicacion_edificio} = req.body;
+
+        // Crear una nueva instancia de solicitud SQL para ejecutar el procedimiento almacenado
+        const request = new sql.Request();
+
+        // Ejecutar el procedimiento almacenado con los parámetros proporcionados
+        await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .input('nombre', sql.NVarChar, nombre)
+            .input('ubicacion_edificio', sql.NVarChar, ubicacion_edificio)
+            .execute('ActualizarEdificio'); // Ejecutar el procedimiento almacenado
+        res.status(200).send('Edificio actualizado exitosamente');
+    } catch (error) {
+        console.error('Error al actualizar el edificio:', error.message);
+        res.status(500).send('Error al actualizar el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+// Elimina un edificio
+app.put('/EliminaEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_edificio } = req.body;
+
+        if (!id_edificio) {
+            return res.status(400).send('El id_edificio es requerido');
+        }
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Ejecutar la actualización para eliminar lógicamente el edificio
+        const result = await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .execute('BajaEdificio');
+
+        // Comprobar si se actualizó algún registro
+        if (result.rowsAffected[0] > 0) {
+            res.status(200).send('Edificio eliminado lógicamente exitosamente');
+        } else {
+            res.status(404).send('No se encontró el edificio para eliminar');
+        }
+    } catch (error) {
+        console.error('Error al eliminar lógicamente el edificio:', error.message);
+        res.status(500).send('Error al eliminar lógicamente el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+//Trae edificios
+app.get('/SelectEdificiosPorEstatus', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
+        console.log('Edificios obtenidos:', result.recordset);
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al traer los edificios:', error.message);
+        res.status(500).send('Error al traer los edificios');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+
+//Trae ubicacion de edificio
+app.get('/TraeUbicacionEdificio/:id_edificio', async (req, res) => {
+    console.log('Conectado a SQL Server');
+    try {
+        await sql.connect(config);
+        const { id_edificio } = req.params;
+        console.log('ID del edificio:', id_edificio);
+        
+        // Realizar la consulta SQL
+        const result = await sql.query`SELECT ubicacion_edificio FROM edificio WHERE id_edificio = ${id_edificio} AND estatus = 1`;
+        
+        // Verificar si se encontró el edificio
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Edificio no encontrado' });
+        }
+
+        console.log('Resultado de la consulta:', result.recordset[0]);
+        
+        // Devolver la ubicación del edificio
+        res.status(200).json(result.recordset[0]); 
+
+    } catch (error) {
+        console.error('Error al traer ubicacion del edificio:', error.message);
+        res.status(500).send('Error al traer ubicacion del edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+******************************Edificios.jsx******************************
+const [radioCheck, setRadioCheck] = useState('Agregar');
     const [id_edificio, setId_edificio] = useState('');
     const [nombre, setNombre] = useState('');
     const [ubicacion_edificio, setUbicacion_edificio] = useState('');
@@ -26,18 +147,6 @@ export const Edificios = () => {
     obtenerEdificios(); // Llamar a la función cuando el componente se monta
 
     }, [action]); // Se ejecuta una sola vez al montar el componente
-
-
-    const handleListo = async (e) => {
-        e.preventDefault();
-        if (radioCheck === 'Agregar') {
-            await handleAgregar(); // Llamar a handleAgregar
-        } else if (radioCheck === 'Actualizar') {
-            await handleActualizar(); // Llamar a handleActualizar
-        } else if (radioCheck === 'Eliminar') {
-            await handleEliminar(); // Asegúrate de definir handleEliminar si es necesario
-        }
-    };
 
     const handleAgregar = async () => {
         if (!nombre || !ubicacion_edificio) {
@@ -94,13 +203,6 @@ export const Edificios = () => {
     };
     
 
-    const handleRadioChange = (event) => {
-        const valueCheck = event.target.value;
-        setRadioCheck(valueCheck);
-        console.log(valueCheck);
-        limpiar();
-    };
-
     const handleSelectedChange = async (e) => {
         const id_edificioSeleccionado = e.target.value; // Capturamos el ID del edificio seleccionado
         const ediSelect = edificios.filter(edi => edi.id_edificio === parseInt(id_edificioSeleccionado));
@@ -126,38 +228,7 @@ export const Edificios = () => {
         }
     };
 
-    const limpiar = () => {
-        setId_edificio('');
-        setNombre('');
-        setUbicacion_edificio('');
-   }
-
-    return (
-        <>
-            <div className="background-half"></div>
-            <form className="form-container">
-                <div className="form-wrapper">
-                    <span className="d-block text-center nito tam-letra-28px tipo-letra-arial">Edificio</span>
-
-                    <div className="depCheck margin-top-20px">
-                        {/* Radio buttons */}
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Agregar" onChange={handleRadioChange} checked={radioCheck === 'Agregar'} />
-                            <label className="form-check-label" htmlFor="idRadioAgregar">Agregar</label>
-                        </div>
-
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Actualizar" onChange={handleRadioChange} checked={radioCheck === 'Actualizar'} />
-                            <label className="form-check-label" htmlFor="idRadioActualizar">Actualizar</label>
-                        </div>
-
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Eliminar" onChange={handleRadioChange} checked={radioCheck === 'Eliminar'} />
-                            <label className="form-check-label" htmlFor="idRadioEliminar">Eliminar</label>
-                        </div>
-                    </div>
-
-                    {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
+    {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
                     <div>
                         <label htmlFor="inputText" className="form-label">Edificio</label>
                         <select className="form-select" aria-label="Select building" value={edificio} onChange={handleSelectedChange/*(e) => setDepartamentoPadre(e.target.value)*/}>
@@ -168,24 +239,9 @@ export const Edificios = () => {
                     </div>
                     )}
 
-                    {(radioCheck === "Agregar") && (
+    {(radioCheck === "Agregar") && (
                     <div className="mb-3">
                         <label htmlFor="inputText" className="form-label">Nombre</label>
                         <input type="text" className="form-control" id="inputText" placeholder="Ingresa nombre de edificio aqui" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                     </div>
                     )}
-                    
-                    <div className="mb-3">
-                        <label htmlFor="inputUbicacion" className="form-label">Ubicacion</label>
-                        <input type="text" className="form-control" id="inputUbicacion" placeholder="Ingresa ubicacion aquí" value={ubicacion_edificio} onChange={(e) => setUbicacion_edificio(e.target.value)} />
-                    </div>
-                    <div className="button-container">
-                        <button onClick={handleListo} className='color-boton-azul submit-btn color-blanco'>
-                            Listo
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </>
-    );
-}
