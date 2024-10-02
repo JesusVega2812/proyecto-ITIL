@@ -1,0 +1,247 @@
+******************************API******************************
+// Da de alta a Edificio
+app.post('/AltaEdificio', async(req, res) => {
+    try{
+        await sql.connect(config);
+        const{nombre, ubicacion_edificio} = req.body;
+        await sql.query`INSERT INTO EDIFICIO(nombre, ubicacion_edificio)
+            VALUES(${nombre}, ${ubicacion_edificio});
+            `;
+        res.status(200).send('Edificio insertado exitosamente');
+    }catch(error){
+        console.error('Error al insertar edificio:, ', error.message);
+        res.status(500).send('Error al insertar edificio');
+    }finally{
+        await sql.close();
+    }
+});
+
+// Actualizar datos de edificio
+app.put('/ActualizarEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_edificio, nombre, ubicacion_edificio} = req.body;
+
+        // Crear una nueva instancia de solicitud SQL para ejecutar el procedimiento almacenado
+        const request = new sql.Request();
+
+        // Ejecutar el procedimiento almacenado con los parámetros proporcionados
+        await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .input('nombre', sql.NVarChar, nombre)
+            .input('ubicacion_edificio', sql.NVarChar, ubicacion_edificio)
+            .execute('ActualizarEdificio'); // Ejecutar el procedimiento almacenado
+        res.status(200).send('Edificio actualizado exitosamente');
+    } catch (error) {
+        console.error('Error al actualizar el edificio:', error.message);
+        res.status(500).send('Error al actualizar el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+// Elimina un edificio
+app.put('/EliminaEdificio', async (req, res) => {
+    try {
+        await sql.connect(config);
+
+        // Extraer parámetros del body
+        const { id_edificio } = req.body;
+
+        if (!id_edificio) {
+            return res.status(400).send('El id_edificio es requerido');
+        }
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Ejecutar la actualización para eliminar lógicamente el edificio
+        const result = await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .execute('BajaEdificio');
+
+        // Comprobar si se actualizó algún registro
+        if (result.rowsAffected[0] > 0) {
+            res.status(200).send('Edificio eliminado lógicamente exitosamente');
+        } else {
+            res.status(404).send('No se encontró el edificio para eliminar');
+        }
+    } catch (error) {
+        console.error('Error al eliminar lógicamente el edificio:', error.message);
+        res.status(500).send('Error al eliminar lógicamente el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+//Trae edificios
+app.get('/SelectEdificiosPorEstatus', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
+        console.log('Edificios obtenidos:', result.recordset);
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al traer los edificios:', error.message);
+        res.status(500).send('Error al traer los edificios');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+
+//Trae ubicacion de edificio
+app.get('/TraeUbicacionEdificio/:id_edificio', async (req, res) => {
+    console.log('Conectado a SQL Server');
+    try {
+        await sql.connect(config);
+        const { id_edificio } = req.params;
+        console.log('ID del edificio:', id_edificio);
+        
+        // Realizar la consulta SQL
+        const result = await sql.query`SELECT ubicacion_edificio FROM edificio WHERE id_edificio = ${id_edificio} AND estatus = 1`;
+        
+        // Verificar si se encontró el edificio
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Edificio no encontrado' });
+        }
+
+        console.log('Resultado de la consulta:', result.recordset[0]);
+        
+        // Devolver la ubicación del edificio
+        res.status(200).json(result.recordset[0]); 
+
+    } catch (error) {
+        console.error('Error al traer ubicacion del edificio:', error.message);
+        res.status(500).send('Error al traer ubicacion del edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+******************************Edificios.jsx******************************
+const [radioCheck, setRadioCheck] = useState('Agregar');
+    const [id_edificio, setId_edificio] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [ubicacion_edificio, setUbicacion_edificio] = useState('');
+    const [edificios, setEdificios] = useState([]);
+    const [edificio, setEdificio] = useState('');
+    const [action, setAction] = useState(null);
+
+    useEffect(() => {
+        const obtenerEdificios = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/SelectEdificiosPorEstatus');
+                console.log('Edificios obtenidos:', response.data); // Verifica la estructura
+                // Si response.data contiene un array dentro de una propiedad
+                setEdificios(response.data)// Asegúrate de que sea un array
+            } catch (error) {
+                console.error('Error al obtener los edificios:', error);
+            }
+        };
+
+    obtenerEdificios(); // Llamar a la función cuando el componente se monta
+
+    }, [action]); // Se ejecuta una sola vez al montar el componente
+
+    const handleAgregar = async () => {
+        if (!nombre || !ubicacion_edificio) {
+            alert("Por favor, complete todos los campos.");
+            return;
+        }
+    
+        try {
+            const response = await axios.post('http://localhost:3000/AltaEdificio', {
+                nombre: nombre,
+                ubicacion_edificio: ubicacion_edificio
+            });
+            const resultado = response.data;
+            console.log(resultado);
+            alert('Edificio agregado exitosamente'); // Mensaje de éxito
+        } catch (error) {
+            console.error("Error al agregar el edificio:", error.message);
+            alert(`Hubo problemas al agregar el edificio: ${error.message}`);
+        }
+        setAction('add');
+    };
+
+    const handleActualizar = async () => {
+        try {
+            const response = await axios.put('http://localhost:3000/ActualizarEdificio', {
+                id_edificio: id_edificio,
+                nombre: nombre,
+                ubicacion_edificio: ubicacion_edificio
+            });
+    
+            const resultado = response.data;
+            console.log('Resultado de la actualización:', resultado);
+            alert('Edificio actualizado exitosamente');
+        } catch (error) {
+            console.error('Hubo problemas:', error.message);
+            alert('Hubo problemas al actualizar el edificio');
+        }
+        setAction('update');
+    };
+
+    const handleEliminar = async () => {
+        try {
+            const response = await axios.put(`http://localhost:3000/EliminaEdificio`, {
+                    id_edificio: id_edificio
+            });
+            const resultado = response.data;
+            console.log('Resultado de la elimincacion:', resultado);
+            alert('Edificio eliminado exitosamente');
+        } catch (error) {
+            console.error('Hubo problemas:', error.message);
+            alert('Hubo problemas al eliminar el edificio');
+        }
+        setAction('update');
+    };
+    
+
+    const handleSelectedChange = async (e) => {
+        const id_edificioSeleccionado = e.target.value; // Capturamos el ID del edificio seleccionado
+        const ediSelect = edificios.filter(edi => edi.id_edificio === parseInt(id_edificioSeleccionado));
+    
+        console.log(ediSelect);
+        setEdificio(id_edificioSeleccionado); // Actualizamos el ID del edificio en el estado
+    
+        if (ediSelect.length > 0) { 
+            setId_edificio(ediSelect[0].id_edificio);
+            setNombre(ediSelect[0].nombre);
+            setUbicacion_edificio(ediSelect[0].ubicacion_edificio);
+        }
+    
+        try {
+            const response = await axios.get(`http://localhost:3000/TraeUbicacionEdificio/${id_edificioSeleccionado}`);
+            if (response.data) {
+                setUbicacion_edificio(response.data.ubicacion_edificio); // Actualizamos la ubicación
+            } else {
+                console.error('No se recibió una respuesta válida de la API');
+            }
+        } catch (error) {
+            console.error('Error al obtener la ubicación del edificio:', error);
+        }
+    };
+
+    {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
+                    <div>
+                        <label htmlFor="inputText" className="form-label">Edificio</label>
+                        <select className="form-select" aria-label="Select building" value={edificio} onChange={handleSelectedChange/*(e) => setDepartamentoPadre(e.target.value)*/}>
+                            <option value="selCheck">Selecciona el edificio</option>
+                            {Array.isArray(edificios) && edificios.map((edi) => (
+                                <option key={edi.id_edificio} value={edi.id_edificio}>{edi.nombre}</option>))}
+                        </select>
+                    </div>
+                    )}
+
+    {(radioCheck === "Agregar") && (
+                    <div className="mb-3">
+                        <label htmlFor="inputText" className="form-label">Nombre</label>
+                        <input type="text" className="form-control" id="inputText" placeholder="Ingresa nombre de edificio aqui" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                    </div>
+                    )}
