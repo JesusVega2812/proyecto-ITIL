@@ -239,7 +239,7 @@ app.get('/SelectDepartamento', async (req, res) => {
 app.get('/SelectEdificios', async(req,res) => {
     try{
         await sql.connect(config);
-        const checkEdificio = await sql.query(`select id_edificio, nombre from Edificio`);
+        const checkEdificio = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
         res.status(200).json({edificios: checkEdificio.recordset});
     }catch(error){
         console.error('Error al traer los edificios:', error.message);
@@ -690,536 +690,82 @@ app.put('/ActualizarEdificio', async (req, res) => {
 });
 
 // Elimina un edificio
-app.delete('/EliminaEdificio', async (req, res) => {
+app.put('/EliminaEdificio', async (req, res) => {
     try {
         await sql.connect(config);
-        const id_edificio = req.query.id_edificio;
 
-        // Usar consulta parametrizada para evitar inyección SQL
-        const result = await sql.query(`
-            delete from EDIFICIO
-            where id_edificio = @id_edificio;
-        `, {
-            id_edificio: sql.Int, value: id_edificio
-        });
+        // Extraer parámetros del body
+        const { id_edificio } = req.body;
 
+        if (!id_edificio) {
+            return res.status(400).send('El id_edificio es requerido');
+        }
+
+        // Crear una nueva instancia de solicitud SQL
+        const request = new sql.Request();
+
+        // Ejecutar la actualización para eliminar lógicamente el edificio
+        const result = await request
+            .input('id_edificio', sql.Int, id_edificio)
+            .execute('BajaEdificio');
+
+        // Comprobar si se actualizó algún registro
         if (result.rowsAffected[0] > 0) {
-            res.json({ success: true, message: 'Edificio eliminado correctamente' });
+            res.status(200).send('Edificio eliminado lógicamente exitosamente');
         } else {
-            res.json({ success: false, message: 'No se encontró el edificio para eliminar' });
+            res.status(404).send('No se encontró el edificio para eliminar');
         }
     } catch (error) {
-        console.error('Error al eliminar el edificio:', error.message);
-        res.status(500).json({ success: false, message: 'Error al eliminar el edificio' });
+        console.error('Error al eliminar lógicamente el edificio:', error.message);
+        res.status(500).send('Error al eliminar lógicamente el edificio');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+//Trae edificios
+app.get('/SelectEdificiosPorEstatus', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query(`select id_edificio, nombre from Edificio where estatus = 1`);
+        console.log('Edificios obtenidos:', result.recordset);
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al traer los edificios:', error.message);
+        res.status(500).send('Error al traer los edificios');
+    } finally {
+        await sql.close();
+    }
+});
+
+
+
+//Trae ubicacion de edificio
+app.get('/TraeUbicacionEdificio/:id_edificio', async (req, res) => {
+    console.log('Conectado a SQL Server');
+    try {
+        await sql.connect(config);
+        const { id_edificio } = req.params;
+        console.log('ID del edificio:', id_edificio);
+        
+        // Realizar la consulta SQL
+        const result = await sql.query`SELECT ubicacion_edificio FROM edificio WHERE id_edificio = ${id_edificio} AND estatus = 1`;
+        
+        // Verificar si se encontró el edificio
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ message: 'Edificio no encontrado' });
+        }
+
+        console.log('Resultado de la consulta:', result.recordset[0]);
+        
+        // Devolver la ubicación del edificio
+        res.status(200).json(result.recordset[0]); 
+
+    } catch (error) {
+        console.error('Error al traer ubicacion del edificio:', error.message);
+        res.status(500).send('Error al traer ubicacion del edificio');
     } finally {
         await sql.close();
     }
-});
-
-//-------------------------------------------------------------------------
-//Desmadre de equipos
-//Trae los modelos de equipos
-app.get('/SelectModelos', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from Modelo');        
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al traer los usuarios', error.message);
-        res.status(500).send('Error al traer los usuarios');
-    }
-});
-
-//Trae los tipos de computadoras
-app.get('/selectTipoComputadora', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from Tipo_Computadora');       
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al traer los usuarios', error.message);
-        res.status(500).send('Error al traer los usuarios');
-    }
-});
-
-//Trae los procesadores
-app.get('/selectProcesador', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from Procesador');       
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al traer los usuarios', error.message);
-        res.status(500).send('Error al traer los usuarios');
-    }
-});
-
-//Trae las tarjetas graficas
-app.get('/SelectGrafica', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from Tarjeta_Grafica');       
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al obtener las tarjetas graficas', error.message);
-        res.status(500).send('Error al obtener las tarjetas graficas');
-    }
-});
-
-//Trae los sistemas operativos
-app.get('/SelectSistemasOperativos', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from sistema_operativo');    
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al obtener los sietamas operativos', error.message);
-        res.status(500).send('Error al obtener los sietamas operativos');
-    }
-});
-
-//Trae las configuraciones de red
-app.get('/ConfiguracionRed', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from tarjeta_red');    
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al obtener las configuraciones de red', error.message);
-        res.status(500).send('Error al obtener las configuraciones de red');
-    }
-});
-
-//Trae los softwares
-app.get('/SelectSoftwares', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from software');    
-        res.status(200).json(result.recordset); // Devuelve los datos correctamente
-    } catch (error) {
-        console.error('Error al obtener las los softwares', error.message);
-        res.status(500).send('Error al obtener los softwares');
-    }
-});
-
-//Trae los tipos de impresoras
-app.get('/SelectTipoImpresora', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from tipo_impresora');    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los tipos de impresora', error.message);
-        res.status(500).send('Error al obtener los tipos de impresora');
-    }
-});
-
-//Trae los tipos de escaner
-app.get('/SelectTipoEscaner', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query('SELECT * from tipo_escaner');    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los tipos de escaner', error.message);
-        res.status(500).send('Error al obtener los tipos de escaner');
-    }
-});
-
-//Inserta Computadora
-app.post('/AltaComputadora',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares
-        });
-        console.log('llegue a altacomputadora');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla COMPUTADORA
-        await sql.query`INSERT INTO COMPUTADORA (id_computadora, id_tipoComputadora, procesador, memoria_RAM, almacenamiento, tarjeta_grafica, sistema_operativo, configuracion_red)
-        VALUES (${idEquipoInsertado}, ${tipo}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed});`;
-
-        // Insertar en la tabla SOFTWARE_COMPUTADORA
-        if (softwares && softwares.length > 0) {
-            for (const softwareId of softwares) {
-                await sql.query`INSERT INTO SOFTWARE_COMPUTADORA (
-                    id_software,
-                    id_computadora
-                ) VALUES (
-                    ${softwareId},
-                    ${idEquipoInsertado}
-                );`;
-            }
-        }
-        console.log(idEquipoInsertado)
-        res.status(200).json({id: idEquipoInsertado});
-    }catch(error){
-        console.error('Error al insertar el equipo-computadora:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-computadora');
-    }finally{
-        await sql.close();
-    }
-});
-
-//Inserta Servidor
-app.post('/AltaServidor',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed
-        });
-        console.log('llegue a altaservidor');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla SERVIDOR
-        await sql.query`INSERT INTO SERVIDOR (id_servidor, procesador, memoria_RAM, almacenamiento, tarjeta_grafica, sistema_operativo, configuracion_red)
-        VALUES (${idEquipoInsertado}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed});`;
-
-        res.status(200).send({ id: idEquipoInsertado });
-    }catch(error){
-        console.error('Error al insertar el equipo-servidor:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-servidor');
-    }finally{
-        await sql.close();
-    }
-});
-
-//Inserta Impresora
-app.post('/AltaImpresora',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipoImpresora, resolucion, velocidad, conectividad} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipoImpresora, resolucion, velocidad, conectividad
-        });
-        console.log('llegue a altaimpresora');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla impresora
-        await sql.query`INSERT INTO IMPRESORA (id_impresora, id_tipoImpresora, resolucion, velocidad_impresion, conectividad)
-        VALUES (${idEquipoInsertado}, ${tipoImpresora}, ${resolucion}, ${velocidad}, ${conectividad});`;
-
-        res.status(200).send({ id: idEquipoInsertado });
-    }catch(error){
-        console.error('Error al insertar el equipo-impresora:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-impresora');
-    }finally{
-        await sql.close();
-    }
-});
-
-//Inserta Switch
-app.post('/AltaSwitch',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia
-        });
-        console.log('llegue a altaswitch');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla switch
-        await sql.query`INSERT INTO SWITCH (id_switch, numero_puertos, velocidad_backplane, tipo_switch, capacidad_switching, consumo_energia)
-        VALUES (${idEquipoInsertado}, ${numPuertos}, ${velocidad_backplane}, ${tipoSwitch}, ${capacidad}, ${consEnergia});`;
-
-        res.status(200).send({ id: idEquipoInsertado });
-    }catch(error){
-        console.error('Error al insertar el equipo-switch:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-switch');
-    }finally{
-        await sql.close();
-    }
-});
-
-//Inserta Router
-app.post('/AltaRouter',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia
-        });
-        console.log('llegue a altarouter');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla switch
-        await sql.query`INSERT INTO ROUTER (id_router, tipo_conexion, soporte_vpn, numero_interfaces_giga_fast, numero_seriales, frecuencia_ruta, protocolos_ruta, capacidad_ruta, consumo_energia)
-        VALUES (${idEquipoInsertado}, ${tipo_conexion}, ${soporte_vpn}, ${numGigFas}, ${numSeriales}, ${frecuencia}, ${protocolos}, ${capacidad}, ${consEnergia});`;
-
-        res.status(200).send({ id: idEquipoInsertado });
-    }catch(error){
-        console.error('Error al insertar el equipo-router:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-router');
-    }finally{
-        await sql.close();
-    }
-});
-
-//Inserta Escaner
-app.post('/AltaEscaner',async(req,res) => {
-    try{
-        await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, velocidad, tipoEscaner} = req.body;
-        console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, velocidad, tipoEscaner
-        });
-        console.log('llegue a altaescaner');
-       // Inserción en la tabla EQUIPO
-        const resultEquipo = await sql.query`
-            DECLARE @InsertedIds TABLE (id_equipo INT);
-            INSERT INTO EQUIPO (numero_serie, fecha_compra, valor_compra, id_usuario, id_modelo, id_garantia, estado_equipo)
-            OUTPUT INSERTED.id_equipo INTO @InsertedIds
-            VALUES (${numeroSerie}, ${fechaCompra}, ${costo}, ${id_usuario}, ${modelo}, ${garantia}, ${estado});
-            
-            SELECT id_equipo FROM @InsertedIds;
-        `;
-        // Obtener el ID del equipo insertado
-        const idEquipoInsertado = resultEquipo.recordset[0].id_equipo;
-        // Inserción en la tabla escaner
-        await sql.query`INSERT INTO ESCANER (id_escaner, velocidad, id_tipoEscaner)
-        VALUES (${idEquipoInsertado}, ${velocidad}, ${tipoEscaner});`;
-
-        res.status(200).send(idEquipoInsertado);
-    }catch(error){
-        console.error('Error al insertar el equipo-escaner:', error.message);
-        // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el equipo-escaner');
-    }finally{
-        await sql.close();
-    }
-});
-
-app.get('/NombreEquipo', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const id_equipo = req.query.id_equipo;  // Cambiado a req.query
-        const result = await sql.query(`SELECT Nombre FROM Equipo WHERE id_equipo = ${id_equipo}`);
-        res.status(200).json(result.recordset[0]);
-    } catch (error) {
-        console.error('Error al traer el nombre del equipo: ', error.message);
-        res.status(500).send('Error al traer el nombre del equipo');
-    } finally {
-        await sql.close();
-    }
-});
-
-//------------28 de Septiembre-------------
-
-//Trae las computadoras
-app.get('/SelectComputadora', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN COMPUTADORA c ON e.id_equipo = c.id_computadora
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener las computadoras', error.message);
-        res.status(500).send('Error al obtener los computadoras');
-    }
-});
-
-//Trae las impresoras
-app.get('/selectImpresora', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN IMPRESORA i ON e.id_equipo = i.id_impresora
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener las impresoras', error.message);
-        res.status(500).send('Error al obtener los impresoras');
-    }
-});
-
-//Trae los servidores
-app.get('/selectServidor', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN SERVIDOR s ON e.id_equipo = s.id_servidor
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los servidores', error.message);
-        res.status(500).send('Error al obtener los servidores');
-    }
-});
-
-//Trae los switch
-app.get('/selectSwitch', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN SWITCH s ON e.id_equipo = s.id_switch
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los switch', error.message);
-        res.status(500).send('Error al obtener los switch');
-    }
-});
-
-//Trae los routers
-app.get('/selectRouter', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN ROUTER r ON e.id_equipo = r.id_router
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los routers', error.message);
-        res.status(500).send('Error al obtener los routes');
-    }
-});
-
-//Trae los escaner
-app.get('/selectEscaner', async (req, res) => {
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        const result = await request.query(`
-            SELECT e.id_equipo, e.nombre
-            FROM EQUIPO e
-            JOIN ESCANER es ON e.id_equipo = es.id_escaner
-            WHERE e.id_espacio IS NULL 
-            AND e.estado_equipo = 'disponible'
-        `);    
-        res.status(200).json(result.recordset);
-    } catch (error) {
-        console.error('Error al obtener los escaners', error.message);
-        res.status(500).send('Error al obtener los escaners');
-    }
-});
-
-// Alta equipo en espacio
-app.put('/AltaEquipoEnEspacio', async (req, res) => {
-    const { id_equipo, id_espacio, fecha_instalacion, id_usuario, clave } = req.body;
-
-    console.log('Datos recibidos:', {
-        id_equipo, id_espacio, fecha_instalacion, id_usuario, clave
-    });
-    try {
-        await sql.connect(config);
-        const request = new sql.Request();
-        request.input('id_espacio', sql.Int, id_espacio);
-        request.input('fecha_instalacion', sql.DateTime, fecha_instalacion);
-        request.input('id_usuario', sql.Int, id_usuario);
-        request.input('clave', sql.VarChar, clave);
-        request.input('id_equipo', sql.Int, id_equipo);
-        const result = await request.query(`
-            UPDATE EQUIPO
-            SET id_espacio = @id_espacio,
-                fecha_instalacion = @fecha_instalacion,
-                id_usuario = @id_usuario,
-                estado_equipo = 'En uso',
-                CLAVE = @clave
-            WHERE id_equipo = @id_equipo
-        `)
-
-        if (result.rowsAffected[0] > 0) {
-            res.json({ success: true, message: 'Equipo dado de alta en espacio' });
-        } else {
-            res.json({ success: false, message: 'No se encontró el equipo para actualizar' });
-        }
-    } catch (error) {
-        console.error('Error al dar de alta el equipo en el espacio:', error.message);
-        res.status(500).json({ success: false, message: 'Error al dar de alta el equipo en el usuario' });
-    } finally {
-        await sql.close();
-    }
 });
