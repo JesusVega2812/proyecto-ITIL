@@ -7,25 +7,26 @@ export const Edificios = () => {
     const [id_edificio, setId_edificio] = useState('');
     const [nombre, setNombre] = useState('');
     const [ubicacion_edificio, setUbicacion_edificio] = useState('');
-    //const [apellido, setApellido] = useState('');
-    //const [departamento, setDepartamento] = useState('');
-    //const [jefe, setJefe] = useState('');
-    //const [correo, setCorreo] = useState('');
-    //const [telefono, setTelefono] = useState('');
-    //const [contrasenia, setContrasenia] = useState('');
-    //const [mostrarContrasenia, setMostrarContrasenia] = useState(false);
+    const [edificios, setEdificios] = useState([]);
+    const [edificio, setEdificio] = useState('');
+    const [action, setAction] = useState(null);
 
-    /*useEffect(() => {
-        const obtenerUsuarios = async () => {
+    useEffect(() => {
+        const obtenerEdificios = async () => {
             try {
-                const response = await axios.get('http://localhost:3000//SelectEdificios');
-                //setUsuario(response.data); // Guardar los usuarios en el estado
+                const response = await axios.get('http://localhost:3000/SelectEdificiosPorEstatus');
+                console.log('Edificios obtenidos:', response.data); // Verifica la estructura
+                // Si response.data contiene un array dentro de una propiedad
+                setEdificios(response.data)// Asegúrate de que sea un array
             } catch (error) {
-                console.error('Error al obtener los usuarios:', error);
+                console.error('Error al obtener los edificios:', error);
             }
         };
-        obtenerUsuarios();
-    }, []);*/
+
+    obtenerEdificios(); // Llamar a la función cuando el componente se monta
+
+    }, [action]); // Se ejecuta una sola vez al montar el componente
+
 
     const handleListo = async (e) => {
         e.preventDefault();
@@ -36,6 +37,7 @@ export const Edificios = () => {
         } else if (radioCheck === 'Eliminar') {
             await handleEliminar(); // Asegúrate de definir handleEliminar si es necesario
         }
+        limpiar();
     };
 
     const handleAgregar = async () => {
@@ -56,6 +58,7 @@ export const Edificios = () => {
             console.error("Error al agregar el edificio:", error.message);
             alert(`Hubo problemas al agregar el edificio: ${error.message}`);
         }
+        setAction('add');
     };
 
     const handleActualizar = async () => {
@@ -68,32 +71,27 @@ export const Edificios = () => {
     
             const resultado = response.data;
             console.log('Resultado de la actualización:', resultado);
-            alert('Departamento actualizado exitosamente');
+            alert('Edificio actualizado exitosamente');
         } catch (error) {
             console.error('Hubo problemas:', error.message);
-            alert('Hubo problemas al actualizar el departamento');
+            alert('Hubo problemas al actualizar el edificio');
         }
+        setAction('update');
     };
 
     const handleEliminar = async () => {
         try {
-            const response = await axios.delete(`http://localhost:3000/EliminaEdificio`, {
-                params: {
+            const response = await axios.put(`http://localhost:3000/EliminaEdificio`, {
                     id_edificio: id_edificio
-                }
             });
             const resultado = response.data;
-            console.log(resultado);
-    
-            if (resultado.success) {
-                alert('Edificio eliminado exitosamente'); // Mensaje de éxito
-            } else {
-                alert(`No se pudo eliminar el edificio: ${resultado.message}`);
-            }
+            console.log('Resultado de la elimincacion:', resultado);
+            alert('Edificio eliminado exitosamente');
         } catch (error) {
-            console.error("Error al eliminar el edificio:", error.message);
-            alert(`Hubo problemas al eliminar el edificio: ${error.message}`);
+            console.error('Hubo problemas:', error.message);
+            alert('Hubo problemas al eliminar el edificio');
         }
+        setAction('update');
     };
     
 
@@ -104,9 +102,34 @@ export const Edificios = () => {
         limpiar();
     };
 
+    const handleSelectedChange = async (e) => {
+        const id_edificioSeleccionado = e.target.value; // Capturamos el ID del edificio seleccionado
+        const ediSelect = edificios.filter(edi => edi.id_edificio === parseInt(id_edificioSeleccionado));
+    
+        console.log(ediSelect);
+        setEdificio(id_edificioSeleccionado); // Actualizamos el ID del edificio en el estado
+    
+        if (ediSelect.length > 0) { 
+            setId_edificio(ediSelect[0].id_edificio);
+            setNombre(ediSelect[0].nombre);
+            setUbicacion_edificio(ediSelect[0].ubicacion_edificio);
+        }
+    
+        try {
+            const response = await axios.get(`http://localhost:3000/TraeUbicacionEdificio/${id_edificioSeleccionado}`);
+            if (response.data) {
+                setUbicacion_edificio(response.data.ubicacion_edificio); // Actualizamos la ubicación
+            } else {
+                console.error('No se recibió una respuesta válida de la API');
+            }
+        } catch (error) {
+            console.error('Error al obtener la ubicación del edificio:', error);
+        }
+    };
+
     const limpiar = () => {
         setId_edificio('');
-        setNombre('');
+        setNombre('Selecciona el edificio');
         setUbicacion_edificio('');
    }
 
@@ -136,17 +159,23 @@ export const Edificios = () => {
                     </div>
 
                     {(radioCheck === 'Actualizar' || radioCheck === 'Eliminar') && (
-                    <div className="mb-3">
-                        <label htmlFor="inputText" className="form-label">Id Edificio</label>
-                        <input type="text" className="form-control" id="inputText" placeholder="Ingresa id de edificio aqui" value={id_edificio} onChange={(e) => setId_edificio(e.target.value)} />
+                    <div>
+                        <label htmlFor="inputText" className="form-label">Edificio</label>
+                        <select className="form-select" aria-label="Select building" value={edificio} onChange={handleSelectedChange/*(e) => setDepartamentoPadre(e.target.value)*/}>
+                            <option value="selCheck">Selecciona el edificio</option>
+                            {Array.isArray(edificios) && edificios.map((edi) => (
+                                <option key={edi.id_edificio} value={edi.id_edificio}>{edi.nombre}</option>))}
+                        </select>
                     </div>
                     )}
 
-                    {/* Campos de formulario */}
+                    {(radioCheck === "Agregar") && (
                     <div className="mb-3">
                         <label htmlFor="inputText" className="form-label">Nombre</label>
                         <input type="text" className="form-control" id="inputText" placeholder="Ingresa nombre de edificio aqui" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                     </div>
+                    )}
+                    
                     <div className="mb-3">
                         <label htmlFor="inputUbicacion" className="form-label">Ubicacion</label>
                         <input type="text" className="form-control" id="inputUbicacion" placeholder="Ingresa ubicacion aquí" value={ubicacion_edificio} onChange={(e) => setUbicacion_edificio(e.target.value)} />
