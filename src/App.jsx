@@ -10,6 +10,7 @@ import { Principal_otro } from './Componets/Principal/Principal_otro.jsx';
 import { EquipoBodega } from './Componets/Equipos/Equipo_bodega.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Edificios } from './Componets/Edificios/Edificios.jsx';
+import { EquipodeIncidencia } from './Componets/Incidencias/EquipodeIncidencia.jsx';
 
 
 export function App() {
@@ -53,12 +54,13 @@ function Content() {
           {!hideHeaderFooter && renderHeader()}
           <Routes>
               <Route path="/" element={<Navigate to="/Login" />} />
-              <Route path="/Login" element={<Login />} /> //Modificar para acceder a otro componente
+              <Route path="/Login" element={<Login />} />
               <Route path="/Principal" element={< Principal_otro/>} />
               <Route path="/Principal_administrador" element={< Principal_administrador/>} />
               <Route path="/Editar_Administrador" element={<Editar_Administrador />} />
               <Route path="/Editar_jefe_departamento" element={<Editar_jefe_departamento />} />
               <Route path="/EquipoBodega" element={<EquipoBodega />} />
+              <Route path="/EquipodeIncidencia" element={<EquipodeIncidencia />} />
           </Routes>
           {!hideHeaderFooter && <Footer />}
       </>

@@ -79,3 +79,22 @@
 .equipo-clave-letrapequena{
     font-size: 9px;
 }
+.eI-juntos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.eI-btn-reportar{
+    border: none;
+    border-radius: 5px;
+    height: 35px;
+    background-color: #7c0494;
+}
+.eI-btn-volver{
+    border: none;
+    background-color: transparent;
+}
+.eI-btn-volver:hover {
+    background-color: transparent;
+    color: inherit;
+}    

@@ -17,15 +17,6 @@
     right: 30px;
     top: 27px;
 }
-.div-inf-actual{
-    margin-bottom: 2px;
-    padding-left: 30px;
-    padding-right: 30px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 .tam-letra-17px{
     font-size: 17px;
 }
@@ -46,7 +37,9 @@
 }
 .div-usuario-header{
     width: 500px;
+    width: 100%;
     text-align: right;
+    padding-right: 6%;
 }
 .header-editar-btn{
     margin-right: 10px;
