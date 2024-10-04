@@ -44,3 +44,12 @@ where id_espacio = 1
 
 
 select * from EDIFICIO
+
+-------------------------ultimo ultimo ultimo 03/10/24---------------------------------------
+ALTER TABLE Espacios
+ADD responsable INT,
+FOREIGN KEY (responsable) REFERENCES usuario(id_usuario);
+
+select * from USUARIO
+
+select * from ESPACIOS

@@ -45,5 +45,6 @@ DROP COLUMN nombre;
 ALTER TABLE Tecnico
 DROP COLUMN apellidos;
 
+select * from TECNICO
 select * from ESTADO_DISPONIBILIDAD
 select *  from especializacion
