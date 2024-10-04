@@ -244,8 +244,6 @@ app.get('/SelectEdificios', async(req,res) => {
     }catch(error){
         console.error('Error al traer los edificios:', error.message);
         res.status(500).send('Error al traer los edificios');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -258,14 +256,12 @@ app.get('/SelectEdificiosPorDepartamento', async(req, res) => {
             SELECT DISTINCT E.id_edificio, E.nombre
             FROM EDIFICIO E
             JOIN ESPACIOS ES ON E.id_edificio = ES.id_edificio
-            WHERE ES.id_departamento = ${id_departamento};
+            WHERE ES.id_departamento = ${id_departamento} and estatus = 1;
         `);
         res.status(200).json({edificios: checkEdificioDepartamento.recordset});
     }catch(error){
         console.error('Error al traer los edificios por departamento: ', error.message);
         res.status(500).send('Error al traer los edificios');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -286,8 +282,6 @@ app.get('/SelectEspaciosPorEdificio', async(req,res) => {
     }catch(error){
         console.error('Error al traer los espacios por edificio: ', error.message);
         res.status(500).send('Error al traer los espacios');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -308,8 +302,6 @@ app.get('/SelectNombrePorEspacios', async(req,res) => {
     }catch(error){
         console.error('Error al traer los nombres de los espacios: ', error.message);
         res.status(500).send('Error al traer los nombres de los espacios');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -322,8 +314,6 @@ app.get('/SelectTipoEspacios', async(req,res) => {
     }catch(error){
         console.error('Error al traer los tipos de espacios: ', error.message);
         res.status(500).json.send('Error al traer los tipos de espacios');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -350,8 +340,6 @@ app.get('/SelectCapacidadNombre', async (req, res) => {
     } catch (error) {
         console.error('Error al traer la capacidad y ubicacion: ', error.message);
         res.status(500).send('Error al traer la capacidad y la ubicacion');
-    } finally {
-        await sql.close();
     }
 });
 
@@ -630,8 +618,6 @@ app.get('/SelectEquiposPorEspacio', async (req, res) => {
     } catch (error) {
         console.error('Error al obtener los equipos:', error.message);
         res.status(500).send({ error: 'Error al obtener los equipos' });
-    }finally{
-        await sql.close();
     }
 });
 
@@ -651,8 +637,6 @@ app.get('/SelectEspaciosPorEdificioADMON', async(req,res) => {
     }catch(error){
         console.error('Error al traer los espacios por edificio ADMON: ', error.message);
         res.status(500).send('Error al traer los espacios ADMIN');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -672,8 +656,6 @@ app.get('/SelectNombrePorEspaciosADMON', async(req,res) => {
     }catch(error){
         console.error('Error al traer los nombres de los espacios ADMON: ', error.message);
         res.status(500).send('Error al traer los nombres de los espacios ADMON');
-    }finally{
-        await sql.close();
     }
 });
 
@@ -770,8 +752,6 @@ app.get('/SelectEdificiosPorEstatus', async (req, res) => {
         await sql.close();
     }
 });
-
-
 
 //Trae ubicacion de edificio
 app.get('/TraeUbicacionEdificio/:id_edificio', async (req, res) => {
@@ -1151,8 +1131,6 @@ app.get('/NombreEquipo', async (req, res) => {
     } catch (error) {
         console.error('Error al traer el nombre del equipo: ', error.message);
         res.status(500).send('Error al traer el nombre del equipo');
-    } finally {
-        await sql.close();
     }
 });
 
@@ -1322,5 +1300,3 @@ app.get('/SelectEspecialidades', async (req, res) => {
         res.status(500).send('Error al traer los usuarios');
     }
 });
-
-//
