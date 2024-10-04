@@ -19,6 +19,8 @@ export const Usuario_Alta_Baja_Cambio = () => {
     const [departamentos, setDepartamentos] = useState([])
     const [nombreapellido, setNombreapellido] = useState(' ');
     const [usuSelected, setUsuSelected] = useState({});
+    const [especialidades, setEspecialidades] = useState([]);
+    const [especialidad, setEspecialidad] = useState('');
 
     useEffect(() => {
         const obtenerUsuarios = async () => {
@@ -27,6 +29,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 setUsuarios(response.data); // Guardar los usuarios en el estado
                 const response_ = await axios.get('http://localhost:3000/SelectDepartamentos');
                 setDepartamentos(response_.data);
+                selectEspecialidades();
                 
             } catch (error) {
                 console.error('Error al obtener los usuarios:', error);
@@ -63,7 +66,8 @@ export const Usuario_Alta_Baja_Cambio = () => {
                 correo: correo,
                 telefono: telefono,
                 permisos: permisos.findIndex((per) => per === permiso) + 1,
-                contrasenia: contrasenia
+                contrasenia: contrasenia,
+                especialidad: especialidad
             });
             // Obtener y mostrar el resultado
             const resultado = response.data;
@@ -153,6 +157,15 @@ export const Usuario_Alta_Baja_Cambio = () => {
         }
     };
 
+    const selectEspecialidades = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectEspecialidades');
+            setEspecialidades(response.data);
+        } catch (error) {
+            console.error('Error al obtener las especialidades', error);
+        }
+    };
+
     const handleRadioChange = (event) => {
         
         const valueCheck = event.target.value;
@@ -174,6 +187,7 @@ export const Usuario_Alta_Baja_Cambio = () => {
         setCorreo('');
         setTelefono('');
         setPermiso('Permisos');
+        setContrasenia('');
     }
 
     return (
@@ -260,6 +274,17 @@ export const Usuario_Alta_Baja_Cambio = () => {
                                     ))}
                                 </select>
                             </div>
+
+                            {(permiso === 'tecnico') && radioCheck === 'Agregar' && (
+                                <div className="mb-3">
+                                <label htmlFor="inputJefe" className="form-label">Especializacion</label>
+                                <select className="form-select" id="inputJefe" value={especialidad} onChange={(e) => setEspecialidad(e.target.value)}>
+                                    {especialidades.map((per, index) => (
+                                        <option key={index} value={per.id_especializacion}>{per.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            )}
                         </div>
                     )}
                     {(radioCheck === 'Agregar') && (

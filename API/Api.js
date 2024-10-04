@@ -197,7 +197,7 @@ app.post('/Permisos', async(req,res) => {
         res.status(500).json({error: 'error al verificar inicio de sesion'});
     }finally{
         await sql.close();
-    }
+    }
 });
 
 app.listen(port, () => {
@@ -334,14 +334,15 @@ app.get('/SelectCapacidadNombre', async (req, res) => {
         console.log('idEspacio ', id_espacio);
         const request = new sql.Request();
         request.input('id_espacio', sql.Int, id_espacio);
-        const result = await request.query('SELECT id_espacio, capacidad, ubicacion_esp, nombre FROM ESPACIOS WHERE id_espacio = @id_espacio');
+        const result = await request.query('SELECT id_espacio, capacidad, ubicacion_esp, nombre, responsable FROM ESPACIOS WHERE id_espacio = @id_espacio');
         const capacidadUbicacion = result.recordset[0];
         console.log('capacidad: ', capacidadUbicacion);
         if (capacidadUbicacion) {
             res.status(200).json({
                 capacidad: capacidadUbicacion.capacidad,
                 ubicacion: capacidadUbicacion.ubicacion_esp,
-                nombreEspacio: capacidadUbicacion.nombre
+                nombreEspacio: capacidadUbicacion.nombre,
+                responsable: capacidadUbicacion.responsable
             });
         } else {
             res.status(404).json({ message: 'Espacio no encontrado' });
@@ -358,9 +359,9 @@ app.get('/SelectCapacidadNombre', async (req, res) => {
 app.post('/AltaEspacios', async(req, res) => {
     try{
         await sql.connect(config);
-        const{tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombre} = req.body;
-        await sql.query`INSERT INTO espacios(id_tipoEspacio, id_edificio, id_departamento, ubicacion_esp, capacidad, nombre)
-            VALUES(${tipoEspacio}, ${edificio}, ${idDepartamentoPertenece}, ${ubicacion}, ${capacidad}, ${nombre});
+        const{tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombre, usuario} = req.body;
+        await sql.query`INSERT INTO espacios(id_tipoEspacio, id_edificio, id_departamento, ubicacion_esp, capacidad, nombre, responsable)
+            VALUES(${tipoEspacio}, ${edificio}, ${idDepartamentoPertenece}, ${ubicacion}, ${capacidad}, ${nombre}, ${usuario});
             `;
         res.status(200).send('Espacio insertado exitosamente');
     }catch(error){
@@ -374,7 +375,7 @@ app.post('/AltaEspacios', async(req, res) => {
 
 // Actualiza espacios
 app.put('/ActualizaEspacio', async (req, res) => {
-    const { tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombreEspacio, id_espacio } = req.body;
+    const { tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombreEspacio, id_espacio, usuario } = req.body;
     console.log('Datos recibidos:', {
         tipoEspacio,
         edificio,
@@ -382,7 +383,8 @@ app.put('/ActualizaEspacio', async (req, res) => {
         ubicacion,
         capacidad,
         nombreEspacio,
-        id_espacio
+        id_espacio,
+        usuario
     });
     try {
         await sql.connect(config);
@@ -394,6 +396,7 @@ app.put('/ActualizaEspacio', async (req, res) => {
         request.input('capacidad', sql.Int, capacidad);
         request.input('nombre', sql.VarChar, nombreEspacio);
         request.input('id_espacio', sql.Int, id_espacio);
+        request.input('responsable',sql.Int, usuario)
         const result = await request.query(`
             UPDATE Espacios
             SET id_tipoEspacio = @id_tipoEspacio,
@@ -401,7 +404,8 @@ app.put('/ActualizaEspacio', async (req, res) => {
                 id_departamento = @id_departamento,
                 ubicacion_esp = @ubicacion_esp,
                 capacidad = @capacidad,
-                nombre = @nombre
+                nombre = @nombre,
+                responsable = @responsable
             WHERE id_espacio = @id_espacio
         `);
         if (result.rowsAffected[0] > 0) {
@@ -463,11 +467,29 @@ app.post('/Login', async (req, res) => {
 });
 
 //---------------------------------------------------
+//Trae todos los usuarios
 app.get('/SelectUsuario', async (req, res) => {
     try {
         await sql.connect(config);
         const request = new sql.Request();
-        const result = await request.query('SELECT id_usuario, nombre + \' \' + apellido AS Nombre, nombre, apellido,id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO where status = 1');        
+        const result = await request.query(`SELECT id_usuario, nombre + \' \' + apellido AS Nombre, nombre, apellido,id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO where status = 1 `);        
+        const Usuario = result.recordset; 
+        res.status(200).json(Usuario); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    } finally {
+        await sql.close();
+    }
+});
+
+app.get('/SelectUsuarioDep/:idDepartamento', async (req, res) => {
+    try {
+        const { idDepartamento } = req.params; // Aquí se extrae el idDepartamento de los parámetros de la URL
+        console.log(idDepartamento);
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`SELECT id_usuario, nombre + ' ' + apellido AS Nombre, nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO WHERE status = 1 AND id_departamento_pertenece = ${idDepartamento}`);        
         const Usuario = result.recordset; 
         res.status(200).json(Usuario); // Devuelve los datos correctamente
     } catch (error) {
@@ -483,15 +505,24 @@ app.post('/AltaUsuarios',async(req,res) => {
     try{
         
         await sql.connect(config);
-        const {nombre,apellido,departamento,jefe,correo,telefono,permisos,contrasenia} = req.body;
-        await sql.query`INSERT INTO usuario(nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status)
+        const {nombre,apellido,departamento,jefe,correo,telefono,permisos,contrasenia,especialidad} = req.body;
+        const result = await sql.query`INSERT INTO usuario(nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status)
+            OUTPUT INSERTED.id_usuario
             VALUES(${nombre}, ${apellido}, ${departamento}, ${jefe}, ${correo}, ${telefono}, ${contrasenia}, ${permisos}, ${1})`;
-         // Enviar una respuesta de éxito
-        res.status(200).send('Departamento insertado exitosamente');
+        
+        const idUsuarioInsertado = result.recordset[0].id_usuario;
+        
+        if(permisos === 4){
+            const disponible = 1;
+            await sql.query`INSERT INTO TECNICO (id_usuario, id_especializacion, id_estadoDisponibilidad)
+                VALUES (${idUsuarioInsertado}, ${especialidad}, ${disponible})`;
+        };
+            // Enviar una respuesta de éxito
+        res.status(200).send('Usuario insertado exitosamente');
     }catch(error){
-        console.error('Error al insertar el departamento:', error.message);
+        console.error('Error al insertar el usuario:', error.message);
         // Enviar una respuesta de error
-        res.status(500).send('Error al insertar el departamento');
+        res.status(500).send('Error al insertar el usuario');
     }finally{
         await sql.close();
     }
@@ -1278,3 +1309,18 @@ app.put('/AltaEquipoEnEspacio', async (req, res) => {
         await sql.close();
     }
 });
+
+//Trae las especialidades de un tecnico
+app.get('/SelectEspecialidades', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query('select *  from especializacion');        
+        res.status(200).json(result.recordset); // Devuelve los datos correctamente
+    } catch (error) {
+        console.error('Error al traer los usuarios', error.message);
+        res.status(500).send('Error al traer los usuarios');
+    }
+});
+
+//

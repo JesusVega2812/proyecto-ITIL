@@ -14,6 +14,8 @@ export const Espacios = () => {
     const [edificios, setEdificios] = useState([]);
     const [tiposEspacios, setTiposEspacios] = useState([]);
     const [nombresEspacio, setNombresEspacio] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
+    const [usuario, setUsuario] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +32,7 @@ export const Espacios = () => {
                 ]);
                 setEdificios(edificiosResponse.data.edificios || []);
                 setTiposEspacios(tiposEspaciosResponse.data.tipoEspacios || []);
+                selectUsuarios();
     
                 if (radioCheck === 'Actualizar' || radioCheck === 'Eliminar') {
                     //Filtro para traer edificios por departamento
@@ -49,16 +52,23 @@ export const Espacios = () => {
                         params: {id_tipoEspacio: tipoEspacio, id_edificio: edificio, id_departamento: idDepartamentoPertenece},
                     });
                     setNombresEspacio(filteredNombreResponse.data.nombresEspacio || []);
-
+                    
                     //Filtrado para traer los demas campos del espacio
                     const filteredCapacidadResponse = await axios.get(`http://localhost:3000/SelectCapacidadNombre`, {
                         params: {id_espacio: nombre},
                     });
-                    const { capacidad, ubicacion, nombreEspacio} = filteredCapacidadResponse.data;
+                    const { capacidad, ubicacion, nombreEspacio, responsable} = filteredCapacidadResponse.data;
                     localStorage.setItem('nombreEspacio', nombreEspacio);
                     localStorage.setItem('id_espacio', nombre);
                     setCapacidad(capacidad);
                     setUbicacion(ubicacion);
+                    //const usuarioSeleccionado = usuarios.find(usuario => usuario.id_usuario === responsable);
+                    if(responsable !== null){
+                        setUsuario(responsable);
+                    }else{
+                        setUsuario('Selecciona un responsable')
+                    }
+                    
                 }
             } catch (error) {
                 console.error('Error al obtener datos:', error);
@@ -76,6 +86,16 @@ export const Espacios = () => {
             await handleActualizar();
         } else if (radioCheck === 'Eliminar') {
             await handleEliminar();
+        }
+    };
+
+    const selectUsuarios = async () => {
+        try {
+            const idDepartamento = localStorage.getItem('idDepartamentoPertenece');
+            const response = await axios.get(`http://localhost:3000/SelectUsuarioDep/${idDepartamento}`);
+            setUsuarios(response.data);
+        } catch (error) {
+            console.error('Error al obtener los usuarios', error);
         }
     };
 
@@ -102,7 +122,7 @@ export const Espacios = () => {
         const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
         const id_espacio = localStorage.getItem('id_espacio');
         const nombreEspacio = localStorage.getItem('nombreEspacio');
-        if (!nombre || !tipoEspacio || !edificio || !capacidad) {
+        if (!nombre || !tipoEspacio || !edificio || !capacidad || !usuario) {
             alert("Por favor, completa todos los campos");
             return;
         }
@@ -114,7 +134,8 @@ export const Espacios = () => {
                 ubicacion,
                 capacidad,
                 nombreEspacio,
-                id_espacio
+                id_espacio, 
+                usuario
             });
             alert('Espacio actualizado exitosamente');
             limpiar();
@@ -127,7 +148,7 @@ export const Espacios = () => {
     const handleAgregar = async (e) => {
         if (e) e.preventDefault();
         const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
-        if (!nombre || !tipoEspacio || !edificio || !capacidad) {
+        if (!nombre || !tipoEspacio || !edificio || !capacidad || !usuario) {
             alert("Por favor, completa todos los campos");
             return;
         }
@@ -138,7 +159,9 @@ export const Espacios = () => {
                 idDepartamentoPertenece,
                 ubicacion,
                 capacidad,
-                nombre
+                nombre, 
+                usuario
+
             });
             alert('Espacio agregado exitosamente');
             limpiar();
@@ -161,6 +184,7 @@ export const Espacios = () => {
         setEdificio('');
         setUbicacion('');
         setCapacidad('');
+        setUsuario('Seleccione un responsable')
     }
 
     return (
@@ -239,6 +263,19 @@ export const Espacios = () => {
                             </select>
                         </div>
                     )}
+                    <div className="mb-3">
+                        <label htmlFor="inputText" className="form-label">Responsable del espacio</label>
+                        <select className="form-select" value={usuario} onChange={(e) => setUsuario(e.target.value)}>
+                            <option value="">Selecciona un responsable</option>
+                            {Array.isArray(usuarios) && usuarios.length > 0 ? (
+                                usuarios.map((usu) => (
+                                    <option key={usu.id_usuario} value={usu.id_usuario}>{usu.Nombre}</option>
+                                ))
+                            ) : (
+                                <option value="">No hay tipo de espacios disponibles</option>
+                            )}
+                        </select>
+                    </div>
                     <div className="mb-3">
                         <label htmlFor="inputCapacidad" className="form-label">Capacidad</label>
                         <input type="number" className="form-control" id="inputCapacidad" placeholder="Ingresa la capacidad en número aquí" value={capacidad} onChange={(e) => setCapacidad(e.target.value)} />
