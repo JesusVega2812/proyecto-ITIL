@@ -90,3 +90,71 @@
     justify-content: center;
     text-align: center;
 }
+.pO-btns-border-color{
+    border: 1px solid gray;
+    color: black;
+    width: 12%;
+    border-radius: 3px;
+}
+.pO-div-btns-group{
+    width: 100%;
+    margin-top: 2%;
+    text-align: center;
+}
+.pO-div-tabla{
+    width: 100%;
+    margin-top: 0.1%;
+}
+.pO-tabla-encabezado{
+    background-color: #043c64;
+}
+.pO-folio{
+    width: 3%;
+}
+.pO-fecha{
+    width: 9%;
+}
+.pO-departamento{
+    width: 25%;
+}
+.pO-descripcion{
+    width: 38%;
+}
+.pO-estatus{
+    width: 10%;
+}
+.pO-acciones{
+    width: 15%;
+}
+.pO-tabla-centrado{
+    text-align: center;
+}
+.pO-border-encabezado{
+    border: 1.5px solid rgb(96, 192, 244);
+}
+.pO-border-cuerpo{
+    border: 1.5px solid rgb(96, 192, 244);
+    background-color: #dbe9f7;
+}
+.pO-border-cuerpo-general{
+    border: 1.5px solid rgb(96, 192, 244);
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
+}
+.pO-orden-trabajo{
+    border-radius: 3px;
+    border: 1px solid rgb(189, 189, 189);
+    background-color: #7c0494;
+    padding: 2% 4%;
+}
+.pO-orden-trabajo:hover{
+    background-color: #283676;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
+}
+.pO-div-noEditable{
+    border: 1px solid rgb(191, 191, 191);
+    border-radius: 3px;
+    color: rgb(101, 101, 101);
+    padding-left: 2%;
+    background-color: rgb(227, 227, 227);
+    margin-bottom: 2%;
+}

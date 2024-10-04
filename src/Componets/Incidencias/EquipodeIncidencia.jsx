@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Equipo.css';
+import '../Equipos/Equipo.css';
+import { useNavigate } from 'react-router-dom';
 
-export const Equipos = () => {
+export const EquipodeIncidencia = () => {
+    const navigate = useNavigate();
     const [edificios, setEdificios] = useState([]);
     const [selectedEdificio, setSelectedEdificio] = useState(null);
     const [tiposEspacios, setTiposEspacios] = useState([]);
@@ -29,6 +31,7 @@ export const Equipos = () => {
     const [escaner, setEscaner] = useState('');
     const [selectedIdEspacio, setSelectedIdEspacio] = useState(null);
     const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
 
     const permisos = localStorage.getItem('permisos');
     const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
@@ -333,11 +336,34 @@ export const Equipos = () => {
         }
     }
 
-    
+    const handleNuevaSolicitud = () => {
+        setShowModal3(true);
+    };
+    const handleCloseModal3 = () => {
+        setShowModal3(false);
+    };
+    const handleHome = () => {
+        navigate('/Principal');
+    };
+
+    const handleValidarModal3 = () => {
+
+
+        navigate('/Principal');
+    };
+
+    const obtenerHoraActual = () => {
+        const now = new Date();
+        const horas = now.getHours().toString().padStart(2, '0');
+        const minutos = now.getMinutes().toString().padStart(2, '0');
+        return `${horas}:${minutos}`; // Retorna en formato HH:MM
+    };
 
     return (
         <div className="equipos-container">
-            <h1 className="equipos-title">Gestión de Equipos </h1>
+            <button className='eI-btn-volver' onClick={handleHome}>← Volver</button>
+            <p></p>
+            <h1 className="equipos-title">Equipo a reportar </h1>
             <ul className="equipos-edificio-list">
                 {Array.isArray(edificios) && edificios.length > 0 ? (
                     edificios.map((edificio) => (
@@ -362,22 +388,20 @@ export const Equipos = () => {
                                                                         {nombreEspacio.nombre}
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
-                                                                        <>
-                                                                            <button className="equipos-select-button" onClick={handleNewEquipo}>New</button>
-                                                                            <ul className="equipos-lista-equipos">
-                                                                                {Array.isArray(equipos) && equipos.length > 0 ? (
-                                                                                    equipos.map((equipo) => (
-                                                                                        <li key={equipo.id_equipo} className="equipos-equipo-item" onClick={handleDetalleEquipo}>
-                                                                                            <div className="equipos-equipo-name">
-                                                                                                {equipo.clave}
-                                                                                            </div>
-                                                                                        </li>
-                                                                                    ))
-                                                                                ) : (
-                                                                                    <span>No hay equipos disponibles</span>
-                                                                                )}
-                                                                            </ul>
-                                                                        </>
+                                                                        <ul className="equipos-lista-equipos">
+                                                                            {Array.isArray(equipos) && equipos.length > 0 ? (
+                                                                                equipos.map((equipo) => (
+                                                                                    <li key={equipo.id_equipo} className="equipos-equipo-item eI-juntos">
+                                                                                        <div className="equipos-equipo-name eI-pequeno" onClick={handleDetalleEquipo}>
+                                                                                            {equipo.clave}
+                                                                                        </div>
+                                                                                        <button className='eI-btn-reportar color-blanco ' onClick={handleNuevaSolicitud}>REPORTAR</button>
+                                                                                    </li>
+                                                                                ))
+                                                                            ) : (
+                                                                                <span>No hay equipos disponibles</span>
+                                                                            )}
+                                                                        </ul>
                                                                     )}     
                                                                 </li>
                                                             ))
@@ -615,6 +639,45 @@ export const Equipos = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal2}>Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal3 && (
+                <div className="modal-overlay" onClick={handleCloseModal3}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Nueva Solicitud</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="mb-3">
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Clave de Equipo: </label>
+                                        <span></span>
+                                        <br />
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Tipo de Incidencia: </label>
+                                        <select className="form-select">
+                                            <option></option>
+                                        </select>
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Prioridad: </label>
+                                        <select className="form-select">
+                                            <option></option>
+                                        </select>
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Horario Disponible Inicial: </label>
+                                        <input type="time" className="form-control" placeholder="Inicio"></input>
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Horario Disponible Final: </label>
+                                        <input type="time" className="form-control" placeholder="Fin"></input>
+                                        <label htmlFor="inputNewPassword" className="form-label nito">Descripción Adicional: </label>
+                                        <input type="text" className="form-control" placeholder="Añade una descripción adicional/general"></input>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal3}>Cancelar</button>
+                                <button type="button" className="btn btn-primary" onClick={handleValidarModal3}>Guardar Cambios</button>
                             </div>
                         </div>
                     </div>
