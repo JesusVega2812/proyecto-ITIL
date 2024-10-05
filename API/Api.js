@@ -1300,3 +1300,114 @@ app.get('/SelectEspecialidades', async (req, res) => {
         res.status(500).send('Error al traer los usuarios');
     }
 });
+
+//Detalle y caracteristicas de los equipos
+app.get('/DetalleEquipo/:idEquipo', async(req, res) => {
+    try {
+        const { idEquipo } = req.params;
+        await sql.connect(config);
+
+        // Consultar primero en la tabla EQUIPO
+        const equipoResult = await sql.query`SELECT * FROM EQUIPO WHERE id_equipo = ${idEquipo}`;
+        const equipo = equipoResult.recordset[0];
+
+        if (!equipo) {
+            return res.status(404).send('Equipo no encontrado');
+        }
+
+        // Comprobar si el equipo es una computadora
+        const computadoraResult = await sql.query`select 
+            c.memoria_RAM, c.almacenamiento,
+            tipoComputadora = tc.nombre,
+            procesador = p.modelo+' '+p.fabricante, p.nucleos, p.hilos, p.cache,
+            tarjeta_grafica = tg.modelo+' '+tg.fabricante, tg.arquitectura,
+            sistemaOperativo = so.nombre+' '+so.version_, so.interfaz, so.licencia,
+            tarjetaRed = tr.modelo+' '+tr.fabricante
+            from COMPUTADORA c
+            inner join TIPO_COMPUTADORA tc on tc.id_tipoComputadora = c.id_tipoComputadora
+            inner join PROCESADOR p on p.id_procesador = c.procesador
+            inner join TARJETA_GRAFICA tg on tg.id_tarjeta = c.tarjeta_grafica
+            inner join SISTEMA_OPERATIVO so on so.id_sistema = c.sistema_operativo
+            inner join TARJETA_RED tr on tr.id_tarjeta = c.configuracion_red 
+            where id_computadora = ${idEquipo}`;
+        const computadora = computadoraResult.recordset[0];
+
+        if (computadora) {
+            // Si es una computadora, enviar los detalles del equipo y la computadora
+            const softwareResult = await sql.query`
+                select software = s.nombre+' '+s.version_
+                from COMPUTADORA c
+                inner join SOFTWARE_COMPUTADORA sc on sc.id_computadora = c.id_computadora
+                inner join SOFTWARE s on s.id_software = sc.id_software
+                where c.id_computadora = ${idEquipo}`
+            const softwares = softwareResult.recordset;
+            
+            return res.status(200).json({
+                tipo: 'Computadora',
+                equipo: equipo,
+                detalles: computadora,
+                softwares: softwares
+            });
+        }
+        // Comprobar si el equipo es un servidor
+        const servidorResult = await sql.query`SELECT * FROM SERVIDOR WHERE id_servidor = ${idEquipo}`;
+        const servidor = servidorResult.recordset[0];
+
+        if (servidor) {
+            // Si es un servidor, enviar los detalles del equipo y el servidor
+            return res.status(200).json({
+                tipo: 'Servidor',
+                equipo: equipo,
+                detalles: servidor
+            });
+        }
+
+        // Comprobar si el equipo es un switch
+        const switchResult = await sql.query`SELECT * FROM SWITCH WHERE id_switch = ${idEquipo}`;
+        const Switch = switchResult.recordset[0];
+
+        if (Switch) {
+            // Si es un switch, enviar los detalles del equipo y el switch
+            return res.status(200).json({
+                tipo: 'Switch',
+                equipo: equipo,
+                detalles: Switch
+            });
+        }
+
+        // Comprobar si el equipo es un router
+        const routerResult = await sql.query`SELECT * FROM ROUTER WHERE id_router = ${idEquipo}`;
+        const router = switchResult.recordset[0];
+
+        if (router) {
+            // Si es un switch, enviar los detalles del equipo y el switch
+            return res.status(200).json({
+                tipo: 'Router',
+                equipo: equipo,
+                detalles: router
+            });
+        }
+
+        // Comprobar si el equipo es un switch
+        const escanerResult = await sql.query`SELECT * FROM ESCANER WHERE id_escaner = ${idEquipo}`;
+        const escaner = switchResult.recordset[0];
+
+        if (escaner) {
+            // Si es un switch, enviar los detalles del equipo y el switch
+            return res.status(200).json({
+                tipo: 'Escaner',
+                equipo: equipo,
+                detalles: escaner
+            });
+        }
+        // Si no es ni computadora ni servidor
+        res.status(404).send('El equipo no es ni una computadora ni un servidor');
+
+    } catch (error) {
+        console.error('Error al obtener los detalles del equipo:', error.message);
+        res.status(500).send('Error al obtener los detalles del equipo');
+    } finally {
+        await sql.close();
+    }
+
+});

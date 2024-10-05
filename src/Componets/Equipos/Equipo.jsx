@@ -30,6 +30,14 @@ export const Equipos = () => {
     const [selectedIdEspacio, setSelectedIdEspacio] = useState(null);
     const [showModal2, setShowModal2] = useState(false);
 
+    //Esta debes copiar y pegar
+    const [equipo, setEquipo] = useState({
+        tipo: '', // Inicializa como string vacío
+        equipo: {},
+        detalles: {}, // Inicializa como objeto vacío
+        softwares: [] // Inicializa como array vacío
+    });
+
     const permisos = localStorage.getItem('permisos');
     const idDepartamentoPertenece = localStorage.getItem('idDepartamentoPertenece');
     const id_usuario = localStorage.getItem('idUsuario');
@@ -65,6 +73,7 @@ export const Equipos = () => {
         selectEscaner();
 
     }, [permisos, idDepartamentoPertenece]);
+
 
     const fetchEspacios = async (id_edificio) => {
         try {
@@ -162,10 +171,28 @@ export const Equipos = () => {
         setShowModal(false);
     };
 
-    const handleDetalleEquipo = () => {
+    //---------------------------De aqui-----------------------------------------------------
+    const handleDetalleEquipo = (event) => {
+        const idEquipo = event.currentTarget.getAttribute('data-id-equipo'); // Obtener el id_equipo desde data-id-equipo
+        //setIdEquipo(idEquipo);
+       
+        detalleEquipo(idEquipo); // Pasar el idEquipo correctamente
         setShowModal2(true);
     };
-    
+
+    const detalleEquipo = async (idEquipo) => {
+        try {
+            //const idEquipo = idEquipo;
+            const response = await axios.get(`http://localhost:3000/DetalleEquipo/${idEquipo}`);
+            //alert(response.data.tipo)
+            setEquipo(response.data || []);
+            console.log(response.data);
+        } catch (err) {
+            alert('Error al cargar el detalle de equipo');
+            console.error(err);
+        }
+    };
+    //------------------------Hasta aqui-------------------------------------
     const handleCloseModal2 = () => {
         setShowModal2(false);
     };
@@ -367,8 +394,8 @@ export const Equipos = () => {
                                                                             <ul className="equipos-lista-equipos">
                                                                                 {Array.isArray(equipos) && equipos.length > 0 ? (
                                                                                     equipos.map((equipo) => (
-                                                                                        <li key={equipo.id_equipo} className="equipos-equipo-item" onClick={handleDetalleEquipo}>
-                                                                                            <div className="equipos-equipo-name">
+                                                                                        <li key={equipo.id_equipo}  className="equipos-equipo-item" onClick={handleDetalleEquipo} data-id-equipo={equipo.id_equipo}>
+                                                                                            <div  className="equipos-equipo-name">
                                                                                                 {equipo.clave}
                                                                                             </div>
                                                                                         </li>
@@ -516,102 +543,147 @@ export const Equipos = () => {
                                 <h5 className="modal-title nito">Detalle Equipo</h5>
                             </div>
                             <div className="modal-body">
-                                <form>
-                                    <div className="mb-3">                                        
+                            <form>
+                                <div className="mb-3">   
+                                    {/* Computadora */}
+                                    {(equipo.tipo === 'Computadora') && (
                                         <div className="input-container">
-                                        <label htmlFor="inputText" className="form-label nito">Tipo de computadora: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Softwares: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="tipoComputadora" className="form-label nito">Tipo de computadora: </label>
+                                            <span className="form-span">{equipo.detalles.tipoComputadora}</span>
+                                            <br />
+                                            <label htmlFor="softwares" className="form-label nito">Softwares: </label>
+                                            {equipo.softwares.map((soft, index) => (
+                                                <span key={index} className="form-span">{soft.nombre}</span>
+                                            ))}
+                                            <br />
+                                        </div>
+                                    )}
 
-                                        {/*Computadora y Servidor*/}
-                                        <label htmlFor="inputText" className="form-label nito">Procesador: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Memoria RAM: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Almacenamiento: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Tarjeta Gráfica: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Sistema Operativo: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Configuración de red: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                    {/* Computadora y Servidor */}
+                                    {(equipo.tipo === 'Computadora' || equipo.tipo === 'Servidor') && (
+                                        <div>
+                                            <label htmlFor="procesador" className="form-label nito">Procesador: </label>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.procesador}</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.nucleos} nucleos</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.hilos} hilos</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.cache} GB</span>
+                                            <br />
 
-                                        {/*Impresora*/}
-                                        <label htmlFor="inputText" className="form-label nito">Tipo de Impresora: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Resolución: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Conectividad: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="ram" className="form-label nito">Memoria RAM: </label>
+                                            <span className="form-span">{equipo.detalles.memoria_RAM}</span>
+                                            <br />
 
-                                        {/*Switch*/}
-                                        <label htmlFor="inputText" className="form-label nito">Número de puertos: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Velocidad: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Tipo de Switch: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Conectividad: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="almacenamiento" className="form-label nito">Almacenamiento: </label>
+                                            <span className="form-span">{equipo.detalles.almacenamiento}</span>
+                                            <br />
 
-                                        {/*Router*/}
-                                        <label htmlFor="inputText" className="form-label nito">Tipo de conexión: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Soporte VPN: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Número de Interfaces Giga, Fast: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Número de Seriales: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Frecuencia de Ruta: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Prótocolos de Ruta: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="tarjetaGrafica" className="form-label nito">Tarjeta Gráfica: </label>
+                                            <span className="form-span">{equipo.detalles.tarjeta_grafica}</span>
+                                            <br />
 
-                                        {/*Switch y Router*/}
-                                        <label htmlFor="inputText" className="form-label nito">Capacidad: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
-                                        <label htmlFor="inputText" className="form-label nito">Consumo de Energía: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="sistemaOperativo" className="form-label nito">Sistema Operativo: </label>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.sistemaOperativo}</span>
+                                            <br />
+                                            <span className="form-span">Tipo de interfaz: {equipo.detalles.interfaz}</span>
+                                            <br />
+                                            <span className="form-span">Licencia: {equipo.detalles.licencia}</span>
+                                            <br />
 
-                                        {/*Escaner*/}
-                                        <label htmlFor="inputText" className="form-label nito">Tipo de Escaner: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                            <label htmlFor="configuracionRed" className="form-label nito">Configuración de red: </label>
+                                            <span className="form-span">{equipo.detalles.tarjetaRed}</span>
+                                            <br />
+                                        </div>
+                                    )}
 
-                                        {/*Impresora y Escaner*/}
-                                        <label htmlFor="inputText" className="form-label nito">Velocidad: </label>
-                                        <span className="form-span"> </span>
-                                        <br />
+                                    {/* Impresora */}
+                                    {(equipo.tipo === 'Impresora') && (
+                                        <div>
+                                            <label htmlFor="tipoImpresora" className="form-label nito">Tipo de Impresora: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_impresora}</span>
+                                            <br />
+                                            <label htmlFor="resolucion" className="form-label nito">Resolución: </label>
+                                            <span className="form-span">{equipo.detalles.resolucion}</span>
+                                            <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
+                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <br />
+                                        </div>
+                                    )}
 
-                                        </div>      
-                                    </div>
-                                </form>
+                                    {/* Switch */}
+                                    {(equipo.tipo === 'Switch') && (
+                                        <div>
+                                            <label htmlFor="numeroPuertos" className="form-label nito">Número de puertos: </label>
+                                            <span className="form-span">{equipo.detalles.numero_puertos}</span>
+                                            <br />
+                                            <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
+                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <br />
+                                            <label htmlFor="tipoSwitch" className="form-label nito">Tipo de Switch: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_switch}</span>
+                                            <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
+                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <br />
+                                        </div>
+                                    )}
+
+                                    {/* Router */}
+                                    {(equipo.tipo === 'Router') && (
+                                        <div>
+                                            <label htmlFor="tipoConexion" className="form-label nito">Tipo de conexión: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_conexion}</span>
+                                            <br />
+                                            <label htmlFor="soporteVPN" className="form-label nito">Soporte VPN: </label>
+                                            <span className="form-span">{equipo.detalles.soporte_vpn}</span>
+                                            <br />
+                                            <label htmlFor="numeroInterfaces" className="form-label nito">Número de Interfaces Giga, Fast: </label>
+                                            <span className="form-span">{equipo.detalles.numero_interfaces}</span>
+                                            <br />
+                                            <label htmlFor="numeroSeriales" className="form-label nito">Número de Seriales: </label>
+                                            <span className="form-span">{equipo.detalles.numero_seriales}</span>
+                                            <br />
+                                            <label htmlFor="frecuenciaRuta" className="form-label nito">Frecuencia de Ruta: </label>
+                                            <span className="form-span">{equipo.detalles.frecuencia_ruta}</span>
+                                            <br />
+                                            <label htmlFor="protocolosRuta" className="form-label nito">Prótocolos de Ruta: </label>
+                                            <span className="form-span">{equipo.detalles.protocolos_ruta}</span>
+                                            <br />
+                                        </div>
+                                    )}
+
+                                    {/* Switch y Router */}
+                                    {(equipo.tipo === 'Switch' || equipo.tipo === 'Router') && (
+                                        <div>
+                                            <label htmlFor="capacidad" className="form-label nito">Capacidad: </label>
+                                            <span className="form-span">{equipo.detalles.capacidad}</span>
+                                            <br />
+                                            <label htmlFor="consumoEnergia" className="form-label nito">Consumo de Energía: </label>
+                                            <span className="form-span">{equipo.detalles.consumo_energia}</span>
+                                            <br />
+                                        </div>
+                                    )}
+
+                                    {/* Escáner */}
+                                    {(equipo.tipo === 'Escaner') && (
+                                        <div>
+                                            <label htmlFor="tipoEscaner" className="form-label nito">Tipo de Escaner: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_escaner}</span>
+                                            <br />
+                                            <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
+                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <br />
+                                        </div>
+                                    )}
+
+                                </div>
+                            </form>
+
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal2}>Cerrar</button>
