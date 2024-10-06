@@ -158,3 +158,18 @@
     background-color: rgb(227, 227, 227);
     margin-bottom: 2%;
 }
+.pO-div-lugar{
+    border: 1px solid rgb(0, 174, 255);
+    border-radius: 4px;
+    padding-left: 3%;
+    margin-top: -1.2%;
+}
+.pO-hr-solicitud{
+    margin-left: 15%;
+}
+.pO-fecha-solicitud{
+    margin-left: 7.5%;
+}
+.pO-btn-equipo{
+    margin-left: 15%;
+}

@@ -223,7 +223,6 @@ export const EquipodeIncidencia = () => {
     const handleGuardarIncidencia = async () => {
         const fechaActual = getFormattedDate();    
         const hrEnvio = obtenerHoraActual();
-        alert(`Equipo seleccionado: ${equipoSeleccionado.id_equipo}, prioridad: ${prioridad}, tipo de incidencia: ${tipoIncidencia}`)
         try {
             const response = await axios.post('http://localhost:3000/NuevaIncidencia', {
                 id_equipo: equipoSeleccionado.id_equipo,

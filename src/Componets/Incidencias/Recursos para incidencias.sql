@@ -34,22 +34,64 @@ VALUES
 
 INSERT INTO ESTADO_INCIDENCIA (estado_incidencia, color)
 VALUES
-('En Proceso', '#FFA500'),  -- Naranja: En Proceso
-('Terminado', '#008000'),   -- Verde: Terminado
-('Liberado', '#0000FF'),    -- Azul: Liberado
-('Rechazado', '#FF0000'),   -- Rojo: Rechazado
+('En Proceso', '#FF8C00'),  -- Naranja: En Proceso
+('Terminado', '#32CD32'),   -- Verde: Terminado
+('Liberado', '#ADD8E6'),    -- Azul: Liberado
+('Rechazado', '#FF6347'),   -- Rojo: Rechazado
 ('Enviado', '#C0C0C0');  -- Gris Claro: Enviado
 
 ------ Octubre 05 de 2024
-SELECT * FROM TIPO_INCIDENCIA
-SELECT * FROM PRIORIDAD
+DBCC CHECKIDENT ('INCIDENCIA', RESEED, 0);
 
-select id_espacio from EQUIPO where id_equipo = 37
-select * from ESPACIOS where id_espacio = 23
-select * from EDIFICIO where id_edificio = 1
+--
 
-select * from INCIDENCIA
-select * from INCIDENCIA_LUGAR
+SELECT 
+    I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+FROM 
+    INCIDENCIA I
+JOIN 
+    INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+JOIN 
+    ESPACIOS E ON IL.id_espacio = E.id_espacio
+JOIN 
+    DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+JOIN 
+	TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+JOIN
+	ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+JOIN
+	TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+WHERE I.id_tecnicoAsignado = 9;
 
-DELETE FROM INCIDENCIA
-WHERE id_incidencia = 9;
+--
+
+select t.id_usuario, u.nombre+' '+u.apellido as nombre from TECNICO T
+JOIN
+	ESPECIALIZACION E ON e.id_especializacion = t.id_especializacion
+JOIN 
+	USUARIO U ON u.id_usuario = t.id_usuario
+WHERE e.id_especializacion = 3 and t.id_estadoDisponibilidad = 1;
+
+--
+
+SELECT 
+	I.id_incidencia,
+    I.hora_envio,
+    I.hora_disponible_inicio,
+    I.hora_disponible_fin,
+    P.nombre AS nombre_prioridad,
+    P.descripcion AS descripcion_prioridad,
+    E.nombre as nombre_espacio,
+    E.ubicacion_esp,
+    D.ubicacion_edificio
+FROM 
+    INCIDENCIA I
+JOIN 
+    PRIORIDAD P ON I.id_prioridad = P.id_prioridad
+JOIN 
+    INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+JOIN 
+    ESPACIOS E ON IL.id_espacio = E.id_espacio
+JOIN 
+    EDIFICIO D ON E.id_edificio = D.id_edificio
+WHERE I.id_incidencia = 2;
