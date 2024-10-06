@@ -13,25 +13,18 @@ export const EquipodeIncidencia = () => {
     const [selectedNombreEspacio, setSelectedNombreEspacio] = useState([]);
     const [equipos, setEquipos] = useState([]);
     const [departamentoPertenece, setDepartamentoPertenece] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [radioCheckEquipo, setRadioCheckEquipo] = useState('Computadora');
-    const [nombreEquipo, setNombreEquipo] = useState([]);
-    const [claveEquipo, setClaveEquipo] = useState('');
-    const [computadoras, setComputadoras] = useState([]);
-    const [computadora, setComputadora] = useState('');
-    const [impresoras, setImpresoras] = useState([]);
-    const [impresora, setImpresora] = useState('');
-    const [servidores, setServidores] = useState([]);
-    const [servidor, setServidor] = useState('');
-    const [swits, setSwits] = useState([]);
-    const [swit, setSwit] = useState('');
-    const [routers, setRouters] = useState([]);
-    const [router, setRouter] = useState('');
-    const [escaners, setEscaners] = useState([]);
-    const [escaner, setEscaner] = useState('');
     const [selectedIdEspacio, setSelectedIdEspacio] = useState(null);
+
     const [showModal2, setShowModal2] = useState(false);
     const [showModal3, setShowModal3] = useState(false);
+    const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
+    const [tipoIncidencias, setTipoIncidencias] = useState([]);
+    const [tipoIncidencia, setTipoIncidencia] = useState('');
+    const [prioridades, setPrioridades] = useState([]);
+    const [prioridad, setPrioridad] = useState('');
+    const [hrInicial, setHrInicial] = useState('');
+    const [hrFinal, setHrFinal] = useState('');
+    const [descripcionGeneral, setDescripcionGeneral] = useState('');
 
     const [equipo, setEquipo] = useState({
         tipo: '', // Inicializa como string vacío
@@ -67,12 +60,8 @@ export const EquipodeIncidencia = () => {
         }; 
         fetchEdificios();
 
-        selectComputadora();
-        selectImpresora();
-        selectServidor();
-        selectSwitch();
-        selectRouter();
-        selectEscaner();
+        selectTipoIncidencia();
+        selectPrioridad();
 
     }, [permisos, idDepartamentoPertenece]);
 
@@ -165,13 +154,6 @@ export const EquipodeIncidencia = () => {
         localStorage.setItem('id_espacio', nombreEspacio.id_espacio);
     };
 
-    const handleNewEquipo = () => {
-        setShowModal(true);
-    };
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
      //---------------------------De aqui-----------------------------------------------------
      const handleDetalleEquipo = (event) => {
         const idEquipo = event.currentTarget.getAttribute('data-id-equipo'); // Obtener el id_equipo desde data-id-equipo
@@ -199,170 +181,12 @@ export const EquipodeIncidencia = () => {
         setShowModal2(false);
     };
 
-    const handleRadioChangeEquipo = (event) => {
-        const valueCheckEquipo = event.target.value;
-        setRadioCheckEquipo(valueCheckEquipo);
-        console.log(valueCheckEquipo);
-        limpiar();
-    };
-
-    const handleValidar = (event) => {
-        event.preventDefault();
-        if(!claveEquipo){
-            alert('Necesita completar los campos');
-            return;
-        }
-        handleGuardarCambios();
-    }
-
-    const getFormattedDate = () => {
-        const today = new Date();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const year = today.getFullYear();
-    
-        return `${month}-${day}-${year}`;
-    };
-
-    const handleGuardarCambios = async () => {
-        const fechaActual = getFormattedDate();
-        let id_equipo;
-        switch (radioCheckEquipo) {
-            case 'Computadora':
-                id_equipo = computadora;
-                break;
-            case 'Impresora':
-                id_equipo = impresora;
-                break;
-            case 'Servidor':
-                id_equipo = servidor;
-                break;
-            case 'Switch':
-                id_equipo = swit;
-                break;
-            case 'Router':
-                id_equipo = router;
-                break;
-            case 'Escaner':
-                id_equipo = escaner;
-                break;
-            default:
-                alert('Por favor, selecciona un tipo de equipo válido.');
-                return;
-        }
-    
-        try {
-            const response = await axios.put('http://localhost:3000/AltaEquipoEnEspacio', {
-                id_equipo: id_equipo,
-                id_espacio: selectedIdEspacio,
-                fecha_instalacion: fechaActual,
-                id_usuario: id_usuario,
-                clave: claveEquipo 
-            });
-            if (response.data.success) {
-                alert('El equipo fue dado de alta en el espacio correctamente');
-                handleCloseModal();
-                fetchEquipos(selectedIdEspacio,selectedEdificio.id_edificio,selectedTipoEspacio.id_tipoEspacio);
-
-                switch (radioCheckEquipo) {
-                    case 'Computadora':
-                        selectComputadora();
-                        break;
-                    case 'Impresora':
-                        selectImpresora();
-                        break;
-                    case 'Servidor':
-                        selectServidor();
-                        break;
-                    case 'Switch':
-                        selectSwitch();
-                        break;
-                    case 'Router':
-                        selectRouter();
-                        break;
-                    case 'Escaner':
-                        selectEscaner();
-                        break;
-                    default:
-                        return;
-                }
-                setClaveEquipo('');
-
-
-            } else {
-                alert('No se pudo dar de alta el equipo en el espacio.');
-            }
-        } catch (error) {
-            console.error('Error al intentar agregar el equipo en el espacio:', error);
-            alert('Hubo un error al intentar agregar el equipo en el espacio');
-        }
-    };
-
     const limpiar = () => {
         
     };
 
-    const selectComputadora = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectComputadora');
-            setComputadoras(response.data);
-            setComputadora(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener las computadoras', error);
-        }
-    }
-
-    const selectImpresora = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectImpresora');
-            setImpresoras(response.data);
-            setImpresora(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener las impresoras', error);
-        }
-    }
-
-    const selectServidor = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectServidor');
-            setServidores(response.data);
-            setServidor(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener los servidores', error);
-        }
-    }
-
-    const selectSwitch = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectSwitch');
-            setSwits(response.data);
-            setSwit(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener los switch', error);
-        }
-    }
-
-    const selectRouter = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectRouter');
-            setRouters(response.data);
-            setRouter(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener los routers', error);
-        }
-    }
-
-    const selectEscaner = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/SelectEscaner');
-            setEscaners(response.data);
-            setEscaner(response.data[0].id_equipo);
-        }catch(error){
-            console.error('Error al obtener los escaners', error);
-        }
-    }
-
-    const handleNuevaSolicitud = () => {
+    const handleNuevaSolicitud = (equipo) => {
+        setEquipoSeleccionado(equipo);
         setShowModal3(true);
     };
     const handleCloseModal3 = () => {
@@ -373,9 +197,20 @@ export const EquipodeIncidencia = () => {
     };
 
     const handleValidarModal3 = () => {
+        if(!hrInicial || !hrFinal){
+            alert('Necesita completar los campos');
+            return;
+        }
+        handleGuardarIncidencia();
+    };
 
-
-        navigate('/Principal');
+    const getFormattedDate = () => {
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getFullYear();
+    
+        return `${month}-${day}-${year}`;
     };
 
     const obtenerHoraActual = () => {
@@ -384,6 +219,48 @@ export const EquipodeIncidencia = () => {
         const minutos = now.getMinutes().toString().padStart(2, '0');
         return `${horas}:${minutos}`; // Retorna en formato HH:MM
     };
+
+    const handleGuardarIncidencia = async () => {
+        const fechaActual = getFormattedDate();    
+        const hrEnvio = obtenerHoraActual();
+        alert(`Equipo seleccionado: ${equipoSeleccionado.id_equipo}, prioridad: ${prioridad}, tipo de incidencia: ${tipoIncidencia}`)
+        try {
+            const response = await axios.post('http://localhost:3000/NuevaIncidencia', {
+                id_equipo: equipoSeleccionado.id_equipo,
+                descripcionGeneral: descripcionGeneral,
+                fechaActual: fechaActual,
+                hrEnvio: hrEnvio,
+                hrInicial: hrInicial,
+                hrFinal: hrFinal,
+                prioridad: prioridad,
+                tipoIncidencia: tipoIncidencia
+            });
+            navigate('/Principal');
+        } catch (error) {
+            console.error('Error al intentar agregar incidencia:', error);
+            alert('Hubo un error al intentar agregar incidencia');
+        }
+    };
+
+    const selectTipoIncidencia = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/TipoIncidencia');
+            setTipoIncidencias(response.data);
+            setTipoIncidencia(response.data[0].id_tipoIncidencia);
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    }
+
+    const selectPrioridad = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/Prioridad');
+            setPrioridades(response.data);
+            setPrioridad(response.data[0].id_prioridad);
+        }catch(error){
+            console.error('Error al obtener las prioridades', error);
+        }
+    }
 
     return (
         <div className="equipos-container">
@@ -417,10 +294,11 @@ export const EquipodeIncidencia = () => {
                                                                         <ul className="equipos-lista-equipos">
                                                                            {Array.isArray(equipos) && equipos.length > 0 ? (
                                                                                     equipos.map((equipo) => (
-                                                                                        <li key={equipo.id_equipo}  className="equipos-equipo-item" onClick={handleDetalleEquipo} data-id-equipo={equipo.id_equipo}>
-                                                                                            <div  className="equipos-equipo-name">
+                                                                                        <li className="equipos-equipo-item eI-juntos" key={equipo.id_equipo} >
+                                                                                            <div data-id-equipo={equipo.id_equipo} onClick={handleDetalleEquipo} className="equipos-equipo-name">
                                                                                                 {equipo.clave}
                                                                                             </div>
+                                                                                            <button className='eI-btn-reportar color-blanco' onClick={() => handleNuevaSolicitud(equipo)}>REPORTAR</button>
                                                                                         </li>
                                                                                     ))
                                                                                 ) : (
@@ -448,113 +326,6 @@ export const EquipodeIncidencia = () => {
                     <span>No hay edificios disponibles</span>
                 )}
             </ul>
-            {showModal && (
-                <div className="modal-overlay" onClick={handleCloseModal}>
-                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Equipo</h5>
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <div className="mb-3">
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioAgregar" value="Computadora" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Computadora'} ></input>
-                                            <label className="form-check-label" htmlFor="idRadioAgregar">Computadora</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioActualizar" value="Impresora" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Impresora'}></input>
-                                            <label className="form-check-label" htmlFor="idRadioActualizar">Impresora</label>
-                                        </div>
-
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Servidor" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Servidor'}></input>
-                                            <label className="form-check-label" htmlFor="idRadioEliminar">Servidor</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Switch" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Switch'}></input>
-                                            <label className="form-check-label" htmlFor="idRadioEliminar">Switch</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Router" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Router'}></input>
-                                            <label className="form-check-label" htmlFor="idRadioEliminar">Router</label>
-                                        </div>
-                                        <div className="form-check form-check-inline">
-                                            <input className="form-check-input" type="radio" name="radioAAE" id="idRadioEliminar" value="Escaner" onChange={handleRadioChangeEquipo} checked={radioCheckEquipo === 'Escaner'}></input>
-                                            <label className="form-check-label" htmlFor="idRadioEliminar">Escaner</label>
-                                        </div>
-                                        
-                                        <div className="input-container">
-                                            <label htmlFor="inputText" className="form-label">Selecciona el equipo</label>
-                                            
-                                            {(radioCheckEquipo === 'Computadora') && (
-                                                <select className="form-select" value={computadora} onChange={(e) => setComputadora(e.target.value)}>
-                                                    {computadoras.map((comp, index) => (
-                                                        <option value={comp.id_equipo} key={comp.id_equipo} > {comp.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-
-                                            {(radioCheckEquipo === 'Impresora') && (
-                                                <select className="form-select" value={impresora} onChange={(e) => setImpresora(e.target.value)}>
-                                                    {impresoras.map((imp, index) => (
-                                                        <option value={imp.id_equipo} key={imp.id_equipo} > {imp.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-
-                                            {(radioCheckEquipo === 'Servidor') && (
-                                                <select className="form-select" value={servidor} onChange={(e) => setServidor(e.target.value)}>
-                                                    {servidores.map((serv, index) => (
-                                                        <option value={serv.id_equipo} key={serv.id_equipo} > {serv.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-
-                                            {(radioCheckEquipo === 'Switch') && (
-                                                <select className="form-select" value={swit} onChange={(e) => setSwit(e.target.value)}>
-                                                    {swits.map((swi, index) => (
-                                                        <option value={swi.id_equipo} key={swi.id_equipo} > {swi.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-
-                                            {(radioCheckEquipo === 'Router') && (
-                                                <select className="form-select" value={router} onChange={(e) => setRouter(e.target.value)}>
-                                                    {routers.map((rou, index) => (
-                                                        <option value={rou.id_equipo} key={rou.id_equipo} > {rou.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-
-                                            {(radioCheckEquipo === 'Escaner') && (
-                                                <select className="form-select" value={escaner} onChange={(e) => setEscaner(e.target.value)}>
-                                                    {escaners.map((esc, index) => (
-                                                        <option value={esc.id_equipo} key={esc.id_equipo} > {esc.nombre}</option>
-                                                    ))}   
-                                                </select>
-                                            )}
-                                        </div>
-
-                                        <div className="mb-3">
-                                            <label htmlFor="inputText" className="form-label">Clave del equipo</label>
-                                            <input type="text" className="form-control" id="inputText" placeholder="Ingresa la clave aquí" value={claveEquipo} onChange={(e) => setClaveEquipo(e.target.value)}></input>
-                                            <label htmlFor="" className='equipo-clave-letrapequena'>Edificio, nombre del espacio, tipo de equipo: C, I,  Se, Sw, R, E , número de equipo de ese tipo en ese espacio.
-                                                Por ejemplo: "EASAC01" 
-                                            </label>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
-                                <button type="button" className="btn btn-primary" onClick={handleValidar}>Guardar Cambios</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {showModal2 && (
                 <div className="modal-overlay" onClick={handleCloseModal2}>
                     <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
@@ -725,22 +496,26 @@ export const EquipodeIncidencia = () => {
                                 <form>
                                     <div className="mb-3">
                                         <label htmlFor="inputNewPassword" className="form-label nito">Clave de Equipo: </label>
-                                        <span></span>
+                                        <span>{equipoSeleccionado.clave}</span>
                                         <br />
                                         <label htmlFor="inputNewPassword" className="form-label nito">Tipo de Incidencia: </label>
-                                        <select className="form-select">
-                                            <option></option>
+                                        <select className="form-select" value={tipoIncidencia} onChange={(e) => setTipoIncidencia(e.target.value)}>
+                                            {tipoIncidencias.map((ti, index) => (
+                                                <option value={ti.id_tipoIncidencia} key={ti.id_tipoIncidencia}> {ti.nombre} </option>
+                                            ))}
                                         </select>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Prioridad: </label>
-                                        <select className="form-select">
-                                            <option></option>
+                                        <select className="form-select" value={prioridad} onChange={(e) => setPrioridad(e.target.value)}>
+                                            {prioridades.map((prio, index) => (
+                                                <option value={prio.id_prioridad} key={prio.id_prioridad}> {prio.nombre} </option>
+                                            ))}
                                         </select>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Horario Disponible Inicial: </label>
-                                        <input type="time" className="form-control" placeholder="Inicio"></input>
+                                        <input type="time" className="form-control" placeholder="Inicio" value={hrInicial} onChange={(e) => setHrInicial(e.target.value)}></input>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Horario Disponible Final: </label>
-                                        <input type="time" className="form-control" placeholder="Fin"></input>
+                                        <input type="time" className="form-control" placeholder="Fin" value={hrFinal} onChange={(e) => setHrFinal(e.target.value)}></input>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Descripción Adicional: </label>
-                                        <input type="text" className="form-control" placeholder="Añade una descripción adicional/general"></input>
+                                        <input type="text" className="form-control" value={descripcionGeneral} onChange={(e) => setDescripcionGeneral(e.target.value)} placeholder="Añade una descripción adicional/general"></input>
                                     </div>
                                 </form>
                             </div>

@@ -41,7 +41,7 @@
 }
 .equipos-espacio-name {
     color: #db5e15;
-    font-size: 1.6vw; /* Tamaño de texto ajustado */
+    font-size: 1.6vw;
 }
 .equipos-selected-space {
     margin-top: 1%;
@@ -53,7 +53,10 @@
 .equipos-lista-equipos {
     margin-top: 1%;
     list-style-type: none;
-    padding-left: 5%;
+    padding-left: 5%
+}
+.bordersuki{
+    border: 1px solid red;
 }
 .equipos-equipo-item {
     margin: 1% 0;

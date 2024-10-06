@@ -1377,7 +1377,7 @@ app.get('/DetalleEquipo/:idEquipo', async(req, res) => {
 
         // Comprobar si el equipo es un router
         const routerResult = await sql.query`SELECT * FROM ROUTER WHERE id_router = ${idEquipo}`;
-        const router = switchResult.recordset[0];
+        const router = routerResult.recordset[0];
 
         if (router) {
             // Si es un switch, enviar los detalles del equipo y el switch
@@ -1390,7 +1390,7 @@ app.get('/DetalleEquipo/:idEquipo', async(req, res) => {
 
         // Comprobar si el equipo es un switch
         const escanerResult = await sql.query`SELECT * FROM ESCANER WHERE id_escaner = ${idEquipo}`;
-        const escaner = switchResult.recordset[0];
+        const escaner = escanerResult.recordset[0];
 
         if (escaner) {
             // Si es un switch, enviar los detalles del equipo y el switch
@@ -1406,8 +1406,76 @@ app.get('/DetalleEquipo/:idEquipo', async(req, res) => {
     } catch (error) {
         console.error('Error al obtener los detalles del equipo:', error.message);
         res.status(500).send('Error al obtener los detalles del equipo');
-    } finally {
+    }
+});
+
+//--------------------05 de Octubre-----------------------
+//Trae las prioridades
+app.get('/Prioridad', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM PRIORIDAD
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener las prioridades', error.message);
+        res.status(500).send('Error al obtener las prioridades');
+    }
+});
+
+//Trae los Tipos de incidencias
+app.get('/TipoIncidencia', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM TIPO_INCIDENCIA
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los tipos de incidencias', error.message);
+        res.status(500).send('Error al obtener los tipos de incidencias');
+    }
+});
+
+//Inserta nueva incidencia
+app.post('/NuevaIncidencia',async(req,res) => {
+    try{
+        await sql.connect(config);
+        const {id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, prioridad, tipoIncidencia} = req.body;
+        console.log('Datos recibidos:', {
+            id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, prioridad, tipoIncidencia
+        });
+        console.log('llegue a altaIncidencia');
+       // Inserción en la tabla EQUIPO
+       const resultIncidencia = await sql.query`
+            DECLARE @InsertedIds TABLE (id_incidencia INT);
+            
+            INSERT INTO INCIDENCIA (id_equipo, descripcion, fecha, hora_envio, id_prioridad, id_estado, id_tipoIncidencia, hora_disponible_inicio, hora_disponible_fin)
+            OUTPUT INSERTED.id_incidencia INTO @InsertedIds
+            VALUES (${id_equipo}, ${descripcionGeneral}, ${fechaActual}, ${hrEnvio}, ${prioridad}, 5, ${tipoIncidencia}, ${hrInicial}, ${hrFinal});
+            
+            SELECT id_incidencia FROM @InsertedIds;
+        `;
+        const id_incidencia = resultIncidencia.recordset[0].id_incidencia;
+        //traer el id_espacio
+        const resultEspacio = await sql.query`
+            select id_espacio from EQUIPO where id_equipo = ${id_equipo};
+        `;
+        const id_espacio = resultEspacio.recordset[0].id_espacio;
+        //Insertar en la tabla incidencia_lugar
+        await sql.query`
+            INSERT INTO INCIDENCIA_LUGAR(id_incidencia, id_espacio)
+            VALUES ( ${id_incidencia}, ${id_espacio});
+        `;
+        res.status(200).send('Incidencia agregada');
+    }catch(error){
+        console.error('Error al insertar incidencia:', error.message);
+        // Enviar una respuesta de error
+        res.status(500).send('Error al insertar incidencia');
+    }finally{
         await sql.close();
     }
-
 });

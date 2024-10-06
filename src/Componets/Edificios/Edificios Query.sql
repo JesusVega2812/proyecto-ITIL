@@ -134,3 +134,14 @@ SELECT DISTINCT E.id_edificio, E.nombre
             FROM EDIFICIO E
             JOIN ESPACIOS ES ON E.id_edificio = ES.id_edificio
             WHERE ES.id_departamento = 2 and estatus = 1
+
+------Octubre 05
+CREATE PROCEDURE BajaEdificio
+    @id_edificio INT
+AS
+BEGIN
+    -- Actualizar el valor del estatus de edificio a 0
+    UPDATE EDIFICIO
+    SET estatus = 0
+	WHERE id_edificio = @id_edificio;
+END;

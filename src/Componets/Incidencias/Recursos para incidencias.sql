@@ -39,3 +39,17 @@ VALUES
 ('Liberado', '#0000FF'),    -- Azul: Liberado
 ('Rechazado', '#FF0000'),   -- Rojo: Rechazado
 ('Enviado', '#C0C0C0');  -- Gris Claro: Enviado
+
+------ Octubre 05 de 2024
+SELECT * FROM TIPO_INCIDENCIA
+SELECT * FROM PRIORIDAD
+
+select id_espacio from EQUIPO where id_equipo = 37
+select * from ESPACIOS where id_espacio = 23
+select * from EDIFICIO where id_edificio = 1
+
+select * from INCIDENCIA
+select * from INCIDENCIA_LUGAR
+
+DELETE FROM INCIDENCIA
+WHERE id_incidencia = 9;
