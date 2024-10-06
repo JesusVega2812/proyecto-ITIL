@@ -385,8 +385,10 @@ export const Equipos = () => {
                                                         {Array.isArray(nombresEspacio) && nombresEspacio.length > 0 ? (
                                                             nombresEspacio.map((nombreEspacio) => (
                                                                 <li key={nombreEspacio.id_espacio} className="equipos-nombre-item">
-                                                                    <div className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
-                                                                        {nombreEspacio.nombre}
+                                                                    <div  className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
+                                                                        <span>Responsable: {nombreEspacio.responsable}</span>
+                                                                        <br/>
+                                                                        {nombreEspacio.nombre}  
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
                                                                         <>
@@ -396,7 +398,7 @@ export const Equipos = () => {
                                                                                     equipos.map((equipo) => (
                                                                                         <li key={equipo.id_equipo}  className="equipos-equipo-item" onClick={handleDetalleEquipo} data-id-equipo={equipo.id_equipo}>
                                                                                             <div  className="equipos-equipo-name">
-                                                                                                {equipo.clave}
+                                                                                                {equipo.clave} 
                                                                                             </div>
                                                                                         </li>
                                                                                     ))
@@ -553,7 +555,7 @@ export const Equipos = () => {
                                             <br />
                                             <label htmlFor="softwares" className="form-label nito">Softwares: </label>
                                             {equipo.softwares.map((soft, index) => (
-                                                <span key={index} className="form-span">{soft.nombre}</span>
+                                                <span key={index} className="form-span"> <br/>{soft.software} </span>
                                             ))}
                                             <br />
                                         </div>
@@ -570,7 +572,7 @@ export const Equipos = () => {
                                             <br />
                                             <span className="form-span">{equipo.detalles.hilos} hilos</span>
                                             <br />
-                                            <span className="form-span">{equipo.detalles.cache} GB</span>
+                                            <span className="form-span">{equipo.detalles.cache} GB Cache</span>
                                             <br />
 
                                             <label htmlFor="ram" className="form-label nito">Memoria RAM: </label>
@@ -622,14 +624,14 @@ export const Equipos = () => {
                                             <span className="form-span">{equipo.detalles.numero_puertos}</span>
                                             <br />
                                             <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
-                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <span className="form-span">{equipo.detalles.velocidad_backplane}</span>
                                             <br />
                                             <label htmlFor="tipoSwitch" className="form-label nito">Tipo de Switch: </label>
                                             <span className="form-span">{equipo.detalles.tipo_switch}</span>
                                             <br />
-                                            <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
-                                            <span className="form-span">{equipo.detalles.conectividad}</span>
-                                            <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Capacidad de switching: </label>
+                                            <span className="form-span">{equipo.detalles.capacidad_switching}</span>
+                                            
                                         </div>
                                     )}
 
@@ -643,7 +645,7 @@ export const Equipos = () => {
                                             <span className="form-span">{equipo.detalles.soporte_vpn}</span>
                                             <br />
                                             <label htmlFor="numeroInterfaces" className="form-label nito">Número de Interfaces Giga, Fast: </label>
-                                            <span className="form-span">{equipo.detalles.numero_interfaces}</span>
+                                            <span className="form-span">{equipo.detalles.numero_interfaces_giga_fast}</span>
                                             <br />
                                             <label htmlFor="numeroSeriales" className="form-label nito">Número de Seriales: </label>
                                             <span className="form-span">{equipo.detalles.numero_seriales}</span>
@@ -654,15 +656,14 @@ export const Equipos = () => {
                                             <label htmlFor="protocolosRuta" className="form-label nito">Prótocolos de Ruta: </label>
                                             <span className="form-span">{equipo.detalles.protocolos_ruta}</span>
                                             <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Capacidad de ruta: </label>
+                                            <span className="form-span">{equipo.detalles.capacidad_ruta}</span>
                                         </div>
                                     )}
 
                                     {/* Switch y Router */}
                                     {(equipo.tipo === 'Switch' || equipo.tipo === 'Router') && (
                                         <div>
-                                            <label htmlFor="capacidad" className="form-label nito">Capacidad: </label>
-                                            <span className="form-span">{equipo.detalles.capacidad}</span>
-                                            <br />
                                             <label htmlFor="consumoEnergia" className="form-label nito">Consumo de Energía: </label>
                                             <span className="form-span">{equipo.detalles.consumo_energia}</span>
                                             <br />

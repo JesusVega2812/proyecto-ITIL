@@ -26,7 +26,7 @@ export const Departamento_Alta_Baja_Cambio = () => {
         };
     
         obtenerDepartamentos();
-    }, []);
+    }, [departamento]);
 
     const handleListo = async (e) => {
         e.preventDefault();
