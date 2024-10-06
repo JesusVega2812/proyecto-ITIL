@@ -290,3 +290,18 @@ SELECT * FROM EQUIPO
 SELECT * FROM COMPUTADORA
 
 select * from usuario
+select * from ESPACIOS
+
+SELECT ES.id_espacio, ES.nombre
+            FROM ESPACIOS ES
+            WHERE ES.id_tipoEspacio = 2 AND ES.id_edificio = 1 AND ES.id_departamento = 2;
+
+UPDATE ESPACIOS
+SET responsable = 3 WHERE id_espacio = 4
+
+SELECT ES.id_espacio, ES.nombre, responsable = u.nombre+' '+u.apellido
+FROM ESPACIOS ES
+LEFT JOIN usuario u ON u.id_usuario = ES.responsable
+WHERE ES.id_tipoEspacio = 2
+  AND ES.id_edificio = 1
+  AND ES.id_departamento = 2

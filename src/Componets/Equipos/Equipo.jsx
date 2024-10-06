@@ -101,11 +101,13 @@ export const Equipos = () => {
                 const response = await axios.get('http://localhost:3000/SelectNombrePorEspacios', {
                     params: { id_tipoEspacio: idTipoEspacio, id_edificio: id_edificio, id_departamento: idDepartamentoPertenece },
                 });
+                console.log(response.data);
                 setNombresEspacio(response.data.nombresEspacio || []);
             }else{
                 const response = await axios.get('http://localhost:3000/SelectNombrePorEspaciosADMON', {
                     params: { id_tipoEspacio: idTipoEspacio, id_edificio: id_edificio},
                 });
+                console.log(response.data);
                 setNombresEspacio(response.data.nombresEspacio || []);
             }
         } catch (err) {

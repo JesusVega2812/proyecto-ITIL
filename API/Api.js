@@ -294,10 +294,15 @@ app.get('/SelectNombrePorEspacios', async(req,res) => {
         const id_departamento = req.query.id_departamento;
         console.log('idTipoEspacio ', id_tipoEspacio);
         const checkNombreEspacio = await sql.query(`
-            SELECT ES.id_espacio, ES.nombre
+            SELECT ES.id_espacio, ES.nombre, responsable = u.nombre+' '+u.apellido
             FROM ESPACIOS ES
+            LEFT JOIN usuario u on u.id_usuario = es.responsable
             WHERE ES.id_tipoEspacio = ${id_tipoEspacio} AND ES.id_edificio = ${id_edificio} AND ES.id_departamento = ${id_departamento};
         `);
+        if(!checkNombreEspacio){
+        
+        }
+        console.log(checkNombreEspacio.recordset)
         res.status(200).json({nombresEspacio: checkNombreEspacio.recordset});
     }catch(error){
         console.error('Error al traer los nombres de los espacios: ', error.message);
@@ -648,8 +653,9 @@ app.get('/SelectNombrePorEspaciosADMON', async(req,res) => {
         const id_edificio = req.query.id_edificio;
         console.log('idTipoEspacio ', id_tipoEspacio);
         const checkNombreEspacio = await sql.query(`
-            SELECT ES.id_espacio, ES.nombre
+            SELECT ES.id_espacio, ES.nombre, responsable = u.nombre+' '+u.apellido
             FROM ESPACIOS ES
+            INNER JOIN USUARIO U ON U.ID_USUARIO = ES.RESPONSABLE
             WHERE ES.id_tipoEspacio = ${id_tipoEspacio} AND ES.id_edificio = ${id_edificio};
         `);
         res.status(200).json({nombresEspacio: checkNombreEspacio.recordset});
@@ -658,7 +664,6 @@ app.get('/SelectNombrePorEspaciosADMON', async(req,res) => {
         res.status(500).send('Error al traer los nombres de los espacios ADMON');
     }
 });
-
 
 // Da de alta a Edificio
 app.post('/AltaEdificio', async(req, res) => {
