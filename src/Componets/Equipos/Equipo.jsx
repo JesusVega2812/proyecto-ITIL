@@ -190,7 +190,8 @@ export const Equipos = () => {
             setEquipo(response.data || []);
             console.log(response.data);
         } catch (err) {
-            alert('Error al cargar el detalle de equipo');
+            setEquipo([]);
+            alert('Error al cargar el detalle de equipo, al parecer el tipo de equipo no esta especificado');
             console.error(err);
         }
     };

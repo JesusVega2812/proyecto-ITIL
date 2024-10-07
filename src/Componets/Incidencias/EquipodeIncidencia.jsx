@@ -171,7 +171,8 @@ export const EquipodeIncidencia = () => {
             setEquipo(response.data || []);
             console.log(response.data);
         } catch (err) {
-            alert('Error al cargar el detalle de equipo');
+            setEquipo([]);
+            alert('Error al cargar el detalle de equipo, al parecer el tipo de equipo no esta especificado');
             console.error(err);
         }
     };
@@ -287,7 +288,9 @@ export const EquipodeIncidencia = () => {
                                                             nombresEspacio.map((nombreEspacio) => (
                                                                 <li key={nombreEspacio.id_espacio} className="equipos-nombre-item">
                                                                     <div className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
-                                                                        {nombreEspacio.nombre}
+                                                                    <span>Responsable: {nombreEspacio.responsable}</span>
+                                                                        <br/>
+                                                                        {nombreEspacio.nombre}  
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
                                                                         <ul className="equipos-lista-equipos">

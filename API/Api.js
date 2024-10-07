@@ -608,7 +608,7 @@ app.get('/SelectEquiposPorEspacio', async (req, res) => {
 
         console.log('idEspacio en equipo:', id_espacio);
         const checkEquiposEspacios = await sql.query(`
-            SELECT id_equipo, clave 
+            SELECT id_equipo, clave = ''+clave
             FROM EQUIPO 
             WHERE id_espacio = ${id_espacio}
             AND id_espacio IN (
@@ -655,7 +655,7 @@ app.get('/SelectNombrePorEspaciosADMON', async(req,res) => {
         const checkNombreEspacio = await sql.query(`
             SELECT ES.id_espacio, ES.nombre, responsable = u.nombre+' '+u.apellido
             FROM ESPACIOS ES
-            LEFT JOIN USUARIO U ON U.ID_USUARIO = ES.RESPONSABLE
+            INNER JOIN USUARIO U ON U.ID_USUARIO = ES.RESPONSABLE
             WHERE ES.id_tipoEspacio = ${id_tipoEspacio} AND ES.id_edificio = ${id_edificio};
         `);
         res.status(200).json({nombresEspacio: checkNombreEspacio.recordset});

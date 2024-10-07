@@ -288,20 +288,16 @@ select * from equipo
 -------------------------29/SEP/2024--------------------------------------
 SELECT * FROM EQUIPO
 SELECT * FROM COMPUTADORA
+select * from router
+select * from SWITCH
+SELECT * FROM servidor
+select * from IMPRESORA
+select * from ESCANER
 
 select * from usuario
-select * from ESPACIOS
 
-SELECT ES.id_espacio, ES.nombre
-            FROM ESPACIOS ES
-            WHERE ES.id_tipoEspacio = 2 AND ES.id_edificio = 1 AND ES.id_departamento = 2;
-
-UPDATE ESPACIOS
-SET responsable = 3 WHERE id_espacio = 4
-
-SELECT ES.id_espacio, ES.nombre, responsable = u.nombre+' '+u.apellido
-FROM ESPACIOS ES
-LEFT JOIN usuario u ON u.id_usuario = ES.responsable
-WHERE ES.id_tipoEspacio = 2
-  AND ES.id_edificio = 1
-  AND ES.id_departamento = 2
+---------------------------07/10/24------------------------------------
+--Ejecutar estos updates porque estos equipo no se insertarin en ningun tipo de equipo
+update equipo set estado_equipo = 'ya no sirve' where id_equipo between 7 and 10
+go
+update equipo set id_espacio = null where id_equipo between 7 and 10
