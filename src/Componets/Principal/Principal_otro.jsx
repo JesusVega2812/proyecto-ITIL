@@ -30,11 +30,23 @@ export const Principal_otro = () => {
     const [nomEspacio, setNomEspacio] = useState('');
     const [ubiEspacio, setUbiEspacio] = useState('');
     const [ubiEdificio, setUbiEdificio] = useState('');
+    const [nomEdificio, setNomEdificio] = useState('');
+    const [responsable, setResponsable] = useState('');
     const [fecha, setFecha] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [tipoIncidencia, setTipoIncidencia] = useState('');
     const [estado, setEstado] = useState('');
     const [id_incidencia, setId_incidencia] = useState('');
+    const [prioridades, setPrioridades] = useState([]);
+    const [prioridad, setPrioridad] = useState('');
+    const [showModal4, setShowModal4] = useState(false);
+    const [showModal5, setShowModal5] = useState(false);
+    const [equipo, setEquipo] = useState({
+        tipo: '', // Inicializa como string vacío
+        equipo: {},
+        detalles: {}, // Inicializa como objeto vacío
+        softwares: [] // Inicializa como array vacío
+    });
 
     useEffect(() => {
         const storedPermisos = localStorage.getItem('permisos');
@@ -155,9 +167,20 @@ export const Principal_otro = () => {
             const response = await axios.get('http://localhost:3000/SelectEspecializaciones');
             setEspecializaciones(response.data);
             setEspecializacion(response.data[0].id_especializacion);
+            selectPrioridad(response.data[0].id_prioridad);
             selectTecnicos(response.data[0].id_especializacion);
         }catch(error){
             console.error('Error al obtener las especializaciones', error);
+        }
+    }
+
+    const selectPrioridad = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/Prioridad');
+            setPrioridades(response.data);
+            setPrioridad(response.data[0].id_prioridad);
+        }catch(error){
+            console.error('Error al obtener las prioridades', error);
         }
     }
 
@@ -262,7 +285,8 @@ export const Principal_otro = () => {
             try {
                 const response = await axios.put('http://localhost:3000/AsignarTecnico',{
                     id_incidencia: selectedIncidencia.id_incidencia,
-                    id_usuario: tecnico
+                    id_usuario: tecnico,
+                    id_prioridad: prioridad
                 })
                 alert('Tecnico Asignado exitosamente');
             } catch (error) {
@@ -303,6 +327,8 @@ export const Principal_otro = () => {
                     setNomEspacio(detalle.nombre_espacio);
                     setUbiEspacio(detalle.ubicacion_esp);
                     setUbiEdificio(detalle.ubicacion_edificio);
+                    setResponsable(detalle.responsable);
+                    setNomEdificio(detalle.nombre_edificio);
                     setEstado(incidencia.estado);
                     setId_incidencia(detalle.id_incidencia);
                     setShowModal3(true);
@@ -351,6 +377,43 @@ export const Principal_otro = () => {
         }
         handleCloseModal3();
     }
+
+   const handleDiagnostico = () => {
+        setShowModal3(false);
+        setShowModal5(true);
+   }
+
+   const handleCloseModal5 = () => {
+    setShowModal5(false);
+};
+
+    //----------------- DETALLE EQUIPO
+    const handleDetalleEquipo = (event) => {
+        const idEquipo = event.currentTarget.getAttribute('data-id-equipo'); // Obtener el id_equipo desde data-id-equipo
+        //setIdEquipo(idEquipo);
+       
+        detalleEquipo(idEquipo); // Pasar el idEquipo correctamente
+        setShowModal4(true);
+    };
+
+    const handleCloseModal4 = () => {
+        setShowModal4(false);
+    };
+
+    const detalleEquipo = async (idEquipo) => {
+        try {
+            //const idEquipo = idEquipo;
+            const response = await axios.get(`http://localhost:3000/DetalleEquipo/${idEquipo}`);
+            //alert(response.data.tipo)
+            setEquipo(response.data || []);
+            console.log(response.data);
+        } catch (err) {
+            setEquipo([]);
+            alert('Error al cargar el detalle de equipo, al parecer el tipo de equipo no esta especificado');
+            console.error(err);
+        }
+    };
+    // ----------- TERMINA DETALLE EQUIPO
 
     return (
         <div className="principal-admin-container">
@@ -510,6 +573,12 @@ export const Principal_otro = () => {
                                                     <option value={esp.id_especializacion} key={esp.id_especializacion}> {esp.nombre} </option>
                                                 ))}
                                             </select>
+                                            <label htmlFor="inputNewPassword" className="form-label nito">Prioridad: </label>
+                                            <select className="form-select" value={prioridad} onChange={(e) => setPrioridad(e.target.value)}>
+                                                {prioridades.map((prio, index) => (
+                                                    <option value={prio.id_prioridad} key={prio.id_prioridad}> {prio.nombre} </option>
+                                                ))}
+                                            </select>
                                             <label htmlFor="" className="form-label nito">Asignar a: </label>
                                             <select className="form-select" value={tecnico} onChange={(e) => setTecnico(e.target.value)}>
                                                 {tecnicos.map((tec, index) => (
@@ -544,7 +613,7 @@ export const Principal_otro = () => {
                                             <span>{fecha}</span>
                                             <label htmlFor="inputText" className="form-label pO-hr-solicitud">Hora de Solicitud: </label>
                                             <span>{hrEnvio}</span>
-                                            <button type="button" className="btn btn-outline-danger pO-btn-equipo">Equipo</button>
+                                            <button type="button" className="btn btn-outline-danger pO-btn-equipo" onClick={handleDetalleEquipo}>Equipo</button>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Tipo de Incidencia: </label>
                                             <span>{tipoIncidencia}</span>
@@ -563,21 +632,208 @@ export const Principal_otro = () => {
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Lugar </label>
                                             <div className='pO-div-lugar'>
+                                                <span>Edificio: {nomEdificio}</span>
+                                                <br />
                                                 <span>Ubicación Edificio: {ubiEdificio}</span>
                                                 <br />
                                                 <span>Nombre Espacio: {nomEspacio}</span>
                                                 <br />
                                                 <span>Ubicación Espacio: {ubiEspacio}</span>
+                                                <br />
+                                                <span>Responsable: {responsable}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <button type="button" className="tam-letra-17px color-boton-lila color-blanco btn-sin-border btn-tam-diagnostico" onClick={handleDiagnostico}>Diagnóstico</button>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal3}>Cancelar</button>
                                 {(estado === 'En Proceso') && (
-                                    <button type="button" className="btn btn-primary" onClick={handleFinalizar}>Finalizar</button>
+                                        <button type="button" className="btn btn-primary" onClick={handleFinalizar}>Finalizar</button>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal4 && (
+                <div className="modal-overlay" onClick={handleCloseModal4}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                        <p></p>
+                        <button type="button" class="btn-close" aria-label="Close" onClick={handleCloseModal4}></button>
+                            <div className="modal-header">
+                                <h5 className="modal-title nito">Detalle Equipo</h5>
+                            </div>
+                            <div className="modal-body">
+                            <form>
+                                <div className="mb-3">   
+                                    {/* Computadora */}
+                                    {(equipo.tipo === 'Computadora') && (
+                                        <div className="input-container">
+                                            <label htmlFor="tipoComputadora" className="form-label nito">Tipo de computadora: </label>
+                                            <span className="form-span">{equipo.detalles.tipoComputadora}</span>
+                                            <br />
+                                            <label htmlFor="softwares" className="form-label nito">Softwares: </label>
+                                            {/*{equipo.softwares.map((soft, index) => (
+                                                <span key={index} className="form-span">{soft.nombre}</span>
+                                            ))}*/}
+                                            <br />
+                                        </div>
+                                    )}
+
+                                    {/* Computadora y Servidor */}
+                                    {(equipo.tipo === 'Computadora' || equipo.tipo === 'Servidor') && (
+                                        <>
+                                            <label htmlFor="procesador" className="form-label nito">Procesador: </label>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.procesador}</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.nucleos} nucleos</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.hilos} hilos</span>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.cache} GB</span>
+                                            <br />
+
+                                            <label htmlFor="ram" className="form-label nito">Memoria RAM: </label>
+                                            <span className="form-span">{equipo.detalles.memoria_RAM}</span>
+                                            <br />
+
+                                            <label htmlFor="almacenamiento" className="form-label nito">Almacenamiento: </label>
+                                            <span className="form-span">{equipo.detalles.almacenamiento}</span>
+                                            <br />
+
+                                            <label htmlFor="tarjetaGrafica" className="form-label nito">Tarjeta Gráfica: </label>
+                                            <span className="form-span">{equipo.detalles.tarjeta_grafica}</span>
+                                            <br />
+
+                                            <label htmlFor="sistemaOperativo" className="form-label nito">Sistema Operativo: </label>
+                                            <br />
+                                            <span className="form-span">{equipo.detalles.sistemaOperativo}</span>
+                                            <br />
+                                            <span className="form-span">Tipo de interfaz: {equipo.detalles.interfaz}</span>
+                                            <br />
+                                            <span className="form-span">Licencia: {equipo.detalles.licencia}</span>
+                                            <br />
+
+                                            <label htmlFor="configuracionRed" className="form-label nito">Configuración de red: </label>
+                                            <span className="form-span">{equipo.detalles.tarjetaRed}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                    {/* Impresora */}
+                                    {(equipo.tipo === 'Impresora') && (
+                                        <>
+                                            <label htmlFor="tipoImpresora" className="form-label nito">Tipo de Impresora: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_impresora}</span>
+                                            <br />
+                                            <label htmlFor="resolucion" className="form-label nito">Resolución: </label>
+                                            <span className="form-span">{equipo.detalles.resolucion}</span>
+                                            <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
+                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                    {/* Switch */}
+                                    {(equipo.tipo === 'Switch') && (
+                                        <>
+                                            <label htmlFor="numeroPuertos" className="form-label nito">Número de puertos: </label>
+                                            <span className="form-span">{equipo.detalles.numero_puertos}</span>
+                                            <br />
+                                            <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
+                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <br />
+                                            <label htmlFor="tipoSwitch" className="form-label nito">Tipo de Switch: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_switch}</span>
+                                            <br />
+                                            <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
+                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                    {/* Router */}
+                                    {(equipo.tipo === 'Router') && (
+                                        <>
+                                            <label htmlFor="tipoConexion" className="form-label nito">Tipo de conexión: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_conexion}</span>
+                                            <br />
+                                            <label htmlFor="soporteVPN" className="form-label nito">Soporte VPN: </label>
+                                            <span className="form-span">{equipo.detalles.soporte_vpn}</span>
+                                            <br />
+                                            <label htmlFor="numeroInterfaces" className="form-label nito">Número de Interfaces Giga, Fast: </label>
+                                            <span className="form-span">{equipo.detalles.numero_interfaces}</span>
+                                            <br />
+                                            <label htmlFor="numeroSeriales" className="form-label nito">Número de Seriales: </label>
+                                            <span className="form-span">{equipo.detalles.numero_seriales}</span>
+                                            <br />
+                                            <label htmlFor="frecuenciaRuta" className="form-label nito">Frecuencia de Ruta: </label>
+                                            <span className="form-span">{equipo.detalles.frecuencia_ruta}</span>
+                                            <br />
+                                            <label htmlFor="protocolosRuta" className="form-label nito">Prótocolos de Ruta: </label>
+                                            <span className="form-span">{equipo.detalles.protocolos_ruta}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                    {/* Switch y Router */}
+                                    {(equipo.tipo === 'Switch' || equipo.tipo === 'Router') && (
+                                        <>
+                                            <label htmlFor="capacidad" className="form-label nito">Capacidad: </label>
+                                            <span className="form-span">{equipo.detalles.capacidad}</span>
+                                            <br />
+                                            <label htmlFor="consumoEnergia" className="form-label nito">Consumo de Energía: </label>
+                                            <span className="form-span">{equipo.detalles.consumo_energia}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                    {/* Escáner */}
+                                    {(equipo.tipo === 'Escaner') && (
+                                        <>
+                                            <label htmlFor="tipoEscaner" className="form-label nito">Tipo de Escaner: </label>
+                                            <span className="form-span">{equipo.detalles.tipo_escaner}</span>
+                                            <br />
+                                            <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
+                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <br />
+                                        </>
+                                    )}
+
+                                </div>
+                            </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal4}>Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal5 && (
+                <div className="modal-overlay" onClick={handleCloseModal5}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Cambiar Contraseña</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="mb-3">
+                                        
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal5}>Cancelar</button>
+                                <button type="button" className="btn btn-primary">Guardar Cambios</button>
                             </div>
                         </div>
                     </div>

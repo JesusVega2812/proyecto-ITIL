@@ -74,8 +74,9 @@ WHERE e.id_especializacion = 3 and t.id_estadoDisponibilidad = 1;
 
 --
 
+
 SELECT 
-	I.id_incidencia,
+    I.id_incidencia,
     I.hora_envio,
     I.hora_disponible_inicio,
     I.hora_disponible_fin,
@@ -83,7 +84,9 @@ SELECT
     P.descripcion AS descripcion_prioridad,
     E.nombre as nombre_espacio,
     E.ubicacion_esp,
-    D.ubicacion_edificio
+    D.ubicacion_edificio,
+	D.nombre as nombre_edificio,
+	CONCAT(U.nombre, ' ', U.apellido) AS responsable
 FROM 
     INCIDENCIA I
 JOIN 
@@ -94,4 +97,6 @@ JOIN
     ESPACIOS E ON IL.id_espacio = E.id_espacio
 JOIN 
     EDIFICIO D ON E.id_edificio = D.id_edificio
-WHERE I.id_incidencia = 2;
+LEFT JOIN
+	USUARIO U ON U.id_usuario = E.responsable
+WHERE I.id_incidencia = 1;

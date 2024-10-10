@@ -173,3 +173,8 @@
 .pO-btn-equipo{
     margin-left: 15%;
 }
+.btn-tam-diagnostico{
+    height: 35px;
+    width: 120px;
+    border-radius: 5px;
+}

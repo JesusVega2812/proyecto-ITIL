@@ -1449,18 +1449,18 @@ app.get('/TipoIncidencia', async (req, res) => {
 app.post('/NuevaIncidencia',async(req,res) => {
     try{
         await sql.connect(config);
-        const {id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, prioridad, tipoIncidencia} = req.body;
+        const {id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, tipoIncidencia} = req.body;
         console.log('Datos recibidos:', {
-            id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, prioridad, tipoIncidencia
+            id_equipo, descripcionGeneral, fechaActual, hrEnvio, hrInicial, hrFinal, tipoIncidencia
         });
         console.log('llegue a altaIncidencia');
        // Inserción en la tabla EQUIPO
        const resultIncidencia = await sql.query`
             DECLARE @InsertedIds TABLE (id_incidencia INT);
             
-            INSERT INTO INCIDENCIA (id_equipo, descripcion, fecha, hora_envio, id_prioridad, id_estado, id_tipoIncidencia, hora_disponible_inicio, hora_disponible_fin)
+            INSERT INTO INCIDENCIA (id_equipo, descripcion, fecha, hora_envio, id_estado, id_tipoIncidencia, hora_disponible_inicio, hora_disponible_fin)
             OUTPUT INSERTED.id_incidencia INTO @InsertedIds
-            VALUES (${id_equipo}, ${descripcionGeneral}, ${fechaActual}, ${hrEnvio}, ${prioridad}, 5, ${tipoIncidencia}, ${hrInicial}, ${hrFinal});
+            VALUES (${id_equipo}, ${descripcionGeneral}, ${fechaActual}, ${hrEnvio}, 5, ${tipoIncidencia}, ${hrInicial}, ${hrFinal});
             
             SELECT id_incidencia FROM @InsertedIds;
         `;
@@ -1588,19 +1588,22 @@ app.get('/SelectTecnicos', async (req, res) => {
 
 // Asigna tecnico a incidencia
 app.put('/AsignarTecnico', async (req, res) => {
-    const { id_incidencia, id_usuario } = req.body;
+    const { id_incidencia, id_usuario, id_prioridad } = req.body;
 
     console.log('Datos recibidos:', {
-        id_incidencia, id_usuario
+        id_incidencia, id_usuario, id_prioridad
     });
     try {
         await sql.connect(config);
         const request = new sql.Request();
         request.input('id_incidencia', sql.Int, id_incidencia);
         request.input('id_usuario', sql.Int, id_usuario);
+        request.input('id_prioridad', sql.Int, id_prioridad);
         const result = await request.query(`
             UPDATE INCIDENCIA
-            SET id_tecnicoAsignado = @id_usuario, 
+            SET 
+                id_prioridad = @id_prioridad,
+                id_tecnicoAsignado = @id_usuario, 
                 id_estado = 1
             WHERE id_incidencia = @id_incidencia;
         `)
@@ -1702,7 +1705,9 @@ app.get('/DetalleIncidencia', async (req, res) => {
                 P.descripcion AS descripcion_prioridad,
                 E.nombre as nombre_espacio,
                 E.ubicacion_esp,
-                D.ubicacion_edificio
+                D.ubicacion_edificio,
+				D.nombre as nombre_edificio,
+				CONCAT(U.nombre, ' ', U.apellido) AS responsable
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1713,7 +1718,9 @@ app.get('/DetalleIncidencia', async (req, res) => {
                 ESPACIOS E ON IL.id_espacio = E.id_espacio
             JOIN 
                 EDIFICIO D ON E.id_edificio = D.id_edificio
-            WHERE I.id_incidencia = ${id_incidencia};
+			LEFT JOIN
+				USUARIO U ON U.id_usuario = E.responsable
+            WHERE I.id_incidencia = 1;
         `;
         const detalle = result.recordset[0];
         console.log(detalle);

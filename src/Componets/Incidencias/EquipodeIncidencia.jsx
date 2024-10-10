@@ -20,8 +20,6 @@ export const EquipodeIncidencia = () => {
     const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
     const [tipoIncidencias, setTipoIncidencias] = useState([]);
     const [tipoIncidencia, setTipoIncidencia] = useState('');
-    const [prioridades, setPrioridades] = useState([]);
-    const [prioridad, setPrioridad] = useState('');
     const [hrInicial, setHrInicial] = useState('');
     const [hrFinal, setHrFinal] = useState('');
     const [descripcionGeneral, setDescripcionGeneral] = useState('');
@@ -59,9 +57,7 @@ export const EquipodeIncidencia = () => {
             }
         }; 
         fetchEdificios();
-
         selectTipoIncidencia();
-        selectPrioridad();
 
     }, [permisos, idDepartamentoPertenece]);
 
@@ -155,7 +151,7 @@ export const EquipodeIncidencia = () => {
     };
 
      //---------------------------De aqui-----------------------------------------------------
-     const handleDetalleEquipo = (event) => {
+    const handleDetalleEquipo = (event) => {
         const idEquipo = event.currentTarget.getAttribute('data-id-equipo'); // Obtener el id_equipo desde data-id-equipo
         //setIdEquipo(idEquipo);
        
@@ -232,7 +228,6 @@ export const EquipodeIncidencia = () => {
                 hrEnvio: hrEnvio,
                 hrInicial: hrInicial,
                 hrFinal: hrFinal,
-                prioridad: prioridad,
                 tipoIncidencia: tipoIncidencia
             });
             navigate('/Principal');
@@ -249,16 +244,6 @@ export const EquipodeIncidencia = () => {
             setTipoIncidencia(response.data[0].id_tipoIncidencia);
         }catch(error){
             console.error('Error al obtener los tipos de incidencias', error);
-        }
-    }
-
-    const selectPrioridad = async () => {
-        try{
-            const response = await axios.get('http://localhost:3000/Prioridad');
-            setPrioridades(response.data);
-            setPrioridad(response.data[0].id_prioridad);
-        }catch(error){
-            console.error('Error al obtener las prioridades', error);
         }
     }
 
@@ -504,12 +489,6 @@ export const EquipodeIncidencia = () => {
                                         <select className="form-select" value={tipoIncidencia} onChange={(e) => setTipoIncidencia(e.target.value)}>
                                             {tipoIncidencias.map((ti, index) => (
                                                 <option value={ti.id_tipoIncidencia} key={ti.id_tipoIncidencia}> {ti.nombre} </option>
-                                            ))}
-                                        </select>
-                                        <label htmlFor="inputNewPassword" className="form-label nito">Prioridad: </label>
-                                        <select className="form-select" value={prioridad} onChange={(e) => setPrioridad(e.target.value)}>
-                                            {prioridades.map((prio, index) => (
-                                                <option value={prio.id_prioridad} key={prio.id_prioridad}> {prio.nombre} </option>
                                             ))}
                                         </select>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Horario Disponible Inicial: </label>
