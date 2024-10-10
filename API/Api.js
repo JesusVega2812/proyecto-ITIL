@@ -1652,38 +1652,22 @@ app.put('/RechazarIncidencia', async (req, res) => {
 });
 
 //Trae el detalle de la tabla de incidencias para tecnico
-app.get('/DetalleTablaTecnico', async (req, res) => {
+app.get('/SelectEquipoDeIncidencia', async (req, res) => {
     try {
         await sql.connect(config);
-        const { id_usuario } = req.query;
+        const { id_incidencia } = req.query;
         console.log('Datos recibidos:', {
-            id_usuario
+            id_incidencia
         });
         const result = await sql.query`
-            SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
-            FROM 
-                INCIDENCIA I
-            JOIN 
-                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
-            JOIN 
-                ESPACIOS E ON IL.id_espacio = E.id_espacio
-            JOIN 
-                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
-            JOIN 
-                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia = I.id_tipoIncidencia
-            JOIN
-                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
-            JOIN
-                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
-            WHERE I.id_tecnicoAsignado = ${id_usuario};
+            select id_equipo from INCIDENCIA where id_incidencia = ${id_incidencia};
         `;
         const detalle = result.recordset;
         console.log(detalle);
         res.status(200).json(detalle);
     } catch (error) {
-        console.log('Error al obtener datos de la tabla: ', error);
-        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+        console.log('Error al obtener datos de la tabla incidencia: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla incidencia al traer el equipo de la incidencia' });
     }
 });
 
@@ -1720,7 +1704,51 @@ app.get('/DetalleIncidencia', async (req, res) => {
                 EDIFICIO D ON E.id_edificio = D.id_edificio
 			LEFT JOIN
 				USUARIO U ON U.id_usuario = E.responsable
-            WHERE I.id_incidencia = 1;
+            WHERE I.id_incidencia = ${id_incidencia};
+        `;
+        const detalle = result.recordset[0];
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos del detalle incidencia: ', error);
+        res.status(500).json({ error: 'Error al obtener datos del detalle incidencia' });
+    }
+});
+
+//Trael el id del equipo que se esta atendiendo en la incidencia
+app.get('/SelectEquipoDeIncidencia', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.query;
+        console.log('Datos recibidos:', {
+            id_incidencia
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia,
+                I.hora_envio,
+                I.hora_disponible_inicio,
+                I.hora_disponible_fin,
+                P.nombre AS nombre_prioridad,
+                P.descripcion AS descripcion_prioridad,
+                E.nombre as nombre_espacio,
+                E.ubicacion_esp,
+                D.ubicacion_edificio,
+				D.nombre as nombre_edificio,
+				CONCAT(U.nombre, ' ', U.apellido) AS responsable
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                PRIORIDAD P ON I.id_prioridad = P.id_prioridad
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                EDIFICIO D ON E.id_edificio = D.id_edificio
+			LEFT JOIN
+				USUARIO U ON U.id_usuario = E.responsable
+            WHERE I.id_incidencia = ${id_incidencia};
         `;
         const detalle = result.recordset[0];
         console.log(detalle);

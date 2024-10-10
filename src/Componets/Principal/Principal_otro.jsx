@@ -388,12 +388,22 @@ export const Principal_otro = () => {
 };
 
     //----------------- DETALLE EQUIPO
-    const handleDetalleEquipo = (event) => {
-        const idEquipo = event.currentTarget.getAttribute('data-id-equipo'); // Obtener el id_equipo desde data-id-equipo
-        //setIdEquipo(idEquipo);
-       
-        detalleEquipo(idEquipo); // Pasar el idEquipo correctamente
-        setShowModal4(true);
+    const handleDetalleEquipo = async () => {
+        try{
+            const idEquipo = await axios.get(`http://localhost:3000/SelectEquipoDeIncidencia`,{
+                params: {
+                    id_incidencia: id_incidencia // Pasar id_incidencia como query param
+                }
+            }) // Obtener el id_equipo desde data-id-equipo
+            //setIdEquipo(idEquipo);
+            console.log(idEquipo.data[0].id_equipo);
+            detalleEquipo(idEquipo.data[0].id_equipo); // Pasar el idEquipo correctamente
+            setShowModal4(true);
+        } catch (err) {
+            setEquipo([]);
+            alert('Error al obtener el equipo que se esta atendiendo en la incidencia');
+            console.error(err);
+        }
     };
 
     const handleCloseModal4 = () => {
