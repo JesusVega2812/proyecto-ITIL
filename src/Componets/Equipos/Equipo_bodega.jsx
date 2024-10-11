@@ -388,6 +388,7 @@ export const EquipoBodega = () => {
                             ))}
                         </select>
                     </div>
+
                     <div className="EquipoBodega-column">
                         <label htmlFor="inputText" className="form-label">Garantia</label>
                         <select className="form-select" >
@@ -402,6 +403,7 @@ export const EquipoBodega = () => {
                             ))}
                         </select>
                     </div>
+                    
                 </div>
                 <hr />
 
