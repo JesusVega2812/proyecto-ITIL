@@ -45,6 +45,7 @@ export const EquipoBodega = () => {
     const [protocolos, setProtocolos] = useState('');
     const [tipoEscaners, settipoEscaners] = useState([]);
     const [tipoEscaner, settipoEscaner] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -327,7 +328,7 @@ export const EquipoBodega = () => {
         navigate('/Principal');
     };
 
-   const limpiar = () => {
+    const limpiar = () => {
         //setDepartamento('Seleccione el departamento')
         //setDepartamentoPadre('Seleccione el departamento');
         //setNombre('');
@@ -335,6 +336,15 @@ export const EquipoBodega = () => {
         //setCorreo('');
         //setTelefono('');
    }
+
+    const handlePuertos = (e) => {
+        e.preventDefault();
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     return (
         <form className="EquipoBodega-form-container">
@@ -403,7 +413,6 @@ export const EquipoBodega = () => {
                             ))}
                         </select>
                     </div>
-                    
                 </div>
                 <hr />
 
@@ -596,6 +605,51 @@ export const EquipoBodega = () => {
                     <button className='color-boton-azul submit-btn color-blanco margin-top-btn-listo' type="submit" onClick={handleListo}>Listo</button>
                 </div>
             </div>
+
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Puertos</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="mb-3">
+                                        <ul>
+                                            <li>Gigabit Ethernet
+                                                <ul>
+                                                    <li>NOMBRES</li>
+                                                </ul>
+                                            </li>
+                                            <li>Fast Ethernet
+                                                <ul>
+                                                    <li>NOMBRES</li>
+                                                </ul>
+                                            </li>
+                                            <li>USB
+                                                <ul>
+                                                    <li>NOMBRES</li>
+                                                </ul>
+                                            </li>
+                                            <li>HDMI
+                                                <ul>
+                                                    <li>NOMBRES</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
+                                <button type="button" className="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </form>
     );
 }
