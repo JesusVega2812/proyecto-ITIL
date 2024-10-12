@@ -1,7 +1,7 @@
 .equipos-container {
-    padding: 2%; /* Ajuste relativo al ancho de la pantalla */
-    max-width: 100%;
-    margin: 2% auto; /* Márgenes en porcentaje para adaptabilidad */
+    padding: 2%;
+    max-width: 99%;
+    margin: 2% auto;
     font-family: Arial, sans-serif;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -10,16 +10,16 @@
 .equipos-title {
     text-align: left;
     margin-bottom: 2%;
-    font-size: 2vw; /* Tamaño de texto ajustado a la pantalla */
+    font-size: 2vw;
 }
 .equipos-edificio-list {
     list-style-type: none;
     padding: 0;
 }
 .equipos-edificio-item {
-    margin: 1% 0; /* Márgenes en porcentaje */
+    margin: 1% 0;
     cursor: pointer;
-    padding: 1%; /* Ajuste proporcional */
+    padding: 1%;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
@@ -28,11 +28,11 @@
 .equipos-edificio-name {
     font-weight: bold;
     color: #043c64;
-    font-size: 1.8vw; /* Tamaño de texto ajustado */
+    font-size: 1.8vw;
 }
 .equipos-espacio-list {
     list-style-type: none;
-    padding-left: 5%; /* Espaciado proporcional */
+    padding-left: 5%;
 }
 .equipos-espacio-item {
     margin: 1% 0;
@@ -110,7 +110,7 @@
     font-size: 17px;
 }
 .scrollableEquipo{
-    max-height: 94.5vh;
+    max-height: 89.1vh;
     overflow-y: auto;
 }
 .div-nombre-conexion {
