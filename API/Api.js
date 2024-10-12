@@ -2190,7 +2190,7 @@ app.put('/RechazarIncidencia', async (req, res) => {
     }
 });
 
-//Trae el detalle de la tabla de incidencias para tecnico
+//Trae el equipo de la incidencia
 app.get('/SelectEquipoDeIncidencia', async (req, res) => {
     try {
         await sql.connect(config);
