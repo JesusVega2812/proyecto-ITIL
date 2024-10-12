@@ -256,7 +256,7 @@ app.get('/SelectEdificiosPorDepartamento', async(req, res) => {
             SELECT DISTINCT E.id_edificio, E.nombre
             FROM EDIFICIO E
             JOIN ESPACIOS ES ON E.id_edificio = ES.id_edificio
-            WHERE ES.id_departamento = ${id_departamento} and estatus = 1;
+            WHERE ES.id_departamento = ${id_departamento} and ES.estatus = 1;
         `);
         res.status(200).json({edificios: checkEdificioDepartamento.recordset});
     }catch(error){
@@ -275,8 +275,8 @@ app.get('/SelectEspaciosPorEdificio', async(req,res) => {
         const checkEspacioEdificio = await sql.query(`
             SELECT DISTINCT TE.id_tipoEspacio, TE.nombre
             FROM TIPO_ESPACIO TE
-            JOIN ESPACIOS ES ON TE.id_tipoEspacio = ES.id_tipoEspacio
-            WHERE ES.id_edificio = ${id_edificio} AND ES.id_departamento = ${id_departamento};
+            LEFT JOIN ESPACIOS ES ON TE.id_tipoEspacio = ES.id_tipoEspacio
+            WHERE ES.id_edificio = ${id_edificio} AND ES.id_departamento = ${id_departamento} AND estatus = 1;
         `);
         res.status(200).json({tiposEspacios: checkEspacioEdificio.recordset});
     }catch(error){
@@ -353,8 +353,8 @@ app.post('/AltaEspacios', async(req, res) => {
     try{
         await sql.connect(config);
         const{tipoEspacio, edificio, idDepartamentoPertenece, ubicacion, capacidad, nombre, usuario} = req.body;
-        await sql.query`INSERT INTO espacios(id_tipoEspacio, id_edificio, id_departamento, ubicacion_esp, capacidad, nombre, responsable)
-            VALUES(${tipoEspacio}, ${edificio}, ${idDepartamentoPertenece}, ${ubicacion}, ${capacidad}, ${nombre}, ${usuario});
+        await sql.query`INSERT INTO espacios(id_tipoEspacio, id_edificio, id_departamento, ubicacion_esp, capacidad, nombre, responsable, estatus)
+            VALUES(${tipoEspacio}, ${edificio}, ${idDepartamentoPertenece}, ${ubicacion}, ${capacidad}, ${nombre}, ${usuario}, 1);
             `;
         res.status(200).send('Espacio insertado exitosamente');
     }catch(error){
@@ -415,12 +415,14 @@ app.put('/ActualizaEspacio', async (req, res) => {
 });
 
 // Elimina un espacio
-app.delete('/EliminaEspacio', async (req,res) => {
+app.put('/EliminaEspacio', async (req,res) => {
     try{
         await sql.connect(config);
-        const id_espacio = req.query.id_espacio;
+        const id_espacio = req.body.id_espacio;
+        console.log(id_espacio)
         const result = await sql.query(`
-            delete from ESPACIOS
+            UPDATE ESPACIOS
+            SET estatus = 0
             where id_espacio = ${id_espacio};
         `)
         if (result.rowsAffected[0] > 0) {
@@ -910,9 +912,9 @@ app.get('/SelectTipoEscaner', async (req, res) => {
 app.post('/AltaComputadora',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipo, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed, softwares
         });
         console.log('llegue a altacomputadora');
        // Inserción en la tabla EQUIPO
@@ -943,6 +945,22 @@ app.post('/AltaComputadora',async(req,res) => {
                 );`;
             }
         }
+
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
+
         console.log(idEquipoInsertado)
         res.status(200).json({id: idEquipoInsertado});
     }catch(error){
@@ -958,9 +976,9 @@ app.post('/AltaComputadora',async(req,res) => {
 app.post('/AltaServidor',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, procesador, RAM, memoria, tarjetaGrafica, sistemaOperativo, tarjetaRed
         });
         console.log('llegue a altaservidor');
        // Inserción en la tabla EQUIPO
@@ -979,6 +997,21 @@ app.post('/AltaServidor',async(req,res) => {
         await sql.query`INSERT INTO SERVIDOR (id_servidor, procesador, memoria_RAM, almacenamiento, tarjeta_grafica, sistema_operativo, configuracion_red)
         VALUES (${idEquipoInsertado}, ${procesador}, ${RAM}, ${memoria}, ${tarjetaGrafica}, ${sistemaOperativo}, ${tarjetaRed});`;
 
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
+
         res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-servidor:', error.message);
@@ -993,9 +1026,9 @@ app.post('/AltaServidor',async(req,res) => {
 app.post('/AltaImpresora',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipoImpresora, resolucion, velocidad, conectividad} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipoImpresora, resolucion, velocidad, conectividad} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipoImpresora, resolucion, velocidad, conectividad
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipoImpresora, resolucion, velocidad, conectividad
         });
         console.log('llegue a altaimpresora');
        // Inserción en la tabla EQUIPO
@@ -1014,6 +1047,21 @@ app.post('/AltaImpresora',async(req,res) => {
         await sql.query`INSERT INTO IMPRESORA (id_impresora, id_tipoImpresora, resolucion, velocidad_impresion, conectividad)
         VALUES (${idEquipoInsertado}, ${tipoImpresora}, ${resolucion}, ${velocidad}, ${conectividad});`;
 
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
+
         res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-impresora:', error.message);
@@ -1028,9 +1076,9 @@ app.post('/AltaImpresora',async(req,res) => {
 app.post('/AltaSwitch',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, numPuertos, velocidad_backplane, tipoSwitch, capacidad, consEnergia
         });
         console.log('llegue a altaswitch');
        // Inserción en la tabla EQUIPO
@@ -1049,6 +1097,21 @@ app.post('/AltaSwitch',async(req,res) => {
         await sql.query`INSERT INTO SWITCH (id_switch, numero_puertos, velocidad_backplane, tipo_switch, capacidad_switching, consumo_energia)
         VALUES (${idEquipoInsertado}, ${numPuertos}, ${velocidad_backplane}, ${tipoSwitch}, ${capacidad}, ${consEnergia});`;
 
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
+
         res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-switch:', error.message);
@@ -1063,9 +1126,9 @@ app.post('/AltaSwitch',async(req,res) => {
 app.post('/AltaRouter',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, tipo_conexion, soporte_vpn, numGigFas, numSeriales, frecuencia, protocolos, capacidad, consEnergia
         });
         console.log('llegue a altarouter');
        // Inserción en la tabla EQUIPO
@@ -1083,6 +1146,21 @@ app.post('/AltaRouter',async(req,res) => {
         await sql.query`INSERT INTO ROUTER (id_router, tipo_conexion, soporte_vpn, numero_interfaces_giga_fast, numero_seriales, frecuencia_ruta, protocolos_ruta, capacidad_ruta, consumo_energia)
         VALUES (${idEquipoInsertado}, ${tipo_conexion}, ${soporte_vpn}, ${numGigFas}, ${numSeriales}, ${frecuencia}, ${protocolos}, ${capacidad}, ${consEnergia});`;
 
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
+
         res.status(200).send({ id: idEquipoInsertado });
     }catch(error){
         console.error('Error al insertar el equipo-router:', error.message);
@@ -1097,9 +1175,9 @@ app.post('/AltaRouter',async(req,res) => {
 app.post('/AltaEscaner',async(req,res) => {
     try{
         await sql.connect(config);
-        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, velocidad, tipoEscaner} = req.body;
+        const {numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, velocidad, tipoEscaner} = req.body;
         console.log('Datos recibidos:', {
-            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, velocidad, tipoEscaner
+            numeroSerie, fechaCompra, costo, id_usuario, modelo, garantia, estado, puertos, velocidad, tipoEscaner
         });
         console.log('llegue a altaescaner');
        // Inserción en la tabla EQUIPO
@@ -1116,6 +1194,21 @@ app.post('/AltaEscaner',async(req,res) => {
         // Inserción en la tabla escaner
         await sql.query`INSERT INTO ESCANER (id_escaner, velocidad, id_tipoEscaner)
         VALUES (${idEquipoInsertado}, ${velocidad}, ${tipoEscaner});`;
+
+        // Insertar en la tabla PUERTO
+        if (puertos && puertos.length > 0) {
+            for (const puertoId of puertos) {
+                await sql.query`INSERT INTO PUERTO (
+                    id_equipo,
+                    nombre_puerto,
+                    estado
+                ) VALUES (
+                    ${idEquipoInsertado},
+                    ${puertoId},
+                    0
+                );`;
+            }
+        }
 
         res.status(200).send(idEquipoInsertado);
     }catch(error){
@@ -2355,5 +2448,133 @@ app.put('/LiberarIncidencia', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al liberar incidencia' });
     } finally {
         await sql.close();
+    }
+});
+
+//Trae los gigas
+app.get('/SelectGiga', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 2;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los gigas', error.message);
+        res.status(500).send('Error al obtener los gigas');
+    }
+});
+
+//Trae los fast
+app.get('/SelectFast', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 1;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los fast', error.message);
+        res.status(500).send('Error al obtener los fast');
+    }
+});
+
+//Trae los consolas
+app.get('/SelectConsolas', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 3;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los consolas', error.message);
+        res.status(500).send('Error al obtener los consolas');
+    }
+});
+
+//Trae los ubs2
+app.get('/SelectUsb2', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 4;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los usb2', error.message);
+        res.status(500).send('Error al obtener los usb2');
+    }
+});
+
+//Trae los ubs3
+app.get('/SelectUsb3', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 5;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los usb3', error.message);
+        res.status(500).send('Error al obtener los usb3');
+    }
+});
+
+//Trae los hdmi
+app.get('/SelectHdmi', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 6;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los hdmi', error.message);
+        res.status(500).send('Error al obtener los hdmi');
+    }
+});
+
+//Trae los Vga
+app.get('/SelectVga', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 7;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los vga', error.message);
+        res.status(500).send('Error al obtener los vga');
+    }
+});
+
+//Trae los ubs3
+app.get('/SelectRj', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 8;
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los rj', error.message);
+        res.status(500).send('Error al obtener los rj');
     }
 });

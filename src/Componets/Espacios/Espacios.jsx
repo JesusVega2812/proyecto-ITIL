@@ -107,8 +107,8 @@ export const Espacios = () => {
             return;
         }
         try{
-            const response = await axios.delete('http://localhost:3000/EliminaEspacio', {
-                params: { id_espacio }
+            const response = await axios.put('http://localhost:3000/EliminaEspacio', {
+                id_espacio
             });
             alert('Espacio eliminado exitosamente');
             limpiar();

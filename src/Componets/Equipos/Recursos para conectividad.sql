@@ -146,3 +146,9 @@ VALUES
 (8, 'RJ45 Port 6');
  
 select * from TIPO_PUERTO
+
+SELECT * FROM NOMBRE_PUERTO
+WHERE id_tipo_puerto = 1;
+
+select * from PUERTO
+SELECT * FROM NOMBRE_PUERTO

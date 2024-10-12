@@ -160,9 +160,12 @@
 }
 .pO-div-lugar{
     border: 1px solid rgb(0, 174, 255);
-    border-radius: 4px;
-    padding-left: 3%;
     margin-top: -1.2%;
+    padding: 0.8%;
+    padding-left: 1.5%;
+    background-color: white;
+    border-radius: 8px; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 .pO-hr-solicitud{
     margin-left: 15%;

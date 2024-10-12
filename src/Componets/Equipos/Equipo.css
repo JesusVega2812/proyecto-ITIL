@@ -55,14 +55,14 @@
     list-style-type: none;
     padding-left: 5%
 }
-.bordersuki{
-    border: 1px solid red;
-}
 .equipos-equipo-item {
     margin: 1% 0;
     padding: 1%;
     background-color: #f1f1f1;
     border-radius: 4px;
+}
+.equipos-nombre-item{
+    list-style-type: none;
 }
 .equipos-select-button {
     background-color: #db5e15;
@@ -101,3 +101,31 @@
     background-color: transparent;
     color: inherit;
 }    
+.editar-nomEspacio{
+    color: #7c0494;
+    font-size: 20px;
+}
+.editar-responsable{
+    color: #7c0494;
+    font-size: 17px;
+}
+.scrollableEquipo{
+    max-height: 94.5vh;
+    overflow-y: auto;
+}
+.div-nombre-conexion {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+.equipos-equipo-name {
+    flex-grow: 1; 
+}
+.btn-conexion {
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #043c64;
+    width: 10%;
+}

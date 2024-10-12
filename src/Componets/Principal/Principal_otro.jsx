@@ -91,9 +91,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -124,9 +124,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -156,9 +156,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -197,9 +197,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -230,9 +230,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -262,9 +262,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -303,9 +303,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -336,9 +336,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -368,9 +368,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -409,9 +409,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -442,9 +442,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -474,9 +474,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -515,9 +515,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -548,9 +548,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -580,9 +580,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -621,9 +621,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${year}-${month}-${day}`;
                     });
                     const departamentosA = detalles.map(d => d.nombre);
@@ -654,9 +654,9 @@ export const Principal_otro = () => {
                     const foliosA = detalles.map(d => d.id_incidencia);
                     const fechasA = detalles.map(d => {
                         const date = new Date(d.fecha);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                        const day = String(date.getDate()).padStart(2, '0');
+                        const year = date.getUTCFullYear();
+                        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                        const day = String(date.getUTCDate()).padStart(2, '0');
                         return `${day}-${month}-${year}`;
                     });
                     const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
@@ -686,9 +686,9 @@ export const Principal_otro = () => {
                 const foliosA = detalles.map(d => d.id_incidencia);
                 const fechasA = detalles.map(d => {
                     const date = new Date(d.fecha);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getUTCFullYear();
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    const day = String(date.getUTCDate()).padStart(2, '0');
                     return `${year}-${month}-${day}`;
                 });
                 const departamentosA = detalles.map(d => d.nombre);
@@ -1030,7 +1030,7 @@ export const Principal_otro = () => {
                                 <td className='pO-border-cuerpo'> 
                                     {(permisos === '1') && (
                                         <>
-                                            {(estados[index] === 'Enviado' || estados[index] === 'En Proceso') && (
+                                            {estados[index] === 'Enviado' && (
                                                 <button className='pO-orden-trabajo color-blanco' onClick={() => handleOrdenTrabajo({
                                                         id_incidencia: folio,
                                                         fecha: fechas[index],
@@ -1055,7 +1055,7 @@ export const Principal_otro = () => {
                                                     Liberar
                                                 </button>
                                             )}
-                                    {(permisos === '4') && (
+                                    {(permisos === '4' || estados[index] !== 'Enviado') && (
                                         <button className='pO-orden-trabajo color-blanco' onClick={() => handleDetalles({
                                             id_incidencia: folio,
                                             fecha: fechas[index],
@@ -1116,19 +1116,19 @@ export const Principal_otro = () => {
                                     <div className="mb-3">
                                         <div className='pO-div-noEditable'>
                                             <label htmlFor="inputText" className="form-label">Folio: </label>
-                                            <span>{selectedIncidencia.id_incidencia}</span>
+                                            <span> {selectedIncidencia.id_incidencia}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Fecha de Solicitud: </label>
-                                            <span>{selectedIncidencia.fecha}</span>
+                                            <span> {selectedIncidencia.fecha}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Departamento: </label>
-                                            <span>{selectedIncidencia.departamento}</span>
+                                            <span> {selectedIncidencia.departamento}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Tipo de Incidencia: </label>
-                                            <span>{selectedIncidencia.tipoIncidencia}</span>
+                                            <span> {selectedIncidencia.tipoIncidencia}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
-                                            <span>{selectedIncidencia.descripcion}</span>
+                                            <span> {selectedIncidencia.descripcion}</span>
                                         </div>
                                         <div className="input-container">
                                             <label htmlFor="" className="form-label nito">Especialización: </label>
@@ -1174,25 +1174,25 @@ export const Principal_otro = () => {
                                     <div className="mb-3">
                                         <div>
                                             <label htmlFor="inputText" className="form-label pO-fecha-solicitud">Fecha de Solicitud: </label>
-                                            <span>{fecha}</span>
+                                            <span> {fecha}</span>
                                             <label htmlFor="inputText" className="form-label pO-hr-solicitud">Hora de Solicitud: </label>
-                                            <span>{hrEnvio}</span>
+                                            <span> {hrEnvio}</span>
                                             <button type="button" className="btn btn-outline-danger pO-btn-equipo" onClick={handleDetalleEquipo}>Equipo</button>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Tipo de Incidencia: </label>
-                                            <span>{tipoIncidencia}</span>
+                                            <span> {tipoIncidencia}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
-                                            <span>{descripcion}</span>
+                                            <span> {descripcion}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Disponibilidad de Horario: </label>
-                                            <span>{hrInicio} a {hrFin}</span>
+                                            <span> {hrInicio} a {hrFin}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Prioridad: </label>
-                                            <span>{nomPrioridad}</span>
+                                            <span> {nomPrioridad}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Prioridad: </label>
-                                            <span>{descPrioridad}</span>
+                                            <span> {descPrioridad}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Lugar </label>
                                             <div className='pO-div-lugar'>
@@ -1208,12 +1208,14 @@ export const Principal_otro = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" className="tam-letra-17px color-boton-lila color-blanco btn-sin-border btn-tam-diagnostico" onClick={handleDiagnostico}>Diagnóstico</button>
+                                    {(estado === 'En Proceso' && permisos === '4') && (
+                                        <button type="button" className="tam-letra-17px color-boton-lila color-blanco btn-sin-border btn-tam-diagnostico" onClick={handleDiagnostico}>Diagnóstico</button>
+                                    )}
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal3}>Cancelar</button>
-                                {(estado === 'En Proceso') && (
+                                {(estado === 'En Proceso' && permisos === '4') && (
                                         <button type="button" className="btn btn-primary" onClick={handleFinalizar}>Finalizar</button>
                                 )}
                             </div>
@@ -1253,7 +1255,7 @@ export const Principal_otro = () => {
                                         <>
                                             <label htmlFor="procesador" className="form-label nito">Procesador: </label>
                                             <br />
-                                            <span className="form-span">{equipo.detalles.procesador}</span>
+                                            <span className="form-span"> {equipo.detalles.procesador}</span>
                                             <br />
                                             <span className="form-span">{equipo.detalles.nucleos} nucleos</span>
                                             <br />
@@ -1263,20 +1265,20 @@ export const Principal_otro = () => {
                                             <br />
 
                                             <label htmlFor="ram" className="form-label nito">Memoria RAM: </label>
-                                            <span className="form-span">{equipo.detalles.memoria_RAM}</span>
+                                            <span className="form-span"> {equipo.detalles.memoria_RAM}</span>
                                             <br />
 
                                             <label htmlFor="almacenamiento" className="form-label nito">Almacenamiento: </label>
-                                            <span className="form-span">{equipo.detalles.almacenamiento}</span>
+                                            <span className="form-span"> {equipo.detalles.almacenamiento}</span>
                                             <br />
 
                                             <label htmlFor="tarjetaGrafica" className="form-label nito">Tarjeta Gráfica: </label>
-                                            <span className="form-span">{equipo.detalles.tarjeta_grafica}</span>
+                                            <span className="form-span"> {equipo.detalles.tarjeta_grafica}</span>
                                             <br />
 
                                             <label htmlFor="sistemaOperativo" className="form-label nito">Sistema Operativo: </label>
                                             <br />
-                                            <span className="form-span">{equipo.detalles.sistemaOperativo}</span>
+                                            <span className="form-span"> {equipo.detalles.sistemaOperativo}</span>
                                             <br />
                                             <span className="form-span">Tipo de interfaz: {equipo.detalles.interfaz}</span>
                                             <br />
@@ -1284,7 +1286,7 @@ export const Principal_otro = () => {
                                             <br />
 
                                             <label htmlFor="configuracionRed" className="form-label nito">Configuración de red: </label>
-                                            <span className="form-span">{equipo.detalles.tarjetaRed}</span>
+                                            <span className="form-span"> {equipo.detalles.tarjetaRed}</span>
                                             <br />
                                         </>
                                     )}
@@ -1293,13 +1295,13 @@ export const Principal_otro = () => {
                                     {(equipo.tipo === 'Impresora') && (
                                         <>
                                             <label htmlFor="tipoImpresora" className="form-label nito">Tipo de Impresora: </label>
-                                            <span className="form-span">{equipo.detalles.tipo_impresora}</span>
+                                            <span className="form-span"> {equipo.detalles.tipo_impresora}</span>
                                             <br />
                                             <label htmlFor="resolucion" className="form-label nito">Resolución: </label>
-                                            <span className="form-span">{equipo.detalles.resolucion}</span>
+                                            <span className="form-span"> {equipo.detalles.resolucion}</span>
                                             <br />
                                             <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
-                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <span className="form-span"> {equipo.detalles.conectividad}</span>
                                             <br />
                                         </>
                                     )}
@@ -1308,16 +1310,16 @@ export const Principal_otro = () => {
                                     {(equipo.tipo === 'Switch') && (
                                         <>
                                             <label htmlFor="numeroPuertos" className="form-label nito">Número de puertos: </label>
-                                            <span className="form-span">{equipo.detalles.numero_puertos}</span>
+                                            <span className="form-span"> {equipo.detalles.numero_puertos}</span>
                                             <br />
                                             <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
-                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <span className="form-span"> {equipo.detalles.velocidad}</span>
                                             <br />
                                             <label htmlFor="tipoSwitch" className="form-label nito">Tipo de Switch: </label>
-                                            <span className="form-span">{equipo.detalles.tipo_switch}</span>
+                                            <span className="form-span"> {equipo.detalles.tipo_switch}</span>
                                             <br />
                                             <label htmlFor="conectividad" className="form-label nito">Conectividad: </label>
-                                            <span className="form-span">{equipo.detalles.conectividad}</span>
+                                            <span className="form-span"> {equipo.detalles.conectividad}</span>
                                             <br />
                                         </>
                                     )}
@@ -1326,22 +1328,22 @@ export const Principal_otro = () => {
                                     {(equipo.tipo === 'Router') && (
                                         <>
                                             <label htmlFor="tipoConexion" className="form-label nito">Tipo de conexión: </label>
-                                            <span className="form-span">{equipo.detalles.tipo_conexion}</span>
+                                            <span className="form-span"> {equipo.detalles.tipo_conexion}</span>
                                             <br />
                                             <label htmlFor="soporteVPN" className="form-label nito">Soporte VPN: </label>
-                                            <span className="form-span">{equipo.detalles.soporte_vpn}</span>
+                                            <span className="form-span"> {equipo.detalles.soporte_vpn}</span>
                                             <br />
                                             <label htmlFor="numeroInterfaces" className="form-label nito">Número de Interfaces Giga, Fast: </label>
-                                            <span className="form-span">{equipo.detalles.numero_interfaces}</span>
+                                            <span className="form-span"> {equipo.detalles.numero_interfaces}</span>
                                             <br />
                                             <label htmlFor="numeroSeriales" className="form-label nito">Número de Seriales: </label>
-                                            <span className="form-span">{equipo.detalles.numero_seriales}</span>
+                                            <span className="form-span"> {equipo.detalles.numero_seriales}</span>
                                             <br />
                                             <label htmlFor="frecuenciaRuta" className="form-label nito">Frecuencia de Ruta: </label>
-                                            <span className="form-span">{equipo.detalles.frecuencia_ruta}</span>
+                                            <span className="form-span"> {equipo.detalles.frecuencia_ruta}</span>
                                             <br />
                                             <label htmlFor="protocolosRuta" className="form-label nito">Prótocolos de Ruta: </label>
-                                            <span className="form-span">{equipo.detalles.protocolos_ruta}</span>
+                                            <span className="form-span"> {equipo.detalles.protocolos_ruta}</span>
                                             <br />
                                         </>
                                     )}
@@ -1350,10 +1352,10 @@ export const Principal_otro = () => {
                                     {(equipo.tipo === 'Switch' || equipo.tipo === 'Router') && (
                                         <>
                                             <label htmlFor="capacidad" className="form-label nito">Capacidad: </label>
-                                            <span className="form-span">{equipo.detalles.capacidad}</span>
+                                            <span className="form-span"> {equipo.detalles.capacidad}</span>
                                             <br />
                                             <label htmlFor="consumoEnergia" className="form-label nito">Consumo de Energía: </label>
-                                            <span className="form-span">{equipo.detalles.consumo_energia}</span>
+                                            <span className="form-span"> {equipo.detalles.consumo_energia}</span>
                                             <br />
                                         </>
                                     )}
@@ -1362,10 +1364,10 @@ export const Principal_otro = () => {
                                     {(equipo.tipo === 'Escaner') && (
                                         <>
                                             <label htmlFor="tipoEscaner" className="form-label nito">Tipo de Escaner: </label>
-                                            <span className="form-span">{equipo.detalles.tipo_escaner}</span>
+                                            <span className="form-span"> {equipo.detalles.tipo_escaner}</span>
                                             <br />
                                             <label htmlFor="velocidad" className="form-label nito">Velocidad: </label>
-                                            <span className="form-span">{equipo.detalles.velocidad}</span>
+                                            <span className="form-span"> {equipo.detalles.velocidad}</span>
                                             <br />
                                         </>
                                     )}

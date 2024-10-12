@@ -53,3 +53,12 @@ FOREIGN KEY (responsable) REFERENCES usuario(id_usuario);
 select * from USUARIO
 
 select * from ESPACIOS
+
+
+------------------ 12 de Octubre
+ALTER TABLE ESPACIOS
+ADD estatus bit
+
+UPDATE ESPACIOS
+SET estatus = 1
+WHERE id_espacio = 23

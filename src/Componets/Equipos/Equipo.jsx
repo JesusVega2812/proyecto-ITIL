@@ -29,6 +29,7 @@ export const Equipos = () => {
     const [escaner, setEscaner] = useState('');
     const [selectedIdEspacio, setSelectedIdEspacio] = useState(null);
     const [showModal2, setShowModal2] = useState(false);
+    const [showModal3, setShowModal3] = useState(false);
 
     //Esta debes copiar y pegar
     const [equipo, setEquipo] = useState({
@@ -363,10 +364,17 @@ export const Equipos = () => {
         }
     }
 
-    
+    const handleConexion = (e) => {
+        e.stopPropagation();
+        setShowModal3(true);
+    };
+
+    const handleCloseModal3 = () => {
+        setShowModal3(false);
+    };
 
     return (
-        <div className="equipos-container">
+        <div className="equipos-container scrollableEquipo">
             <h1 className="equipos-title">Gestión de Equipos </h1>
             <ul className="equipos-edificio-list">
                 {Array.isArray(edificios) && edificios.length > 0 ? (
@@ -389,19 +397,23 @@ export const Equipos = () => {
                                                             nombresEspacio.map((nombreEspacio) => (
                                                                 <li key={nombreEspacio.id_espacio} className="equipos-nombre-item">
                                                                     <div  className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
-                                                                        <span>Responsable: {nombreEspacio.responsable}</span>
-                                                                        <br/>
-                                                                        {nombreEspacio.nombre}  
+                                                                        <span className='editar-nomEspacio nito'>{nombreEspacio.nombre}</span>
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
                                                                         <>
+                                                                            <span className='editar-responsable nito'>Responsable: </span>
+                                                                            <span>  {nombreEspacio.responsable}</span>
+                                                                            <br />
                                                                             <button className="equipos-select-button" onClick={handleNewEquipo}>New</button>
                                                                             <ul className="equipos-lista-equipos">
                                                                                 {Array.isArray(equipos) && equipos.length > 0 ? (
                                                                                     equipos.map((equipo) => (
                                                                                         <li key={equipo.id_equipo}  className="equipos-equipo-item" onClick={handleDetalleEquipo} data-id-equipo={equipo.id_equipo}>
-                                                                                            <div  className="equipos-equipo-name">
+                                                                                            <div className='div-nombre-conexion'>
+                                                                                                <div  className="equipos-equipo-name">
                                                                                                 {equipo.clave} 
+                                                                                                </div>
+                                                                                                <button className='btn-conexion color-blanco' onClick={handleConexion}>Conexión</button>
                                                                                             </div>
                                                                                         </li>
                                                                                     ))
@@ -691,6 +703,29 @@ export const Equipos = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal2}>Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal3 && (
+                <div className="modal-overlay" onClick={handleCloseModal3}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                        <p></p>
+                        <button type="button" class="btn-close" aria-label="Close" onClick={handleCloseModal3}></button>
+                            <div className="modal-header">
+                                <h5 className="modal-title nito">Conexión</h5>
+                            </div>
+                            <div className="modal-body">
+                            <form>
+                                 
+                            </form>
+
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal3}>Cerrar</button>
                             </div>
                         </div>
                     </div>

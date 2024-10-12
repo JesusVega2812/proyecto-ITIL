@@ -1,3 +1,5 @@
+use ProyectoITIL
+go
 
 alter table historial_incidencias
 drop constraint FK_Historial_TipoReparacion;
@@ -14,7 +16,7 @@ alter table PARTES_REEMPLAZADAS
 drop constraint FK_PartesReemplazadas_Parte;
 
 alter table PARTES_REEMPLAZADAS
-drop constraint PK__PARTES_R__087CB9D440A253ED;
+drop constraint PK__PARTES_R__087CB9D40E45D4C3;
 
 alter table PARTES_REEMPLAZADAS
 drop column id_historial;
@@ -35,8 +37,12 @@ EXEC sp_rename 'PARTES_REEMPLAZADAS', 'RFC';
 EXEC sp_rename 'PARTES', 'PIEZA';
 
 -------------------------------------------------------------------------------
+Create table RFC(
+	pieza int not null,
+	incidencia INT not null);
+
 alter table PIEZA
-drop constraint PK__PARTES__3F12D5847095BAEF
+drop constraint PK__PARTES__3F12D5845E5A87A9
 
 alter table PIEZA
 drop column id_parte;
@@ -46,15 +52,6 @@ add id_pieza int not null identity(1,1)
 
 alter table Pieza 
 add constraint PK_Pieza primary key(id_pieza)
-
-alter table RFC
-drop column id_parte;
-
-alter table RFC
-add pieza int not null;
-
-alter table RFC
-add incidencia INT not null
 
 alter table RFC
 add constraint PK_RFC primary key(pieza,incidencia);

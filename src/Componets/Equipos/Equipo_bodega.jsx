@@ -46,6 +46,33 @@ export const EquipoBodega = () => {
     const [tipoEscaners, settipoEscaners] = useState([]);
     const [tipoEscaner, settipoEscaner] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [expandedG, setExpandedG] = useState(false);
+    const [expandedF, setExpandedF] = useState(false);
+    const [expandedU2, setExpandedU2] = useState(false);
+    const [expandedU3, setExpandedU3] = useState(false);
+    const [expandedC, setExpandedC] = useState(false);
+    const [expandedH, setExpandedH] = useState(false);
+    const [expandedV, setExpandedV] = useState(false);
+    const [expandedR, setExpandedR] = useState(false);
+
+    const [gigas, setGigas] = useState([]);
+    const [gigasSelected, setGigasSelected] = useState([]);
+    const [fasts, setFasts] = useState([]);
+    const [fastsSelected, setFastsSelected] = useState([]);
+    const [consolas, setConsolas] = useState([]);
+    const [consolasSelected, setConsolasSelected] = useState([]);
+    const [usbs2, setUsbs2] = useState([]);
+    const [usbs2Selected, setUsbs2Selected] = useState([]);
+    const [usbs3, setUsbs3] = useState([]);
+    const [usbs3Selected, setUsbs3Selected] = useState([]);
+    const [hdmis, setHdmis] = useState([]);
+    const [hdmisSelected, setHdmisSelected] = useState([]);
+    const [vgas, setVgas] = useState([]);
+    const [vgasSelected, setVgasSelected] = useState([]);
+    const [rjs, setRjs] = useState([]);
+    const [rjsSelected, setRjsSelected] = useState([]);
+
+    const [puertos, setPuertos] = useState([]);    
 
     const navigate = useNavigate();
 
@@ -64,7 +91,170 @@ export const EquipoBodega = () => {
         selectTipoImpresora();
         //Escaner
         selectTipoEscaner();
+
+        selectGiga();
+        selectFast();
+        selectConsolas();
+        selectHdmis();
+        selectUsbs2();
+        selectUsbs3();
+        selectRjs();
+        selectVgas()
     }, []);
+
+    const handleExpandG = (e) => {
+        e.preventDefault();
+        setExpandedG(!expandedG);
+    };
+
+    const handleExpandF = (e) => {
+        e.preventDefault();
+        setExpandedF(!expandedF);
+    };
+
+    const handleExpandU2 = (e) => {
+        e.preventDefault();
+        setExpandedU2(!expandedU2);
+    };
+
+    const handleExpandU3 = (e) => {
+        e.preventDefault();
+        setExpandedU3(!expandedU3);
+    };
+
+    const handleExpandH = (e) => {
+        e.preventDefault();
+        setExpandedH(!expandedH);
+    };
+
+    const handleExpandV = (e) => {
+        e.preventDefault();
+        setExpandedV(!expandedV);
+    };
+
+    const handleExpandR = (e) => {
+        e.preventDefault();
+        setExpandedR(!expandedR);
+    };
+
+    const handleExpandC = (e) => {
+        e.preventDefault();
+        setExpandedC(!expandedC);
+    };
+
+    const handleCheckboxChangePuertos = (id, selected, setSelected) => {
+        if (selected.includes(id)) {
+          setSelected(selected.filter((selectedId) => selectedId !== id));
+          setPuertos(puertos.filter((selectedId) => selectedId !== id));
+        } else {
+          setSelected([...selected, id]);
+          setPuertos([...puertos, id]);
+        }
+      };
+
+    const selectGiga = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectGiga');
+            setGigas(response.data);
+        } catch (error) {
+            console.error('Error al obtener los gigas', error);
+        }
+    };
+
+    const handleCheckboxChangeGigas = (id) => {
+        handleCheckboxChangePuertos(id, gigasSelected, setGigasSelected);
+      };      
+
+    const selectFast = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectFast');
+            setFasts(response.data);
+        } catch (error) {
+            console.error('Error al obtener los fast', error);
+        }
+    };
+
+    const handleCheckboxChangeFast = (id) => {
+        handleCheckboxChangePuertos(id, fastsSelected, setFastsSelected);
+      };      
+
+    const selectConsolas = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectConsolas');
+            setConsolas(response.data);
+        } catch (error) {
+            console.error('Error al obtener las consolas', error);
+        }
+    };
+
+    const handleCheckboxChangeConsolas = (id) => {
+        handleCheckboxChangePuertos(id, consolasSelected, setConsolasSelected);
+      };  
+
+    const selectUsbs2 = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectUsb2');
+            setUsbs2(response.data);
+        } catch (error) {
+            console.error('Error al obtener los USBs 2.0', error);
+        }
+    };
+
+    const handleCheckboxChangeUsbs2 = (id) => {
+        handleCheckboxChangePuertos(id, usbs2Selected, setUsbs2Selected);
+    };
+    
+    const selectUsbs3 = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectUsb3');
+            setUsbs3(response.data);
+        } catch (error) {
+            console.error('Error al obtener los USBs 3.0', error);
+        }
+    };
+
+    const handleCheckboxChangeUsbs3 = (id) => {
+        handleCheckboxChangePuertos(id, usbs3Selected, setUsbs3Selected);
+    };
+
+    const selectHdmis = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectHdmi');
+            setHdmis(response.data);
+        } catch (error) {
+            console.error('Error al obtener los HDMIs', error);
+        }
+    };
+
+    const handleCheckboxChangeHdmis = (id) => {
+        handleCheckboxChangePuertos(id, hdmisSelected, setHdmisSelected);
+    };
+
+    const selectVgas = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectVga');
+            setVgas(response.data);
+        } catch (error) {
+            console.error('Error al obtener los VGAs', error);
+        }
+    };
+
+    const handleCheckboxChangeVgas = (id) => {
+        handleCheckboxChangePuertos(id, vgasSelected, setVgasSelected);
+    };
+
+    const selectRjs = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/SelectRj');
+            setRjs(response.data);
+        } catch (error) {
+            console.error('Error al obtener los RJ45', error);
+        }
+    };
+
+    const handleCheckboxChangeRjs = (id) => {
+        handleCheckboxChangePuertos(id, rjsSelected, setRjsSelected);
+    };
 
     const selectTipoEscaner = async () => {
         try{
@@ -183,6 +373,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //computadora
                     tipo: computadoraTipo,
                     procesador: procesador,
@@ -206,6 +397,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //servidor
                     procesador: procesador,
                     RAM: ram,
@@ -226,6 +418,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //impresora
                     tipoImpresora: tipoImpresora,
                     resolucion: resolucion,
@@ -244,6 +437,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //Switch
                     numPuertos: numPuertos,
                     velocidad_backplane: velocidad_backplane,
@@ -264,6 +458,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //Router
                     tipo_conexion: tipo_conexion,
                     soporte_vpn: valorSoporteVPN,
@@ -286,6 +481,7 @@ export const EquipoBodega = () => {
                     modelo: modelo,
                     garantia: null,
                     estado: estadoEquipo,
+                    puertos: puertos,
                     //Escaner
                     velocidad: velocidad,
                     tipoEscaner: tipoEscaner
@@ -320,7 +516,6 @@ export const EquipoBodega = () => {
             setSoftwaresSelected([...softwaresSelected, id]);
         }
         console.log(softwaresSelected);
-        
     };
 
     const handleCerrar = (e) => {
@@ -479,22 +674,22 @@ export const EquipoBodega = () => {
 
                 {(radioCheckEquipo === 'Computadora') && (
                     <div>
-                    <label htmlFor="inputText" className="form-label margin-top-sfw">Softwares</label>
-                    {softwares.map((software) => (
-                        <div className="form-check" key={software.id_software}>
-                            <input 
-                                className="form-check-input" 
-                                type="checkbox" 
-                                value={software.id_software}
-                                //checked={softwaresSelected.includes(software.id_software)}
-                                onChange={() => handleCheckboxChange(software.id_software)}
-                            />
-                            <label className="form-check-label" htmlFor={software.id_software}>
-                                {`${software.nombre}, ${software.version_}`}
-                            </label>
-                        </div>
-                    ))}
-                </div>
+                        <label htmlFor="inputText" className="form-label margin-top-sfw">Softwares</label>
+                        {softwares.map((software) => (
+                            <div className="form-check" key={software.id_software}>
+                                <input 
+                                    className="form-check-input" 
+                                    type="checkbox" 
+                                    value={software.id_software}
+                                    //checked={softwaresSelected.includes(software.id_software)}
+                                    onChange={() => handleCheckboxChange(software.id_software)}
+                                />
+                                <label className="form-check-label" htmlFor={software.id_software}>
+                                    {`${software.nombre}, ${software.version_}`}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
                 )}
 
                 {(radioCheckEquipo === 'Impresora') && (
@@ -618,35 +813,148 @@ export const EquipoBodega = () => {
                             </div>
                             <div className="modal-body">
                                 <form>
-                                    <div className="mb-3">
-                                        <ul>
-                                            <li>Gigabit Ethernet
-                                                <ul>
-                                                    <li>NOMBRES</li>
-                                                </ul>
-                                            </li>
-                                            <li>Fast Ethernet
-                                                <ul>
-                                                    <li>NOMBRES</li>
-                                                </ul>
-                                            </li>
-                                            <li>USB
-                                                <ul>
-                                                    <li>NOMBRES</li>
-                                                </ul>
-                                            </li>
-                                            <li>HDMI
-                                                <ul>
-                                                    <li>NOMBRES</li>
-                                                </ul>
-                                            </li>
-                                        </ul>
+                                    <div className="mb-3 scrollablediv">
+                                            <button className="custom-buttonEB"onClick={handleExpandG}>Gigabit Ethernet</button>
+                                            {expandedG && (
+                                                <div className="scrollable">
+                                                    {gigas.map((giga) => (
+                                                        <div className='form-check' key={giga.id_nombre_puerto}>
+                                                            <input
+                                                                type="checkbox" className='form-check-input'
+                                                                value={giga.id_nombre_puerto} 
+                                                                checked={gigasSelected.includes(giga.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeGigas(giga.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={giga.id_nombre_puerto}>{giga.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandF}>Fast Ethernet</button>
+                                            {expandedF && (
+                                                <div className="scrollable">
+                                                    {fasts.map((fast) => (
+                                                        <div className='form-check' key={fast.id_nombre_puerto}>
+                                                            <input
+                                                                type="checkbox" className='form-check-input'
+                                                                value={fast.id_nombre_puerto}
+                                                                checked={fastsSelected.includes(fast.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeFast(fast.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={fast.id_nombre_puerto}>{fast.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            
+                                            <button className="custom-buttonEB" onClick={handleExpandC}>Consola - RS-232</button>
+                                            {expandedC && (
+                                                <div className="scrollable">
+                                                    {consolas.map((consola) => (
+                                                        <div className='form-check' key={consola.id_nombre_puerto}>
+                                                            <input
+                                                                type="checkbox" className='form-check-input'
+                                                                value={consola.id_nombre_puerto} 
+                                                                checked={consolasSelected.includes(consola.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeConsolas(consola.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={consola.id_nombre_puerto}>{consola.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandU2}>USB 2.0</button>
+                                            {expandedU2 && (
+                                                <div className="scrollable">
+                                                    {usbs2.map((usb2) => (
+                                                        <div className='form-check' key={usb2.id_nombre_puerto}>
+                                                            <input 
+                                                                type="checkbox" className='form-check-input'
+                                                                value={usb2.id_nombre_puerto} 
+                                                                checked={usbs2Selected.includes(usb2.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeUsbs2(usb2.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={usb2.id_nombre_puerto}>{usb2.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandU3}>USB 3.0</button>
+                                            {expandedU3 && (
+                                                <div className="scrollable">
+                                                    {usbs3.map((usb3) => (
+                                                        <div className='form-check' key={usb3.id_nombre_puerto}>
+                                                            <input 
+                                                                type="checkbox" className='form-check-input' 
+                                                                value={usb3.id_nombre_puerto} 
+                                                                checked={usbs3Selected.includes(usb3.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeUsbs3(usb3.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={usb3.id_nombre_puerto}>{usb3.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandH}>HDMI</button>
+                                            {expandedH && (
+                                                <div className="scrollable">
+                                                    {hdmis.map((hdmi) => (
+                                                        <div className='form-check' key={hdmi.id_nombre_puerto}>
+                                                            <input 
+                                                                type="checkbox" className='form-check-input' 
+                                                                value={hdmi.id_nombre_puerto} 
+                                                                checked={hdmisSelected.includes(hdmi.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeHdmis(hdmi.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={hdmi.id_nombre_puerto}>{hdmi.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandV}>VGA</button>
+                                            {expandedV && (
+                                                <div className="scrollable">
+                                                    {vgas.map((vga) => (
+                                                        <div className='form-check' key={vga.id_nombre_puerto}>
+                                                            <input 
+                                                                type="checkbox" className='form-check-input' 
+                                                                value={vga.id_nombre_puerto} 
+                                                                checked={vgasSelected.includes(vga.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeVgas(vga.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={vga.id_nombre_puerto}>{vga.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button className="custom-buttonEB" onClick={handleExpandR}>RJ45</button>
+                                            {expandedR && (
+                                                <div className="scrollable">
+                                                    {rjs.map((rj) => (
+                                                        <div className='form-check' key={rj.id_nombre_puerto}>
+                                                            <input 
+                                                                type="checkbox" className='form-check-input' 
+                                                                value={rj.id_nombre_puerto} 
+                                                                checked={rjsSelected.includes(rj.id_nombre_puerto)}
+                                                                onChange={() => handleCheckboxChangeRjs(rj.id_nombre_puerto)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={rj.id_nombre_puerto}>{rj.nombre_puerto}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                     </div>
                                 </form>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
-                                <button type="button" className="btn btn-primary">Guardar Cambios</button>
+                                <button type="button" className="btn btn-primary" onClick={handleCloseModal}>Aceptar</button>
                             </div>
                         </div>
                     </div>
