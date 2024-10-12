@@ -1549,6 +1549,545 @@ app.get('/DetalleTablaDepartamento', async (req, res) => {
     }
 });
 
+//Trae el detalle de la tabla de incidencias por tecnico
+app.get('/DetalleTablaTecnico', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario};
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+
+
+
+//Trae el detalle de la tabla de incidencias para ADMON enviados
+app.get('/DetalleTablaADMONEnviado', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+			WHERE I.id_estado = 5;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+        //res.status(200).json({id_folio: detalle.id_incidencia, departamento: detalle.nombre, fecha: detalle.fecha, 
+          //  tipoIncidencia: detalle.nombreIncidencia, descripcion: detalle.descripcion, estado: detalle.estado, color: detalle.color})
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por departamento enviados
+app.get('/DetalleTablaDepartamentoDetalleTablaDepartamentoEnviado', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_departamento } = req.query;
+        console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            WHERE D.id_departamento = ${id_departamento} and I.id_estado = 5;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por tecnico enviados
+app.get('/DetalleTablaTecnicoEnviado', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario} and I.id_estado = 5;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias para ADMON en proceso
+app.get('/DetalleTablaADMONEnProceso', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+			WHERE I.id_estado = 1;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+        //res.status(200).json({id_folio: detalle.id_incidencia, departamento: detalle.nombre, fecha: detalle.fecha, 
+          //  tipoIncidencia: detalle.nombreIncidencia, descripcion: detalle.descripcion, estado: detalle.estado, color: detalle.color})
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por departamento en proceso
+app.get('/DetalleTablaDepartamentoDetalleTablaDepartamentoEnproceso', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_departamento } = req.query;
+        console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            WHERE D.id_departamento = ${id_departamento} and I.id_estado = 1;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por tecnico en proceso
+app.get('/DetalleTablaTecnicoEnProceso', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario} and I.id_estado = 1;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias para ADMON Terminados
+app.get('/DetalleTablaADMONTerminados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+			WHERE I.id_estado = 2;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+        //res.status(200).json({id_folio: detalle.id_incidencia, departamento: detalle.nombre, fecha: detalle.fecha, 
+          //  tipoIncidencia: detalle.nombreIncidencia, descripcion: detalle.descripcion, estado: detalle.estado, color: detalle.color})
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por departamento terminados
+app.get('/DetalleTablaDepartamentoDetalleTablaDepartamentoTerminados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_departamento } = req.query;
+        console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            WHERE D.id_departamento = ${id_departamento} and I.id_estado = 2;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por tecnico terminados
+app.get('/DetalleTablaTecnicoTerminados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario} and I.id_estado = 2;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias para ADMON Liberados
+app.get('/DetalleTablaADMONLiberados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+			WHERE I.id_estado = 3;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+        //res.status(200).json({id_folio: detalle.id_incidencia, departamento: detalle.nombre, fecha: detalle.fecha, 
+          //  tipoIncidencia: detalle.nombreIncidencia, descripcion: detalle.descripcion, estado: detalle.estado, color: detalle.color})
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por departamento Liberados
+app.get('/DetalleTablaDepartamentoDetalleTablaDepartamentoLiberados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_departamento } = req.query;
+        console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            WHERE D.id_departamento = ${id_departamento} and I.id_estado = 3;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por tecnico liberados
+app.get('/DetalleTablaTecnicoLiberados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario} and I.id_estado = 3;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias para ADMON Rechazados
+app.get('/DetalleTablaADMONRechazados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+			WHERE I.id_estado = 4;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+        //res.status(200).json({id_folio: detalle.id_incidencia, departamento: detalle.nombre, fecha: detalle.fecha, 
+          //  tipoIncidencia: detalle.nombreIncidencia, descripcion: detalle.descripcion, estado: detalle.estado, color: detalle.color})
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por departamento Rechazados
+app.get('/DetalleTablaDepartamentoDetalleTablaDepartamentoRechazados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_departamento } = req.query;
+        console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            WHERE D.id_departamento = ${id_departamento} and I.id_estado = 4;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
+//Trae el detalle de la tabla de incidencias por tecnico Rechazados
+app.get('/DetalleTablaTecnicoRechazados', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_usuario } = req.query;
+        console.log('Datos recibidos:', {
+            id_usuario
+        });
+        const result = await sql.query`
+            SELECT 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color
+            FROM 
+                INCIDENCIA I
+            JOIN 
+                INCIDENCIA_LUGAR IL ON I.id_incidencia = IL.id_incidencia
+            JOIN 
+                ESPACIOS E ON IL.id_espacio = E.id_espacio
+            JOIN 
+                DEPARTAMENTO D ON E.id_departamento = D.id_departamento
+            JOIN 
+                TIPO_INCIDENCIA TI ON TI.id_tipoIncidencia =I.id_tipoIncidencia
+            JOIN
+                ESTADO_INCIDENCIA EI ON EI.id_estado = I.id_estado
+            JOIN
+                TECNICO T ON T.id_usuario = I.id_tecnicoAsignado
+            WHERE I.id_tecnicoAsignado = ${id_usuario} and I.id_estado = 4;
+        `;
+        const detalle = result.recordset;
+        console.log(detalle);
+        res.status(200).json(detalle);
+    } catch (error) {
+        console.log('Error al obtener datos de la tabla: ', error);
+        res.status(500).json({ error: 'Error al obtener datos de la tabla' });
+    }
+});
+
 //Trae las especializaciones
 app.get('/SelectEspecializaciones', async (req, res) => {
     try {

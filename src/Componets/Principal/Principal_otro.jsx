@@ -51,10 +51,564 @@ export const Principal_otro = () => {
     useEffect(() => {
         const storedPermisos = localStorage.getItem('permisos');
         if (storedPermisos) {
-            setPermisos(storedPermisos);
+            setPermisos(storedPermisos); // Actualiza el estado permisos
         }
-        handleDetalleTabla(storedPermisos);
+        handleDetalleTabla(storedPermisos); // Pasas la variable local solo al cargar
     }, []);
+
+    const handleTodos = () => {
+        handleDetalleTabla(permisos);
+    };
+
+    const handleEnviados = () => {
+        handleDetalleTablaEnviados(permisos);
+    };
+
+    const handleEnProceso = () => {
+        handleDetalleTablaEnProceso(permisos);
+    };
+
+    const handleTerminados = () => {
+        handleDetalleTablaTerminados(permisos);
+    };
+
+    const handleLiberados = () => {
+        handleDetalleTablaLiberados(permisos);
+    };
+
+    const handleRechazados = () => {
+        handleDetalleTablaRechazados(permisos);
+    };
+
+    const handleDetalleTablaRechazados = async (permisos) => {
+        const id_departamento = localStorage.getItem('idDepartamentoPertenece');
+        const id_usuario = localStorage.getItem('idUsuario');
+        try{
+            if(permisos === '1'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaADMONRechazados');
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    });
+                    const departamentosA = detalles.map(d => d.nombre);
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDepartamentos(departamentosA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }else if(permisos === '2' || permisos === '3'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoRechazados',
+                    {params: { id_departamento: id_departamento }}
+                );
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${day}-${month}-${year}`;
+                    });
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }
+            else if(permisos === '4'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoRechazados',
+                    {params: { id_usuario: id_usuario }}
+                );
+                const detalles = response.data;
+            if (detalles.length > 0) {
+                const foliosA = detalles.map(d => d.id_incidencia);
+                const fechasA = detalles.map(d => {
+                    const date = new Date(d.fecha);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                });
+                const departamentosA = detalles.map(d => d.nombre);
+                const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                const descripcionesA = detalles.map(d => d.descripcion);
+                const estadosA = detalles.map(d => d.estado);
+                const coloresA = detalles.map(d => d.color);
+    
+                setFolios(foliosA);
+                setFechas(fechasA);
+                setDepartamentos(departamentosA);
+                setDetalles(prevDetalles => [
+                    ...prevDetalles, 
+                    ...tiposIncidenciaA.map((tipo, index) => ({ 
+                        tipoIncidencia: tipo, 
+                        descripcion: descripcionesA[index] 
+                    }))
+                ]);
+                setEstados(estadosA);
+                setColores(coloresA);
+                }
+            }
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    };
+
+    const handleDetalleTablaTerminados = async (permisos) => {
+        const id_departamento = localStorage.getItem('idDepartamentoPertenece');
+        const id_usuario = localStorage.getItem('idUsuario');
+        try{
+            if(permisos === '1'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaADMONTerminados');
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    });
+                    const departamentosA = detalles.map(d => d.nombre);
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDepartamentos(departamentosA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }else if(permisos === '2' || permisos === '3'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoTerminados',
+                    {params: { id_departamento: id_departamento }}
+                );
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${day}-${month}-${year}`;
+                    });
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }
+            else if(permisos === '4'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoTerminados',
+                    {params: { id_usuario: id_usuario }}
+                );
+                const detalles = response.data;
+            if (detalles.length > 0) {
+                const foliosA = detalles.map(d => d.id_incidencia);
+                const fechasA = detalles.map(d => {
+                    const date = new Date(d.fecha);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                });
+                const departamentosA = detalles.map(d => d.nombre);
+                const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                const descripcionesA = detalles.map(d => d.descripcion);
+                const estadosA = detalles.map(d => d.estado);
+                const coloresA = detalles.map(d => d.color);
+    
+                setFolios(foliosA);
+                setFechas(fechasA);
+                setDepartamentos(departamentosA);
+                setDetalles(prevDetalles => [
+                    ...prevDetalles, 
+                    ...tiposIncidenciaA.map((tipo, index) => ({ 
+                        tipoIncidencia: tipo, 
+                        descripcion: descripcionesA[index] 
+                    }))
+                ]);
+                setEstados(estadosA);
+                setColores(coloresA);
+                }
+            }
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    };
+
+    const handleDetalleTablaLiberados = async (permisos) => {
+        const id_departamento = localStorage.getItem('idDepartamentoPertenece');
+        const id_usuario = localStorage.getItem('idUsuario');
+        try{
+            if(permisos === '1'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaADMONLiberados');
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    });
+                    const departamentosA = detalles.map(d => d.nombre);
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDepartamentos(departamentosA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }else if(permisos === '2' || permisos === '3'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoLiberados',
+                    {params: { id_departamento: id_departamento }}
+                );
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${day}-${month}-${year}`;
+                    });
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }
+            else if(permisos === '4'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoLiberados',
+                    {params: { id_usuario: id_usuario }}
+                );
+                const detalles = response.data;
+            if (detalles.length > 0) {
+                const foliosA = detalles.map(d => d.id_incidencia);
+                const fechasA = detalles.map(d => {
+                    const date = new Date(d.fecha);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                });
+                const departamentosA = detalles.map(d => d.nombre);
+                const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                const descripcionesA = detalles.map(d => d.descripcion);
+                const estadosA = detalles.map(d => d.estado);
+                const coloresA = detalles.map(d => d.color);
+    
+                setFolios(foliosA);
+                setFechas(fechasA);
+                setDepartamentos(departamentosA);
+                setDetalles(prevDetalles => [
+                    ...prevDetalles, 
+                    ...tiposIncidenciaA.map((tipo, index) => ({ 
+                        tipoIncidencia: tipo, 
+                        descripcion: descripcionesA[index] 
+                    }))
+                ]);
+                setEstados(estadosA);
+                setColores(coloresA);
+                }
+            }
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    };
+
+    const handleDetalleTablaEnProceso = async (permisos) => {
+        const id_departamento = localStorage.getItem('idDepartamentoPertenece');
+        const id_usuario = localStorage.getItem('idUsuario');
+        try{
+            if(permisos === '1'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaADMONEnProceso');
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    });
+                    const departamentosA = detalles.map(d => d.nombre);
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDepartamentos(departamentosA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }else if(permisos === '2' || permisos === '3'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoEnProceso',
+                    {params: { id_departamento: id_departamento }}
+                );
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${day}-${month}-${year}`;
+                    });
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }
+            else if(permisos === '4'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoEnProceso',
+                    {params: { id_usuario: id_usuario }}
+                );
+                const detalles = response.data;
+            if (detalles.length > 0) {
+                const foliosA = detalles.map(d => d.id_incidencia);
+                const fechasA = detalles.map(d => {
+                    const date = new Date(d.fecha);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                });
+                const departamentosA = detalles.map(d => d.nombre);
+                const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                const descripcionesA = detalles.map(d => d.descripcion);
+                const estadosA = detalles.map(d => d.estado);
+                const coloresA = detalles.map(d => d.color);
+    
+                setFolios(foliosA);
+                setFechas(fechasA);
+                setDepartamentos(departamentosA);
+                setDetalles(prevDetalles => [
+                    ...prevDetalles, 
+                    ...tiposIncidenciaA.map((tipo, index) => ({ 
+                        tipoIncidencia: tipo, 
+                        descripcion: descripcionesA[index] 
+                    }))
+                ]);
+                setEstados(estadosA);
+                setColores(coloresA);
+                }
+            }
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    };
+
+    const handleDetalleTablaEnviados = async (permisos) => {
+        const id_departamento = localStorage.getItem('idDepartamentoPertenece');
+        const id_usuario = localStorage.getItem('idUsuario');
+        try{
+            if(permisos === '1'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaADMONEnviado');
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    });
+                    const departamentosA = detalles.map(d => d.nombre);
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDepartamentos(departamentosA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }else if(permisos === '2' || permisos === '3'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoEnviado',
+                    {params: { id_departamento: id_departamento }}
+                );
+                const detalles = response.data;
+                if (detalles.length > 0) {
+                    const foliosA = detalles.map(d => d.id_incidencia);
+                    const fechasA = detalles.map(d => {
+                        const date = new Date(d.fecha);
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        return `${day}-${month}-${year}`;
+                    });
+                    const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                    const descripcionesA = detalles.map(d => d.descripcion);
+                    const estadosA = detalles.map(d => d.estado);
+                    const coloresA = detalles.map(d => d.color);
+        
+                    setFolios(foliosA);
+                    setFechas(fechasA);
+                    setDetalles(prevDetalles => [
+                        ...prevDetalles, 
+                        ...tiposIncidenciaA.map((tipo, index) => ({ 
+                            tipoIncidencia: tipo, 
+                            descripcion: descripcionesA[index] 
+                        }))
+                    ]);
+                    setEstados(estadosA);
+                    setColores(coloresA);
+                }
+            }
+            else if(permisos === '4'){
+                const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoEnviado',
+                    {params: { id_usuario: id_usuario }}
+                );
+                const detalles = response.data;
+            if (detalles.length > 0) {
+                const foliosA = detalles.map(d => d.id_incidencia);
+                const fechasA = detalles.map(d => {
+                    const date = new Date(d.fecha);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                });
+                const departamentosA = detalles.map(d => d.nombre);
+                const tiposIncidenciaA = detalles.map(d => d.nombreIncidencia);
+                const descripcionesA = detalles.map(d => d.descripcion);
+                const estadosA = detalles.map(d => d.estado);
+                const coloresA = detalles.map(d => d.color);
+    
+                setFolios(foliosA);
+                setFechas(fechasA);
+                setDepartamentos(departamentosA);
+                setDetalles(prevDetalles => [
+                    ...prevDetalles, 
+                    ...tiposIncidenciaA.map((tipo, index) => ({ 
+                        tipoIncidencia: tipo, 
+                        descripcion: descripcionesA[index] 
+                    }))
+                ]);
+                setEstados(estadosA);
+                setColores(coloresA);
+                }
+            }
+        }catch(error){
+            console.error('Error al obtener los tipos de incidencias', error);
+        }
+    };
 
     const handleDetalleTabla = async (permisos) => {
         const id_departamento = localStorage.getItem('idDepartamentoPertenece');
@@ -439,12 +993,12 @@ export const Principal_otro = () => {
                 <button type="button" className="btn btn-info principal-admin-btn" onClick={handleCerrarSesion}>Cerrar Sesión</button>
             </div>
             <div className='pO-div-btns-group'>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">Todos</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">Enviados</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">En Proceso</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">Terminados</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">Liberados</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color">Rechazados</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleTodos}>Todos</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleEnviados}>Enviados</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleEnProceso}>En Proceso</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleTerminados}>Terminados</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleLiberados}>Liberados</button>
+                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleRechazados}>Rechazados</button>
             </div>
             <div className='pO-div-tabla'>
                 <table class="tabla" className='pO-tabla-centrado'>
@@ -832,11 +1386,15 @@ export const Principal_otro = () => {
                     <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Cambiar Contraseña</h5>
+                                <h5 className="modal-title">Diagnóstico</h5>
                             </div>
                             <div className="modal-body">
                                 <form>
                                     <div className="mb-3">
+
+                                        <div>
+                                            <button className="tam-letra-17px color-boton-lila color-blanco btn-sin-border btn-tam-diagnostico btn-posicion">RFC</button>
+                                        </div>
                                         
                                     </div>
                                 </form>
