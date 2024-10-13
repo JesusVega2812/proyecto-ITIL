@@ -61,4 +61,4 @@ ADD estatus bit
 
 UPDATE ESPACIOS
 SET estatus = 1
-WHERE id_espacio = 23
+WHERE id_espacio in (3,4,5,7,10,11,13,14,15,16)
