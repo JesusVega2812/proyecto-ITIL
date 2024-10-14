@@ -749,11 +749,11 @@ export const Principal_otro = () => {
             const response = await axios.get('http://localhost:3000/SelectTecnicos',{
                 params: {id_especializacion: idEspecializacion}
             });
-            setTecnicos(response.data);
-            if (response.data.length > 0) {
-                setTecnico(response.data[0].id_usuario);
-            } else {
-                alert('No hay técnicos disponibles para esta especialización.');
+            console.log(response.data)
+            if(response.data){
+                setTecnico(response.data.nombre);
+            }else{
+                setTecnico('')
             }
         }catch(error){
             console.error('Error al obtener los tecnicos', error);
@@ -1143,12 +1143,8 @@ export const Principal_otro = () => {
                                                     <option value={prio.id_prioridad} key={prio.id_prioridad}> {prio.nombre} </option>
                                                 ))}
                                             </select>
-                                            <label htmlFor="" className="form-label nito">Asignar a: </label>
-                                            <select className="form-select" value={tecnico} onChange={(e) => setTecnico(e.target.value)}>
-                                                {tecnicos.map((tec, index) => (
-                                                    <option value={tec.id_usuario} key={tec.id_usuario}> {tec.nombre} </option>
-                                                ))}
-                                            </select>
+                                            <label htmlFor="" className="form-label nito">Técnico asignado: </label>
+                                            <input type="text" className="form-control" id="inputText" value={tecnico} readOnly />
                                         </div>
                                     </div>
                                 </form>
