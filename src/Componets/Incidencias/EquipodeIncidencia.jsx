@@ -273,25 +273,27 @@ export const EquipodeIncidencia = () => {
                                                             nombresEspacio.map((nombreEspacio) => (
                                                                 <li key={nombreEspacio.id_espacio} className="equipos-nombre-item">
                                                                     <div className="equipos-nombre-name" onClick={() => handleNombreEspacioSelect(nombreEspacio)}>
-                                                                    <span>Responsable: {nombreEspacio.responsable}</span>
-                                                                        <br/>
-                                                                        {nombreEspacio.nombre}  
+                                                                        <span className='editar-nomEspacio nito'>{nombreEspacio.nombre}</span>
                                                                     </div>
                                                                     {selectedNombreEspacio && selectedNombreEspacio.id_espacio === nombreEspacio.id_espacio && (
-                                                                        <ul className="equipos-lista-equipos">
-                                                                           {Array.isArray(equipos) && equipos.length > 0 ? (
-                                                                                    equipos.map((equipo) => (
-                                                                                        <li className="equipos-equipo-item eI-juntos" key={equipo.id_equipo} >
-                                                                                            <div data-id-equipo={equipo.id_equipo} onClick={handleDetalleEquipo} className="equipos-equipo-name">
-                                                                                                {equipo.clave}
-                                                                                            </div>
-                                                                                            <button className='eI-btn-reportar color-blanco' onClick={() => handleNuevaSolicitud(equipo)}>REPORTAR</button>
-                                                                                        </li>
-                                                                                    ))
-                                                                                ) : (
-                                                                                    <span>No hay equipos disponibles</span>
-                                                                                )}
-                                                                        </ul>
+                                                                        <>
+                                                                            <span className='editar-responsable nito'>Responsable: </span>
+                                                                            <span>  {nombreEspacio.responsable}</span>
+                                                                            <ul className="equipos-lista-equipos">
+                                                                            {Array.isArray(equipos) && equipos.length > 0 ? (
+                                                                                        equipos.map((equipo) => (
+                                                                                            <li className="equipos-equipo-item eI-juntos" key={equipo.id_equipo} >
+                                                                                                <div data-id-equipo={equipo.id_equipo} onClick={handleDetalleEquipo} className="equipos-equipo-name">
+                                                                                                    {equipo.clave}
+                                                                                                </div>
+                                                                                                <button className='eI-btn-reportar color-blanco' onClick={() => handleNuevaSolicitud(equipo)}>REPORTAR</button>
+                                                                                            </li>
+                                                                                        ))
+                                                                                    ) : (
+                                                                                        <span>No hay equipos disponibles</span>
+                                                                                    )}
+                                                                            </ul>
+                                                                        </>
                                                                     )}     
                                                                 </li>
                                                             ))
