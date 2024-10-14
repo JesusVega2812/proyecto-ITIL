@@ -2475,7 +2475,8 @@ app.get('/SelectFast', async (req, res) => {
         const result = await request.query(`
             SELECT * FROM NOMBRE_PUERTO
             WHERE id_tipo_puerto = 1;
-        `);    
+        `);   
+        console.log(result.recordset) 
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error al obtener los fast', error.message);
