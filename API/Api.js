@@ -2204,14 +2204,9 @@ app.get('/SelectTecnicos', async (req, res) => {
         console.log(id_especializacion)
         const request = new sql.Request();
         const result = await request.query(`
-            select t.id_usuario, u.nombre+' '+u.apellido as nombre from TECNICO T
-            JOIN
-                ESPECIALIZACION E ON e.id_especializacion = t.id_especializacion
-            JOIN 
-                USUARIO U ON u.id_usuario = t.id_usuario
-            WHERE e.id_especializacion = ${id_especializacion} and t.id_estadoDisponibilidad = 1;
-        `);    
-        res.status(200).json(result.recordset);
+            EXEC AsignarIncidencia ${id_especializacion}`);    
+        console.log(result.recordset[0])
+        res.status(200).json(result.recordset[0]);
     } catch (error) {
         console.error('Error al obtener las especializaciones', error.message);
         res.status(500).send('Error al obtener las especializacioness');
@@ -2475,7 +2470,8 @@ app.get('/SelectFast', async (req, res) => {
         const result = await request.query(`
             SELECT * FROM NOMBRE_PUERTO
             WHERE id_tipo_puerto = 1;
-        `);    
+        `);   
+        console.log(result.recordset) 
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error al obtener los fast', error.message);

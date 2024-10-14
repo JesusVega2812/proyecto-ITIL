@@ -152,3 +152,6 @@ WHERE id_tipo_puerto = 1;
 
 select * from PUERTO
 SELECT * FROM NOMBRE_PUERTO
+
+SELECT * FROM NOMBRE_PUERTO
+            WHERE id_tipo_puerto = 1
