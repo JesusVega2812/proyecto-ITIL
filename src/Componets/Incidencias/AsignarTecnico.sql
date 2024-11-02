@@ -8,7 +8,7 @@ siguiente para darle esa incidencia, llevar un orden
 alter table Tecnico
 add num_incidencias int
 
-update TECNICO set num_incidencias = 0 where id_usuario in (15,16)
+update TECNICO set num_incidencias = 0 where id_usuario in (8,9)
 
 select * from TECNICO
 

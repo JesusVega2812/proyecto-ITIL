@@ -20,7 +20,7 @@ export const Principal_otro = () => {
     const [selectedIncidencia, setSelectedIncidencia] = useState(null);
     const [especializaciones, setEspecializaciones] = useState([]);
     const [especializacion, setEspecializacion] = useState('');
-    const [tecnicos, setTecnicos] = useState([]);
+    const [tecnicoId, setTecnicoId] = useState([]);
     const [tecnico, setTecnico] = useState('');
     const [hrEnvio, setHrEnvio] = useState('');
     const [hrInicio, setHrInicio] = useState('');
@@ -751,6 +751,7 @@ export const Principal_otro = () => {
             });
             console.log(response.data)
             if(response.data){
+                setTecnicoId(response.data.id_usuario);
                 setTecnico(response.data.nombre);
             }else{
                 setTecnico('')
@@ -839,7 +840,7 @@ export const Principal_otro = () => {
             try {
                 const response = await axios.put('http://localhost:3000/AsignarTecnico',{
                     id_incidencia: selectedIncidencia.id_incidencia,
-                    id_usuario: tecnico,
+                    id_usuario: tecnicoId,
                     id_prioridad: prioridad
                 })
                 alert('Tecnico Asignado exitosamente');
