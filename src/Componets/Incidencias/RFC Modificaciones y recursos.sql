@@ -90,8 +90,6 @@ INSERT INTO pieza (nombre, detalle, stock) VALUES
 ('SE-Ventilador Alta Velocidad', 'Ventilador de alta velocidad diseñado para enfriamiento de servidores', 15),
 ('SE-Módulo Expansión Almacenamiento', 'Módulo de expansión de almacenamiento escalable para servidores', 8);
 
-select * from PIEZA
-
 CREATE TABLE DIAGNOSTICO (
     id_diagnostico INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50),
@@ -135,39 +133,6 @@ ALTER TABLE INCIDENCIA
 ADD CONSTRAINT FK_Incidencia_Diagnostico
 FOREIGN KEY (diagnostico) REFERENCES DIAGNOSTICO(id_diagnostico);
 
-
-
-SELECT * FROM DIAGNOSTICO
-
-
-SELECT s.id_software, s.nombre 
-FROM INCIDENCIA i
-JOIN EQUIPO e ON e.id_equipo = i.id_equipo
-JOIN COMPUTADORA c ON c.id_computadora = e.id_equipo
-JOIN SOFTWARE_COMPUTADORA sc ON sc.id_computadora = c.id_computadora
-JOIN SOFTWARE s ON s.id_software = sc.id_software
-WHERE i.id_equipo = 44 AND i.id_incidencia = 14
-
-
-SELECT s.id_software, s.nombre 
-FROM SOFTWARE s
-WHERE s.id_software NOT IN (
-    SELECT sc.id_software
-    FROM INCIDENCIA i
-    JOIN EQUIPO e ON e.id_equipo = i.id_equipo
-    JOIN COMPUTADORA c ON c.id_computadora = e.id_equipo
-    JOIN SOFTWARE_COMPUTADORA sc ON sc.id_computadora = c.id_computadora
-    WHERE i.id_equipo = 44 AND i.id_incidencia = 14
-);
-
-select * from INCIDENCIA
-
-select * from SOFTWARE_COMPUTADORA
-
-select * from EQUIPO
-
-select * from ESTADO_INCIDENCIA
-
 CREATE TABLE DIAGNOSTICO_INCIDENCIA(
 	id_diagnostico int not null,
 	id_incidencia int not null,
@@ -183,18 +148,6 @@ ADD CONSTRAINT FK_diagnosticoIncidencia_Incidencia FOREIGN KEY (id_incidencia) R
 
 ALTER TABLE DIAGNOSTICO_INCIDENCIA
 ADD CONSTRAINT FK_DiagnosticoIncidencia_TipoIncidencia FOREIGN KEY (id_tipoIncidencia) REFERENCES tipo_incidencia(id_tipoIncidencia);
-
-select * from software
-select * from TIPO_INCIDENCIA
-SELECT id_tipoIncidencia FROM INCIDENCIA WHERE id_incidencia = 14
-
-select * from DIAGNOSTICO_INCIDENCIA
-
-delete FROM DIAGNOSTICO_INCIDENCIA WHERE id_diagnostico = 3 AND id_incidencia = 13
-
-select * from INCIDENCIA
-
-select * from COMPUTADORA
 
 ---------------- 06 de Noviembre de 2024
 DELETE FROM DIAGNOSTICO WHERE nombre = 'SE-Cambio de pieza';
@@ -236,10 +189,8 @@ INSERT INTO pieza (nombre, detalle, stock, precioUnitario) VALUES
 ('CO-SE-UPS', 'Sistema de alimentación ininterrumpida para computadoras y servidores', 10, 2500),
 ('CO-IM-Regleta de Alimentación', 'Distribuidor de corriente para computadoras e impresoras', 20, 300);
 
-
 ALTER TABLE RFC
 ADD autoriza INT;
-
 
 CREATE TABLE historial_pieza (
     id_equipo INT,
@@ -251,7 +202,6 @@ CREATE TABLE historial_pieza (
     FOREIGN KEY (id_pieza) REFERENCES pieza(id_pieza),  -- Relación con la tabla pieza
     FOREIGN KEY (id_incidencia) REFERENCES incidencia(id_incidencia)  -- Relación con la tabla incidencia
 );
-
 
 CREATE PROCEDURE AllRFC
     @id_incidencia INT,
@@ -295,50 +245,7 @@ BEGIN
     
 END;
 
-
-DECLARE @id_incidencia INT = 16;        -- Reemplaza con un id_incidencia existente o de prueba
-DECLARE @id_pieza INT = 23;             -- Reemplaza con un id_pieza existente en la tabla `pieza`
-DECLARE @id_diagnostico INT = 1;       -- Reemplaza con un id_diagnostico válido
-DECLARE @id_tipoIncidencia INT = 3;    -- Reemplaza con un id_tipoIncidencia válido
-DECLARE @id_equipo INT = 44;            -- Reemplaza con un id_equipo válido
-
-EXEC AllRFC @id_incidencia, @id_pieza, @id_diagnostico, @id_tipoIncidencia, @id_equipo;
-
--- Verificar inserción en RFC
-SELECT * FROM RFC WHERE incidencia = @id_incidencia AND pieza = @id_pieza;
-
--- Verificar inserción en Diagnostico_incidencia
-SELECT * FROM Diagnostico_incidencia WHERE id_incidencia = @id_incidencia AND id_diagnostico = @id_diagnostico;
-
--- Verificar inserción en historial_pieza
-SELECT * FROM historial_pieza WHERE id_incidencia = @id_incidencia AND id_pieza = @id_pieza;
-
-
-DECLARE @id_incidencia INT = 16;
-DECLARE @id_pieza INT = 23;
-DECLARE @id_diagnostico INT = 1;
-DECLARE @id_tipoIncidencia INT = 3;
-DECLARE @id_equipo INT = 44;
-
--- Eliminar registro de la tabla RFC
-DELETE FROM RFC
-WHERE incidencia = @id_incidencia AND pieza = @id_pieza;
-
--- Eliminar registro de la tabla Diagnostico_incidencia
-DELETE FROM Diagnostico_incidencia
-WHERE id_incidencia = @id_incidencia AND id_diagnostico = @id_diagnostico AND id_tipoincidencia = @id_tipoIncidencia;
-
--- Eliminar registro de la tabla historial_pieza
-DELETE FROM historial_pieza
-WHERE id_incidencia = @id_incidencia AND id_pieza = @id_pieza AND id_equipo = @id_equipo;
-
-select * from PIEZA
-
-
 ---------07 de Noviembre de 2024
-select * from rfc
-
-
 -- Crear la tabla SERVICIOS con un ID único, nombre y duración promedio
 CREATE TABLE SERVICIOS (
     id_servicio INT IDENTITY(1,1) PRIMARY KEY,
@@ -350,7 +257,6 @@ CREATE TABLE SERVICIOS (
 ALTER TABLE RFC
 ADD id_servicio INT,
     FOREIGN KEY (id_servicio) REFERENCES SERVICIOS(id_servicio);
-
 
 INSERT INTO SERVICIOS (nombre, duracion) VALUES 
 ('Cambio de Fuente de Poder', 75),
@@ -385,79 +291,12 @@ ALTER TABLE RFC
 ADD hora_inicial TIME,
     hora_final TIME;
 
-
-select * from rfc
-
-select * from SERVICIOS
-
-select * from INCIDENCIA
-update incidencia set servicio = 1 where id_incidencia=20
-
-
 ----08 de Noviembre de 2024
 ALTER TABLE rfc
 ADD autorizado int;
 
 ALTER TABLE INCIDENCIA
 ADD servicio BIT DEFAULT 0;
-
-
-
-
-select id_equipo from INCIDENCIA where id_incidencia = 16;
-
-select * from ESTADO_INCIDENCIA
-
-select * from INCIDENCIA
-
-select * from rfc
-
-
-DECLARE @id_incidencia INT = 18;        -- Reemplaza con un id_incidencia existente o de prueba
-DECLARE @id_pieza INT = 23;             -- Reemplaza con un id_pieza existente en la tabla `pieza`
-DECLARE @id_diagnostico INT = 1;       -- Reemplaza con un id_diagnostico válido
-DECLARE @id_tipoIncidencia INT = 3;    -- Reemplaza con un id_tipoIncidencia válido
-DECLARE @id_equipo INT = 44;            -- Reemplaza con un id_equipo válido
-
-EXEC AllRFC @id_incidencia, @id_pieza, @id_diagnostico, @id_tipoIncidencia, @id_equipo;
-
--- Verificar inserción en RFC
-SELECT * FROM RFC WHERE incidencia = @id_incidencia AND pieza = @id_pieza;
-
--- Verificar inserción en Diagnostico_incidencia
-SELECT * FROM Diagnostico_incidencia WHERE id_incidencia = @id_incidencia AND id_diagnostico = @id_diagnostico;
-
--- Verificar inserción en historial_pieza
-SELECT * FROM historial_pieza WHERE id_incidencia = @id_incidencia AND id_pieza = @id_pieza;
-
-
-DECLARE @id_incidencia INT = 18;
-DECLARE @id_pieza INT = 23;
-DECLARE @id_diagnostico INT = 1;
-DECLARE @id_tipoIncidencia INT = 3;
-DECLARE @id_equipo INT = 44;
-
--- Eliminar registro de la tabla RFC
-DELETE FROM RFC
-WHERE incidencia = @id_incidencia AND pieza = @id_pieza;
-
--- Eliminar registro de la tabla Diagnostico_incidencia
-DELETE FROM Diagnostico_incidencia
-WHERE id_incidencia = @id_incidencia AND id_diagnostico = @id_diagnostico AND id_tipoincidencia = @id_tipoIncidencia;
-
--- Eliminar registro de la tabla historial_pieza
-DELETE FROM historial_pieza
-WHERE id_incidencia = @id_incidencia AND id_pieza = @id_pieza AND id_equipo = @id_equipo;
-
-
-select * from RFC
-
-select * from INCIDENCIA
-
-
-Select id_pieza from HISTORIAL_PIEZA 
-where id_incidencia = 19
-
 
 ---09 de Noviembre de 2024
 SELECT 
@@ -467,45 +306,8 @@ SELECT
 FROM RFC
 where incidencia = 20;
 
-select * from pieza
-
-select * from rfc
-
-UPDATE PIEZA
-            SET stock = stock - 1
-            WHERE id_pieza = 23;
-
-
-select * from rfc
-where incidencia = 20
-
-
-update incidencia
-set id_estado = 2
-where id_incidencia = 20
-
-select* from usuario
-
-select i.id_tecnicoAsignado as tecnico, CONCAT(u.nombre, ' ', u.apellido) as nombre from INCIDENCIA i
-join TECNICO t on t.id_usuario = i.id_tecnicoAsignado
-join USUARIO u on u.id_usuario = t.id_usuario
-where id_incidencia = 20
-
-select * from TECNICO
-
 ALTER TABLE incidencia
 ADD calificacion INT;
 
 ALTER TABLE tecnico
 ADD promedio_calificaciones DECIMAL(3, 2);
-
-select * from INCIDENCIA
-
-UPDATE INCIDENCIA
-SET calificacion = @calificacion
-WHERE id_incidencia = @id_incidencia
-
-
-select * from INCIDENCIA
-
-select * from TECNICO
