@@ -10,6 +10,7 @@ import { Principal_otro } from './Componets/Principal/Principal_otro.jsx';
 import { EquipoBodega } from './Componets/Equipos/Equipo_bodega.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { EquipodeIncidencia } from './Componets/Incidencias/EquipodeIncidencia.jsx';
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
 export function App() {
     return (
