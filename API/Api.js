@@ -467,7 +467,11 @@ app.get('/SelectUsuario', async (req, res) => {
     try {
         await sql.connect(config);
         const request = new sql.Request();
-        const result = await request.query(`SELECT id_usuario, nombre + \' \' + apellido AS Nombre, nombre, apellido,id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO where status = 1 `);        
+        const result = await request.query(`
+            SELECT id_usuario, nombre + ' ' + apellido AS Nombre, nombre, 
+        apellido, id_departamento_pertenece, id_jefe, correo, telefono, permisos 
+        FROM USUARIO 
+        WHERE status = 1;`);        
         const Usuario = result.recordset; 
         res.status(200).json(Usuario); // Devuelve los datos correctamente
     } catch (error) {
@@ -484,7 +488,10 @@ app.get('/SelectUsuarioDep/:idDepartamento', async (req, res) => {
         console.log(idDepartamento);
         await sql.connect(config);
         const request = new sql.Request();
-        const result = await request.query(`SELECT id_usuario, nombre + ' ' + apellido AS Nombre, nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO WHERE status = 1 AND id_departamento_pertenece = ${idDepartamento}`);        
+        const result = await request.query(`
+            SELECT id_usuario, nombre + ' ' + apellido AS Nombre, nombre, apellido, 
+            id_departamento_pertenece, id_jefe, correo, telefono, permisos FROM USUARIO 
+            WHERE status = 1 AND id_departamento_pertenece = ${idDepartamento}`);        
         const Usuario = result.recordset; 
         res.status(200).json(Usuario); // Devuelve los datos correctamente
     } catch (error) {
@@ -1210,7 +1217,7 @@ app.post('/AltaEscaner',async(req,res) => {
             }
         }
 
-        res.status(200).send(idEquipoInsertado);
+        res.status(200).send({id: idEquipoInsertado});
     }catch(error){
         console.error('Error al insertar el equipo-escaner:', error.message);
         // Enviar una respuesta de error

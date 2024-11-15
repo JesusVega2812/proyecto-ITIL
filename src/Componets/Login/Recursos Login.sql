@@ -2,7 +2,7 @@ use proyectoITIL
 go
 DROP FUNCTION IF EXISTS dbo.VerificarUsuario;
 
-ALTER FUNCTION dbo.VerificarUsuario
+CREATE FUNCTION dbo.VerificarUsuario
 (
     @usuario NVARCHAR(50),
     @contra NVARCHAR(50)
@@ -57,5 +57,3 @@ END;
 select dbo.VerificarPermisos ('Marisol Manjarrez')
 
 select nombre from departamento where id_departamento = 1
-
-

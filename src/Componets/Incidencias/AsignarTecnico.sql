@@ -4,11 +4,10 @@ Procedimiento almacenado que reciba el id de especilizacion de la incidencia, co
 se debe de consultar todos los tecnicos con esa especializacion y elejir al tecnico 
 siguiente para darle esa incidencia, llevar un orden
 */
+ALTER TABLE Tecnico
+ADD num_incidencias INT DEFAULT 0;
 
-alter table Tecnico
-add num_incidencias int
-
-update TECNICO set num_incidencias = 0 where id_usuario in (8,9)
+update TECNICO set num_incidencias = 0 where id_usuario in (5,6,7,8)
 
 select * from TECNICO
 

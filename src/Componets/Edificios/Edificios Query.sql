@@ -15,13 +15,13 @@ END;
 
 -- Insertar eficios
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
-values ('Edificio A', 'investiga');
+values ('Edificio A', 'Primer edificio de Sistemas');
 
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
-values ('Edificio B', 'investiga');
+values ('Edificio B', 'Segundo edificio de Sistemas');
 
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
-values ('Edificio C', 'investiga');
+values ('Edificio C', 'Tercer edificio de Sistemas');
 
 INSERT INTO EDIFICIO (nombre, ubicacion_edificio)
 values ('Edificio D', 'investiga');

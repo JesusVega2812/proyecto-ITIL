@@ -534,8 +534,8 @@ export const Equipos = () => {
                                         <div className="mb-3">
                                             <label htmlFor="inputText" className="form-label">Clave del equipo</label>
                                             <input type="text" className="form-control" id="inputText" placeholder="Ingresa la clave aquí" value={claveEquipo} onChange={(e) => setClaveEquipo(e.target.value)}></input>
-                                            <label htmlFor="" className='equipo-clave-letrapequena'>Edificio, nombre del espacio, tipo de equipo: C, I,  Se, Sw, R, E , número de equipo de ese tipo en ese espacio.
-                                                Por ejemplo: "EASAC01" 
+                                            <label htmlFor="" className='equipo-clave-letrapequena'>Tipo de equipo: C-, I-,  Se-, Sw-, R-, E- , edificio, nombre del espacio, número de equipo de ese tipo en ese espacio.
+                                                Por ejemplo: "C-EASA01" 
                                             </label>
                                         </div>
                                     </div>

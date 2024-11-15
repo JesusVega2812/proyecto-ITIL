@@ -43,7 +43,7 @@ VALUES
 ('USB 3.0'),
 ('HDMI'),
 ('VGA'),
-('RJ45')
+('RJ45');
  
 insert into NOMBRE_PUERTO
 values

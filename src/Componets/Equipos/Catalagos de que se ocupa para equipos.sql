@@ -89,11 +89,13 @@ INSERT INTO MARCA (nombre) VALUES
 ('Sony'), ('Panasonic'), ('HP'), ('Canon'), ('Dell'), 
 ('Lenovo'), ('Samsung'), ('Acer'), ('Asus'), ('Microsoft');
 go
+
+
 -- Inserciones en la tabla MODELO
 INSERT INTO MODELO (nombre, id_marca, año_lanzamiento) VALUES
 ('Latitude 5500', 5, 2021), -- Dell
 ('Pavilion 15', 3, 2020), -- HP
-('MacBook Pro 16', 11, 2021), -- Apple
+('MacBook Pro 16', 10, 2021), -- Apple
 ('ThinkPad X1 Carbon', 6, 2022), -- Lenovo
 ('ROG Strix', 9, 2021), -- Asus
 ('Aspire 7', 8, 2020), -- Acer

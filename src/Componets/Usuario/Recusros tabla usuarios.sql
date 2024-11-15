@@ -45,6 +45,31 @@ DROP COLUMN nombre;
 ALTER TABLE Tecnico
 DROP COLUMN apellidos;
 
+select * from USUARIO
 select * from TECNICO
 select * from ESTADO_DISPONIBILIDAD
 select *  from especializacion
+
+--------------12 de Noviembre de 2024
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status) 
+VALUES 
+('Martin', 'Nevarez', 2, 1, 'martin.nevarez@ti.com', '555-4444', '123', 4, 1),
+('David', 'Mendoza', 2, 1, 'david.mendoza@ti.com', '555-5555', '123', 4, 1),
+('Felipe', 'Lopez', 2, 1, 'felipe.lopez@ti.com', '555-6666', '123', 4, 1),
+('Antonio', 'Murillo', 2, 1, 'antonio.murillo@ti.com', '555-7777', '123', 4, 1),
+('Pedro', 'Villa', 2, 1, 'pedro.villa@ti.com', '555-8888', '123', 4, 1),
+('Luis', 'Audeves', 2, 1, 'luis.audeves@ti.com', '555-9999', '123', 4, 1);
+
+INSERT INTO TECNICO (id_usuario, id_especializacion, id_estadoDisponibilidad)
+VALUES
+(4, 3, 1),
+(5, 3, 1),
+(6, 2, 1),
+(7, 2, 1),
+(8, 1, 1),
+(9, 1, 1);
+
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status)
+VALUES ('Mario', 'Bastidas', 2, 1, 'bastidas@ti.com', '555-9999', '123', 3, 1);
+
+Select * from equipo

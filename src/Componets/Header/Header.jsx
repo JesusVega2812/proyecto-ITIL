@@ -29,10 +29,6 @@ export const Header = () => {
         }
     };
 
-    const handleAdministrador = () => {
-        navigate('/Principal_administrador');
-    };
-
     return (
         <div>
             <div className='div-nombre-logo'>
@@ -44,9 +40,6 @@ export const Header = () => {
             <div className='div-inf-actual tam-letra-18px'>
                 <div className='div-usuario-header'>
                     <button className='tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleEditarPermisos}>&#x1f589;</button>
-                    {permisos === '1' && (
-                            <button className='tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleAdministrador}>Administración</button>
-                    )}
                     <span>Usuario: </span>
                     <span>{usuario}</span>
                 </div>

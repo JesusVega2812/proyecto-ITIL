@@ -1,6 +1,6 @@
 -- Insertar departamentos
 INSERT INTO DEPARTAMENTO (nombre, id_departamentoPadre, correo, telefono, ubicacion_dep)
-VALUES ('Departamento Academicos', NULL, 'contacto@aca.com', '123-4567', 'Edificio A, Piso 2');
+VALUES ('Departamento Academicos', NULL, 'contacto@aca.com', '123-4567', 'Edificio L, enfrente de control escolar');
 
 INSERT INTO DEPARTAMENTO (nombre, id_departamentoPadre, correo, telefono, ubicacion_dep)
 VALUES ('Sistemas y Computacion', 1, 'contacto@sistemas.com', '987-6543', 'Edificio A, Piso 1');
@@ -10,7 +10,7 @@ INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, corre
 VALUES ('Marisol', 'Manjarrez', 2, NULL, 'marisol.gomez@rrhh.com', '555-2222', '123',2);
 
 INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena,permisos)
-VALUES ('Marcos', 'Rodriguez', 1, 1, 'marcos.perez@ti.com', '555-1111', '123',1);
+VALUES ('Marco', 'Rodriguez', 2, 1, 'marcos.perez@ti.com', '555-1111', '123',1);
 
 create PROCEDURE InsertDepartamento
     @nombre NVARCHAR(100),

@@ -16,7 +16,7 @@ alter table PARTES_REEMPLAZADAS
 drop constraint FK_PartesReemplazadas_Parte;
 
 alter table PARTES_REEMPLAZADAS
-drop constraint PK__PARTES_R__087CB9D40E45D4C3;
+drop constraint PK__PARTES_R__087CB9D49B84448F;
 
 alter table PARTES_REEMPLAZADAS
 drop column id_historial;
@@ -42,16 +42,16 @@ Create table RFC(
 	incidencia INT not null);
 
 alter table PIEZA
-drop constraint PK__PARTES__3F12D5845E5A87A9
+drop constraint PK__PARTES__3F12D58425852F55;
 
 alter table PIEZA
 drop column id_parte;
 
 alter table Pieza 
-add id_pieza int not null identity(1,1)
+add id_pieza int not null identity(1,1);
 
 alter table Pieza 
-add constraint PK_Pieza primary key(id_pieza)
+add constraint PK_Pieza primary key(id_pieza);
 
 alter table RFC
 add constraint PK_RFC primary key(pieza,incidencia);
@@ -152,6 +152,8 @@ ADD CONSTRAINT FK_DiagnosticoIncidencia_TipoIncidencia FOREIGN KEY (id_tipoIncid
 ---------------- 06 de Noviembre de 2024
 DELETE FROM DIAGNOSTICO WHERE nombre = 'SE-Cambio de pieza';
 
+ALTER table pieza
+ADD precioUnitario DECIMAL(9,2);
 
 UPDATE pieza SET precioUnitario = 1500.00 WHERE nombre = 'CO-SE-Fuente de Poder';
 UPDATE pieza SET precioUnitario = 300.00 WHERE nombre = 'CO-SE-DISCO DURO';
@@ -191,6 +193,9 @@ INSERT INTO pieza (nombre, detalle, stock, precioUnitario) VALUES
 
 ALTER TABLE RFC
 ADD autoriza INT;
+
+ALTER TABLE RFC
+ADD autorizado INT DEFAULT 0;
 
 CREATE TABLE historial_pieza (
     id_equipo INT,
@@ -292,9 +297,6 @@ ADD hora_inicial TIME,
     hora_final TIME;
 
 ----08 de Noviembre de 2024
-ALTER TABLE rfc
-ADD autorizado int;
-
 ALTER TABLE INCIDENCIA
 ADD servicio BIT DEFAULT 0;
 

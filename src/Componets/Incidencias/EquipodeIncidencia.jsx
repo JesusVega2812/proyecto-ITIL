@@ -334,9 +334,9 @@ export const EquipodeIncidencia = () => {
                                             <span className="form-span">{equipo.detalles.tipoComputadora}</span>
                                             <br />
                                             <label htmlFor="softwares" className="form-label nito">Softwares: </label>
-                                            {/*{equipo.softwares.map((soft, index) => (
-                                                <span key={index} className="form-span">{soft.nombre}</span>
-                                            ))}*/}
+                                             {equipo.softwares.map((soft, index) => (
+                                                <span key={index} className="form-span"> <br/>{soft.software} </span>
+                                            ))}
                                             <br />
                                         </div>
                                     )}
