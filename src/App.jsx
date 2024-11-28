@@ -41,7 +41,7 @@ function Content() {
         if (location.pathname === '/Principal' || location.pathname === '/Principal_administrador') {
             if (permisos === '1' || permisos === '2') {
                 return <Header />;
-            } else if (permisos === '3' || permisos === '4') {
+            } else if (permisos === '3' || permisos === '4' || permisos === '5') {
                 return <Header_sin_editar />;
             }
         }

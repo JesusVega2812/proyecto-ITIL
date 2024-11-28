@@ -1558,9 +1558,9 @@ app.post('/NuevaIncidencia',async(req,res) => {
        const resultIncidencia = await sql.query`
             DECLARE @InsertedIds TABLE (id_incidencia INT);
             
-            INSERT INTO INCIDENCIA (id_equipo, descripcion, fecha, hora_envio, id_estado, id_tipoIncidencia, hora_disponible_inicio, hora_disponible_fin)
+            INSERT INTO INCIDENCIA (id_equipo, descripcion, fecha, hora_envio, id_estado, id_tipoIncidencia, hora_disponible_inicio, hora_disponible_fin, btnDiag, btnAutorizacion, det)
             OUTPUT INSERTED.id_incidencia INTO @InsertedIds
-            VALUES (${id_equipo}, ${descripcionGeneral}, ${fechaActual}, ${hrEnvio}, 5, ${tipoIncidencia}, ${hrInicial}, ${hrFinal});
+            VALUES (${id_equipo}, ${descripcionGeneral}, ${fechaActual}, ${hrEnvio}, 5, ${tipoIncidencia}, ${hrInicial}, ${hrFinal}, 0, 0, 0);
             
             SELECT id_incidencia FROM @InsertedIds;
         `;
@@ -1592,7 +1592,7 @@ app.get('/DetalleTablaADMON', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1630,7 +1630,7 @@ app.get('/DetalleTablaDepartamento', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1669,7 +1669,7 @@ app.get('/DetalleTablaTecnico', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1709,7 +1709,7 @@ app.get('/DetalleTablaADMONEnviado', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1748,7 +1748,7 @@ app.get('/DetalleTablaDepartamentoEnviado', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1787,7 +1787,7 @@ app.get('/DetalleTablaTecnicoEnviado', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1824,7 +1824,7 @@ app.get('/DetalleTablaADMONEnProceso', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1863,7 +1863,7 @@ app.get('/DetalleTablaDepartamentoEnproceso', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1902,7 +1902,7 @@ app.get('/DetalleTablaTecnicoEnProceso', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1939,7 +1939,7 @@ app.get('/DetalleTablaADMONTerminados', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -1978,7 +1978,7 @@ app.get('/DetalleTablaDepartamentoTerminados', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2017,7 +2017,7 @@ app.get('/DetalleTablaTecnicoTerminados', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2054,7 +2054,7 @@ app.get('/DetalleTablaADMONLiberados', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2093,7 +2093,7 @@ app.get('/DetalleTablaDepartamentoLiberados', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2132,7 +2132,7 @@ app.get('/DetalleTablaTecnicoLiberados', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora , I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2169,7 +2169,7 @@ app.get('/DetalleTablaADMONRechazados', async (req, res) => {
         await sql.connect(config);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion 
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2208,7 +2208,7 @@ app.get('/DetalleTablaDepartamentoRechazados', async (req, res) => {
         console.log('Llegue a tabla por dpto y el id_departamento es ', id_departamento);
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio 
+                I.id_incidencia, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2247,7 +2247,7 @@ app.get('/DetalleTablaTecnicoRechazados', async (req, res) => {
         });
         const result = await sql.query`
             SELECT 
-                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio 
+                I.id_incidencia, D.nombre, I.fecha, TI.nombre as nombreIncidencia, I.descripcion, EI.estado_incidencia as estado, EI.color, ISNULL(r.autoriza, 0) AS autoriza,  ISNULL(r.autorizado, 0) AS autorizado, I.servicio, I.detalleHora, I.btnAutorizacion
             FROM 
                 INCIDENCIA I
             JOIN 
@@ -2319,7 +2319,10 @@ app.put('/AsignarTecnico', async (req, res) => {
     });
     try {
         await sql.connect(config);
-        const request = new sql.Request();
+        const transaction = new sql.Transaction();
+        await transaction.begin();
+
+        const request = new sql.Request(transaction);
         request.input('id_incidencia', sql.Int, id_incidencia);
         request.input('id_usuario', sql.Int, id_usuario);
         request.input('id_prioridad', sql.Int, id_prioridad);
@@ -2330,20 +2333,34 @@ app.put('/AsignarTecnico', async (req, res) => {
                 id_tecnicoAsignado = @id_usuario, 
                 id_estado = 1
             WHERE id_incidencia = @id_incidencia;
-        `)
+        `);
 
         if (result.rowsAffected[0] > 0) {
-            res.json({ success: true, message: 'Tecnico asignado' });
+            const updateTechnicianResult = await request.query(`
+                UPDATE TECNICO
+                SET num_incidencias = num_incidencias + 1
+                WHERE id_usuario = @id_usuario;
+            `);
+
+            if (updateTechnicianResult.rowsAffected[0] > 0) {
+                await transaction.commit();
+                res.json({ success: true, message: 'Técnico asignado y número de incidencias actualizado' });
+            } else {
+                await transaction.rollback();
+                res.json({ success: false, message: 'No se pudo actualizar el número de incidencias del técnico' });
+            }
         } else {
-            res.json({ success: false, message: 'No se pudo asignar tecnico' });
+            await transaction.rollback();
+            res.json({ success: false, message: 'No se pudo asignar técnico' });
         }
     } catch (error) {
-        console.error('Error al asignar tecnico:', error.message);
-        res.status(500).json({ success: false, message: 'Error al asignar tecnico' });
+        console.error('Error al asignar técnico:', error.message);
+        res.status(500).json({ success: false, message: 'Error al asignar técnico' });
     } finally {
         await sql.close();
     }
 });
+
 
 // Rechazar incidencia
 app.put('/RechazarIncidencia', async (req, res) => {
@@ -2859,12 +2876,18 @@ app.post('/GuardarRFC', async (req, res) => {
 
         const result = await request.execute('AllRFC');  
 
+        const updateRequest = new sql.Request();
+        updateRequest.input('id_incidencia', sql.Int, id_incidencia);
+        await updateRequest.query(`
+            UPDATE Incidencia
+            SET btnDiag = 1
+            WHERE id_incidencia = @id_incidencia;
+        `);
+        
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error al ejecutar el procedimiento AllRFC', error.message);
         res.status(500).send('Error al ejecutar el procedimiento');
-    } finally {
-        await sql.close();
     }
 });
 
@@ -3075,6 +3098,9 @@ app.post('/TecnicoIncidencia', async (req, res) => {
     try {
         await sql.connect(config);
         const { id_incidencia } = req.body;
+        console.log('Datos recibidos tecnico incidencia:', {
+            id_incidencia
+        });
 
         const request = new sql.Request();
         request.input('id_incidencia', sql.Int, id_incidencia);
@@ -3083,11 +3109,467 @@ app.post('/TecnicoIncidencia', async (req, res) => {
             select i.id_tecnicoAsignado as tecnico, CONCAT(u.nombre, ' ', u.apellido) as nombre from INCIDENCIA i
             join TECNICO t on t.id_usuario = i.id_tecnicoAsignado
             join USUARIO u on u.id_usuario = t.id_usuario
-            where id_incidencia = 20
+            where id_incidencia = @id_incidencia
         `);    
+        tecnico = result.recordset[0];
+        console.log('El tecnico es:', {
+            tecnico
+        });
         res.status(200).json(result.recordset[0]);
     } catch (error) {
         console.error('Error al obtener al tecnico', error.message);
         res.status(500).send('Error al obtener al tecnico');
+    }
+});
+
+//Trae la info de pieza
+app.post('/TraerInfoPieza', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.body;
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select p.nombre from incidencia i
+            join RFC r on r.incidencia = i.id_incidencia
+            join PIEZA p on p.id_pieza = r.pieza
+            where id_incidencia = @id_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener la info de pza', error.message);
+        res.status(500).send('Error al obtener la info de pza');
+    }
+});
+
+//Trae la duracion del servicio
+app.post('/DuracionServicio', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.body;
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select s.duracion from incidencia i
+            join RFC r on r.incidencia = i.id_incidencia
+            join servicios s on s.id_servicio = r.id_servicio
+            where id_incidencia = @id_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener la duracion del servicio', error.message);
+        res.status(500).send('Error al obtener la duracion del servicio');
+    }
+});
+
+// Agregar problema a incidencia, reasignar técnico y eliminar registros relacionados
+app.put('/AgregarProblema', async (req, res) => {
+    const { id_incidencia } = req.body;
+
+    console.log('Datos recibidos problema incidencia:', { id_incidencia });
+
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+
+        // Buscar un nuevo técnico con la misma especialización y jefe = 1
+        const resultTecnico = await request.query(`
+            SELECT TOP 1
+                t2.id_usuario AS nuevo_tecnico
+            FROM INCIDENCIA i
+            JOIN TECNICO t1 ON i.id_tecnicoAsignado = t1.id_usuario
+            JOIN TECNICO t2 ON t1.id_especializacion = t2.id_especializacion
+            JOIN USUARIO u2 ON t2.id_usuario = u2.id_usuario
+            WHERE i.id_incidencia = @id_incidencia
+              AND t1.id_usuario != t2.id_usuario
+              AND t2.jefe = 1;
+        `);
+
+        // Verificar si se encontró un nuevo técnico
+        if (resultTecnico.recordset.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontró un técnico elegible para reasignar la incidencia'
+            });
+        }
+
+        const nuevoTecnico = resultTecnico.recordset[0].nuevo_tecnico;
+
+        console.log('NUEVO TECNICO:', { nuevoTecnico });
+
+        // Eliminar registros en RFC y DIAGNOSTICO_INCIDENCIA antes de hacer el update
+        await request.query(`
+            DELETE FROM RFC
+            WHERE incidencia = @id_incidencia
+        `);
+
+        await request.query(`
+            DELETE FROM DIAGNOSTICO_INCIDENCIA
+            WHERE id_incidencia = @id_incidencia
+        `);
+
+        request.input('nuevo_tecnico', sql.Int, nuevoTecnico);
+
+        // Actualizar la tabla INCIDENCIA con el nuevo técnico y marcar problema
+        const resultUpdate = await request.query(`
+            UPDATE INCIDENCIA
+            SET problema = 1, id_tecnicoAsignado = @nuevo_tecnico, diagnostico = NULL, servicio = 0, calificacion = NULL, 
+            detalleHora = 0, btnDiag = 0
+            WHERE id_incidencia = @id_incidencia
+        `);
+
+        // Verificar si se actualizó correctamente
+        if (resultUpdate.rowsAffected[0] === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontró la incidencia con el ID proporcionado'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Problema agregado, técnico reasignado y registros eliminados exitosamente',
+            nuevo_tecnico: nuevoTecnico
+        });
+
+    } catch (error) {
+        console.error('Error al problema incidencia:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Error al actualizar el problema de la incidencia'
+        });
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae las causas
+app.get('/SelectCausa', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            select * from CAUSA_RAIZ
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener las causas', error.message);
+        res.status(500).send('Error al obtener las causas');
+    }
+});
+
+//Dar de alta el error conocido
+app.post('/AltaError', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia, causa, errorEncontrado } = req.body;
+
+        console.log('Datos recibidos alta error:', { id_incidencia, causa, errorEncontrado });
+
+        const request = new sql.Request();
+        request.input('id_causa', sql.Int, causa);
+        request.input('errorEncontrado', sql.VarChar, errorEncontrado);
+
+        // Insertar en la tabla errores y obtener el ID generado
+        const resultInsert = await request.query(`
+            INSERT INTO errores (descripcion, causa_raiz) 
+            OUTPUT INSERTED.id_error
+            VALUES (@errorEncontrado, @id_causa)
+        `);
+
+        // Obtener el id_error generado
+        const id_error = resultInsert.recordset[0].id_error;
+
+        // Crear un nuevo objeto de solicitud para la actualización
+        const updateRequest = new sql.Request();
+        updateRequest.input('id_error', sql.Int, id_error);
+        updateRequest.input('id_incidencia', sql.Int, id_incidencia);
+
+        // Actualizar la tabla INCIDENCIA con el id_error
+        const resultUpdate = await updateRequest.query(`
+            UPDATE INCIDENCIA
+            SET id_error = @id_error
+            WHERE id_incidencia = @id_incidencia
+        `);
+
+        // Verificar si la incidencia fue actualizada
+        if (resultUpdate.rowsAffected[0] === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontró la incidencia para actualizar'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Error registrado y vinculado exitosamente',
+            id_error: id_error
+        });
+
+    } catch (error) {
+        console.error('Error al dar de alta el error:', error.message);
+        res.status(500).send('Error al dar de alta el error');
+    } finally {
+        await sql.close();
+    }
+});
+
+//Trae los errores conocidos
+app.get('/selectErroresConocidos', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const request = new sql.Request();
+        const result = await request.query(`
+            select * from errores
+        `);    
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los errores conocidos', error.message);
+        res.status(500).send('Error al obtener los errores conocidos');
+    }
+});
+
+// Asigna tecnico a incidencia con error
+app.put('/AsignarTecnicoError', async (req, res) => {
+    const { id_incidencia, id_usuario, id_prioridad, id_error } = req.body;
+
+    console.log('Datos recibidos:', {
+        id_incidencia, id_usuario, id_prioridad, id_error
+    });
+    try {
+        await sql.connect(config);
+        const transaction = new sql.Transaction();
+        await transaction.begin();
+
+        const request = new sql.Request(transaction);
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        request.input('id_usuario', sql.Int, id_usuario);
+        request.input('id_prioridad', sql.Int, id_prioridad);
+        request.input('id_error', sql.Int, id_error);
+        const result = await request.query(`
+            UPDATE INCIDENCIA
+            SET 
+                id_prioridad = @id_prioridad,
+                id_tecnicoAsignado = @id_usuario, 
+                id_estado = 1,
+                errorConocido = @id_error,
+                eC = 1,
+                btnDiag = 1
+            WHERE id_incidencia = @id_incidencia;
+        `);
+
+        if (result.rowsAffected[0] > 0) {
+            const updateTechnicianResult = await request.query(`
+                UPDATE TECNICO
+                SET num_incidencias = num_incidencias + 1
+                WHERE id_usuario = @id_usuario;
+            `);
+
+            if (updateTechnicianResult.rowsAffected[0] > 0) {
+                await transaction.commit();
+                res.json({ success: true, message: 'Técnico asignado y número de incidencias actualizado' });
+            } else {
+                await transaction.rollback();
+                res.json({ success: false, message: 'No se pudo actualizar el número de incidencias del técnico' });
+            }
+        } else {
+            await transaction.rollback();
+            res.json({ success: false, message: 'No se pudo asignar técnico' });
+        }
+    } catch (error) {
+        console.error('Error al asignar técnico:', error.message);
+        res.status(500).json({ success: false, message: 'Error al asignar técnico' });
+    } finally {
+        await sql.close();
+    }
+});
+
+//Traer el error conocido
+app.get('/errorIncidencia', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.query;
+
+        console.log('Datos EI:', {
+            id_incidencia
+        });
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select errorConocido from INCIDENCIA where id_incidencia = @id_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener el error de incidencia', error.message);
+        res.status(500).send('Error al obtener el error de incidencia');
+    }
+});
+
+//Traer si hay error conocido
+app.get('/errorConocido', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.query;
+
+        console.log('Datos EC:', {
+            id_incidencia
+        });
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select eC from INCIDENCIA where id_incidencia = @id_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener el error conocido de incidencia', error.message);
+        res.status(500).send('Error al obtener el error conocido de incidencia');
+    }
+});
+
+//Trae la solucion del problema
+app.post('/Solucion', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { error_incidencia } = req.body;
+
+        const request = new sql.Request();
+        request.input('error_incidencia', sql.Int, error_incidencia);
+        
+        const result = await request.query(`
+            select i.id_incidencia, i.diagnostico, d.nombre as diagnom, r.pieza, p.nombre as pzanom, s.id_servicio, s.nombre as sernom, s.duracion, 
+            e.id_error, e.descripcion, c.id_causa_raiz, c.nombre as caunom, c.descripcion as caudes from INCIDENCIA i 
+            join DIAGNOSTICO d on d.id_diagnostico = i.diagnostico
+            join rfc r on r.incidencia = i.id_incidencia
+            join PIEZA p on p.id_pieza = r.pieza
+            join SERVICIOS s on s.id_servicio = r.id_servicio
+            join errores e on e.id_error = i.id_error
+            join CAUSA_RAIZ c on c.id_causa_raiz = e.causa_raiz
+            where i.id_error = @error_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener la solucion del problema', error.message);
+        res.status(500).send('Error al obtener la solucion del problema');
+    }
+});
+
+//Ver si ya se hizo el diagnostico
+app.get('/btnDiag', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.query;
+
+        console.log('Datos btnDiag:', {
+            id_incidencia
+        });
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select btnDiag from INCIDENCIA where id_incidencia = @id_incidencia
+        `);    
+            const resp = result.recordset[0]
+        console.log('Es btnDiag:', {
+            resp
+        });
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener btnDiag', error.message);
+        res.status(500).send('Error al obtener btnDiag');
+    }
+});
+
+//Ver si ya se solicito la autorizacion
+app.get('/btnAutorizacion', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.query;
+
+        console.log('Datos btnAutorizacion:', {
+            id_incidencia
+        });
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select btnAutorizacion from INCIDENCIA where id_incidencia = @id_incidencia
+        `);    
+
+        const r = result.recordset[0]
+        console.log('es btnAutorizacion:', {
+            r
+        });
+
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener la solicitud de autorizacion', error.message);
+        res.status(500).send('Error la solicitud de autorizacion');
+    }
+});
+
+//Cambiar el btn autorizacion
+app.post('/cambiarBtnAutorizacion', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.body;
+
+        console.log('Datos cambiar btnAutorizacion:', {
+            id_incidencia
+        });
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            update incidencia
+            set btnAutorizacion = 1
+            where id_incidencia = @id_incidencia
+        `);    
+
+        // Verifica si alguna fila fue afectada
+        if (result.rowsAffected[0] > 0) {
+            res.status(200).json({
+                success: true,
+                message: 'btnAutorizacion actualizado correctamente',
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'No se encontró una incidencia con el ID proporcionado',
+            });
+        }
+    } catch (error) {
+        console.error('Error al cambiar el btnAutorizacion:', error.message);
+        res.status(500).send('Error al cambiar el btnAutorizacion');
+    }
+});
+
+//det
+app.post('/det', async (req, res) => {
+    try {
+        await sql.connect(config);
+        const { id_incidencia } = req.body;
+
+        const request = new sql.Request();
+        request.input('id_incidencia', sql.Int, id_incidencia);
+        
+        const result = await request.query(`
+            select det from INCIDENCIA where id_incidencia = @id_incidencia
+        `);    
+        res.status(200).json(result.recordset[0]);
+    } catch (error) {
+        console.error('Error al obtener dt', error.message);
+        res.status(500).send('Error al obtener dt');
     }
 });

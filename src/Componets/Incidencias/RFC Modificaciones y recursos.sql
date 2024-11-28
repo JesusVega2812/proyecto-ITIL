@@ -129,6 +129,8 @@ INSERT INTO DIAGNOSTICO (nombre, descripcion) VALUES
 ALTER TABLE INCIDENCIA
 ADD diagnostico INT;
 
+select * from INCIDENCIA
+
 ALTER TABLE INCIDENCIA
 ADD CONSTRAINT FK_Incidencia_Diagnostico
 FOREIGN KEY (diagnostico) REFERENCES DIAGNOSTICO(id_diagnostico);
@@ -208,6 +210,9 @@ CREATE TABLE historial_pieza (
     FOREIGN KEY (id_incidencia) REFERENCES incidencia(id_incidencia)  -- Relación con la tabla incidencia
 );
 
+ALTER TABLE INCIDENCIA
+ADD detalleHora BIT DEFAULT 0;
+
 CREATE PROCEDURE AllRFC
     @id_incidencia INT,
     @id_pieza INT,
@@ -229,7 +234,8 @@ BEGIN
     VALUES (@id_incidencia, @id_pieza, 0);
 
 	UPDATE INCIDENCIA 
-	SET diagnostico = @id_diagnostico
+	SET diagnostico = @id_diagnostico,
+		detalleHora = 1
 	WHERE id_incidencia = @id_incidencia
 
     -- Insertar en la tabla Diagnostico_incidencia
@@ -274,6 +280,7 @@ INSERT INTO SERVICIOS (nombre, duracion) VALUES
 ('Cambio de Monitor', 60),
 ('Cambio de Cámara Web', 45),
 ('Cambio de Parlantes', 45),
+('Cambio de Lamparar', 50),
 ('Limpieza de software en Computadora', 50),
 ('Actualización de software en Computadora', 60),
 ('Configuración de red en Computadora', 70),
@@ -306,10 +313,90 @@ SELECT
     hora_final, 
     DATEDIFF(MINUTE, hora_inicial, hora_final) AS duracion_minutos
 FROM RFC
-where incidencia = 20;
+where incidencia = 0;
 
 ALTER TABLE incidencia
 ADD calificacion INT;
 
 ALTER TABLE tecnico
 ADD promedio_calificaciones DECIMAL(3, 2);
+
+------19 de Noviembre de 2024
+UPDATE INCIDENCIA
+SET id_estado = 2
+where id_incidencia = 2
+
+-- NOVIEMBRE 23 de 2024
+
+
+--Tecnico encargado de cada especialdidad
+INSERT INTO USUARIO (nombre, apellido, id_departamento_pertenece, id_jefe, correo, telefono, contrasena, permisos, status)
+VALUES 
+    ('Miguel', 'Perez', 2, 1, 'Miguel.perez@correo.com', '1234567890', '123', 5, 1),
+    ('Carlos', 'Lopez', 2, 1, 'Carlos.lopez@correo.com', '0987654321', '123', 5, 1),
+    ('Luis', 'Martínez', 2, 1, 'luis.martinez@correo.com', '1122334455', '123', 5, 1);
+
+ALTER TABLE TECNICO
+ADD jefe BIT NOT NULL DEFAULT 0;
+
+INSERT INTO TECNICO (id_usuario, id_especializacion, id_estadoDisponibilidad, jefe)
+VALUES
+(11, 1, 1, 1),
+(12, 2, 1, 1),
+(13, 3, 1, 1);
+
+----------------------------------------------------------------------------------------------------------------------
+ALTER TABLE INCIDENCIA
+ADD problema BIT DEFAULT 0;
+
+CREATE TABLE CAUSA_RAIZ (
+    id_causa_raiz INT IDENTITY(1,1) PRIMARY KEY,
+    nombre NVARCHAR(100) NOT NULL,
+    descripcion NVARCHAR(255)
+);
+
+INSERT INTO CAUSA_RAIZ (nombre, descripcion) VALUES 
+('Error humano', 'Acciones o decisiones incorrectas realizadas por el usuario o técnico.'),
+('Fallo eléctrico', 'Interrupciones o fluctuaciones en el suministro de energía eléctrica.'),
+('Obsolescencia de hardware', 'Equipos que han superado su vida útil o ya no cumplen los estándares actuales.'),
+('Conflicto de software', 'Incompatibilidad entre aplicaciones o sistemas operativos.'),
+('Mal mantenimiento', 'Falta de limpieza, actualizaciones o revisiones regulares en el equipo.'),
+('Configuración incorrecta', 'Errores en la configuración de sistemas, redes o dispositivos.'),
+('Desgaste físico', 'Deterioro natural de los componentes debido al uso prolongado.'),
+('Ataque cibernético', 'Acceso no autorizado o daño intencional a los sistemas informáticos.'),
+('Problemas climáticos', 'Impactos relacionados con el clima, como humedad, calor extremo o frío.'),
+('Error en actualizaciones', 'Problemas derivados de actualizaciones de software o firmware defectuosas.'),
+('Problema de compatibilidad', 'Falta de compatibilidad entre dispositivos, sistemas o versiones.'),
+('Error de fabricación', 'Defectos en componentes o equipos desde su producción.'),
+('Fallo de conectividad', 'Pérdida o interrupción en las conexiones de red o cables.'),
+('Sobrecarga del sistema', 'Uso excesivo de los recursos que supera la capacidad del equipo.'),
+('Falla de seguridad', 'Brechas en medidas de seguridad que exponen datos o sistemas a riesgos.');
+
+CREATE TABLE errores (
+    id_error INT IDENTITY(1,1) PRIMARY KEY,
+	descripcion VARCHAR(100),
+    causa_raiz INT
+);
+
+ALTER TABLE errores
+ADD CONSTRAINT FK_Errores_CausaRaiz
+FOREIGN KEY (causa_raiz) REFERENCES CAUSA_RAIZ(id_causa_raiz);
+
+ALTER TABLE INCIDENCIA
+ADD id_error INT NULL,
+CONSTRAINT FK_Incidencias_Error FOREIGN KEY (id_error) REFERENCES errores(id_error);
+
+ALTER TABLE INCIDENCIA
+ADD errorConocido INT NULL;
+
+ALTER TABLE INCIDENCIA
+ADD eC bit NULL;
+
+ALTER TABLE INCIDENCIA
+ADD btnDiag bit default 0 NOT NULL;
+
+ALTER TABLE INCIDENCIA
+ADD btnAutorizacion bit default 0 NOT NULL;
+
+ALTER TABLE INCIDENCIA
+ADD det bit default 0 NOT NULL;

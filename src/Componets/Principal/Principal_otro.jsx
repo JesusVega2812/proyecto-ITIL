@@ -50,12 +50,14 @@ export const Principal_otro = () => {
     const [softwaresSelected, setSoftwaresSelected] = useState([]);
     const [piezas, setPiezas] = useState([]);
     const [pieza, setPieza] = useState('');
-    const [btnDiag, setBtnDiag] = useState(true);
+    const [btnDiag, setBtnDiag] = useState('');
     const [autorizar, setAutorizar] = useState([]);
     const [autorizados, setAutorizados] = useState([]);
+    const [btnAutorizaciones, setBtnAutorizaciones] = useState([]);
     const [servicios, setServicios] = useState([]);
     const [servicio, setServicio] = useState('');
     const [autorizado, setAutorizado] = useState('');
+    const [autoriza, setAutoriza] = useState('');
     const [sers, setSers] = useState([]);
     const [ser, setSer] = useState('');
     const [btnAcyRe, setBtnAcyRe] = useState(true);
@@ -63,6 +65,34 @@ export const Principal_otro = () => {
     const [horaFinal, setHoraFinal] = useState('');
     const [tiempoMinutos, setTiempoMinutos] = useState('');
     const [selectedRating, setSelectedRating] = useState(null);
+    const [detalleHora, setDetalleHora] = useState('');
+    const [servicioDuracion, setServicioDuracion] = useState(null);
+    const [infoPieza, setInfoPieza] = useState('');
+    const [showModal8, setShowModal8] = useState(false);
+    const [causas, setCausas] = useState([]);
+    const [causa, setCausa] = useState('');
+    const [errorEncontrado, setErrorEncontrado] = useState('');
+    const [erroresConocidos, setErroresConocidos] = useState([]);
+    const [errorConocido, setErrorConocido] = useState('');
+    const [eC, setEC] = useState('');
+    const [eI, setEI] = useState('');
+    const [expanded, setExpanded] = useState(false);
+    const [expandedL, setExpandedL] = useState(false);
+    const [idDiag, setIdDiag] = useState('');
+    const [diagNom, setDiagNom] = useState('');
+    const [idPza, setIdPza] = useState('');
+    const [pzaNom, setPzaNom] = useState('');
+    const [serNom, setSerNom] = useState('');
+    const [idSer, setIdSer] = useState('');
+    const [serDur, setSerDur] = useState('');
+    const [idEr, setIdEr] = useState('');
+    const [erDes, serErDes] = useState('');
+    const [idCau, serIdCau] = useState('');
+    const [caunom, setCauNom] = useState('');
+    const [cauDes, setCauDes] = useState('');
+    const [btnAutorizacion, setBtnAutorizacion] = useState('');
+    const [det, setDet] = useState('');
+    
 
     const handleRatingClick = (value) => {
         setSelectedRating(value);
@@ -131,7 +161,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -145,6 +177,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoRechazados',
@@ -167,6 +201,8 @@ export const Principal_otro = () => {
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
                     const sersA = detalles.map(d => d.servicio)
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -179,9 +215,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoRechazados',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -202,7 +240,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -216,6 +256,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizaciones(auto);
                 }
             }
         }catch(error){
@@ -246,7 +288,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -260,6 +304,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoTerminados',
@@ -281,7 +327,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -294,9 +342,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoTerminados',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -317,7 +367,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -331,6 +383,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizaciones(auto);
                 }
             }
         }catch(error){
@@ -361,7 +415,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -375,6 +431,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoLiberados',
@@ -396,7 +454,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -409,9 +469,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoLiberados',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -432,7 +494,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -446,6 +510,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizaciones(auto);
                 }
             }
         }catch(error){
@@ -476,7 +542,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -490,6 +558,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoEnProceso',
@@ -511,7 +581,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -524,9 +596,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoEnProceso',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -547,7 +621,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -561,6 +637,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizaciones(auto);
                 }
             }
         }catch(error){
@@ -591,7 +669,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -605,6 +685,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamentoEnviado',
@@ -626,7 +708,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -639,9 +723,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnicoEnviado',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -662,7 +748,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -676,6 +764,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizaciones(auto);
                 }
             }
         }catch(error){
@@ -706,7 +796,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -723,6 +815,8 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }else if(permisos === '2' || permisos === '3'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaDepartamento',
@@ -744,7 +838,9 @@ export const Principal_otro = () => {
                     const coloresA = detalles.map(d => d.color);
                     const autorizarA = detalles.map(d => d.autoriza);
                     const autorizadosA = detalles.map(d => d.autorizado);
-                    const sersA = detalles.map(d => d.servicio)
+                    const sersA = detalles.map(d => d.servicio);
+                    const dH = detalles.map(d => d.detalleHora);
+                    const auto = detalles.map(d => d.btnAutorizacion);
         
                     setFolios(foliosA);
                     setFechas(fechasA);
@@ -760,9 +856,11 @@ export const Principal_otro = () => {
                     setAutorizar(autorizarA);
                     setAutorizados(autorizadosA);
                     setSers(sersA);
+                    setDetalleHora(dH);
+                    setBtnAutorizaciones(auto);
                 }
             }
-            else if(permisos === '4'){
+            else if(permisos === '4' || permisos === '5'){
                 const response = await axios.get('http://localhost:3000/DetalleTablaTecnico',
                     {params: { id_usuario: id_usuario }}
                 );
@@ -783,7 +881,9 @@ export const Principal_otro = () => {
                 const coloresA = detalles.map(d => d.color);
                 const autorizarA = detalles.map(d => d.autoriza);
                 const autorizadosA = detalles.map(d => d.autorizado);
-                const sersA = detalles.map(d => d.servicio)
+                const sersA = detalles.map(d => d.servicio);
+                const dH = detalles.map(d => d.detalleHora);
+                const auto = detalles.map(d => d.btnAutorizacion);
     
                 setFolios(foliosA);
                 setFechas(fechasA);
@@ -800,6 +900,8 @@ export const Principal_otro = () => {
                 setAutorizar(autorizarA);
                 setAutorizados(autorizadosA);
                 setSers(sersA);
+                setDetalleHora(dH);
+                setBtnAutorizacion(auto);
                 }
             }
         }catch(error){
@@ -914,6 +1016,7 @@ export const Principal_otro = () => {
     const handleOrdenTrabajo = (incidencia) => {
         setSelectedIncidencia(incidencia);
         selectEspecializaciones();
+        selectErroresConocidos();
         setShowModal2(true);
     };
     
@@ -923,19 +1026,33 @@ export const Principal_otro = () => {
     };
     
     const handleEnviar = async () => {
-        if(!especializacion || !tecnico){
+        // Verificar si los campos esenciales están completos
+        if (!especializacion || !tecnico) {
             alert('Complete los espacios en blanco');
             return;
-        }else{
+        } else {
             try {
-                const response = await axios.put('http://localhost:3000/AsignarTecnico',{
-                    id_incidencia: selectedIncidencia.id_incidencia,
-                    id_usuario: tecnicoId,
-                    id_prioridad: prioridad
-                })
-                alert('Tecnico Asignado exitosamente');
+                // Si errorConocido está vacío, realizar la solicitud sin el parámetro de errorConocido
+                if (!errorConocido) {
+                    const response = await axios.put('http://localhost:3000/AsignarTecnico', {
+                        id_incidencia: selectedIncidencia.id_incidencia,
+                        id_usuario: tecnicoId,
+                        id_prioridad: prioridad
+                    });
+                    alert('Técnico asignado exitosamente');
+                }
+                // Si errorConocido tiene un valor, incluirlo en la solicitud
+                else {
+                    const response = await axios.put('http://localhost:3000/AsignarTecnicoError', {
+                        id_incidencia: selectedIncidencia.id_incidencia,
+                        id_usuario: tecnicoId,
+                        id_prioridad: prioridad,
+                        id_error: errorConocido // Incluir errorConocido
+                    });
+                    alert('Técnico asignado con error conocido exitosamente');
+                }
             } catch (error) {
-                alert('Hubo un problema al asignar al tecnico');
+                alert('Hubo un problema al asignar al técnico');
                 console.error(error.message);
             }
             handleCloseModal2();
@@ -954,36 +1071,18 @@ export const Principal_otro = () => {
         return `${hours}:${minutes}`;
     };
 
-    const handleDetalles = async (incidencia) => {
+    const handlePieza = async (incidencia) => {
         try {
-            const response = await axios.get('http://localhost:3000/DetalleIncidencia',{
-                params: {id_incidencia: incidencia.id_incidencia}
+            const response = await axios.post('http://localhost:3000/TraerInfoPieza',{
+                id_incidencia: incidencia,
             })
-            const detalle = response.data;
-                if (detalle) {
-                    setFecha(incidencia.fecha)
-                    setTipoIncidencia(incidencia.tipoIncidencia);
-                    setDescripcion(incidencia.descripcion);
-                    setHrEnvio(formatTime(detalle.hora_envio));
-                    setHrInicio(formatTime(detalle.hora_disponible_inicio));
-                    setHrFin(formatTime(detalle.hora_disponible_fin));
-                    setNombrePrioridad(detalle.nombre_prioridad);
-                    setDescPrioridad(detalle.descripcion_prioridad);
-                    setNomEspacio(detalle.nombre_espacio);
-                    setUbiEspacio(detalle.ubicacion_esp);
-                    setUbiEdificio(detalle.ubicacion_edificio);
-                    setResponsable(detalle.responsable);
-                    setNomEdificio(detalle.nombre_edificio);
-                    setEstado(incidencia.estado);
-                    setId_incidencia(detalle.id_incidencia);
-                    setAutorizado(incidencia.autorizado);
-                    setShowModal3(true);
-                }
+            setInfoPieza(response.data.nombre);
         } catch (error) {
-            alert('Hubo un problema traer el detalle de la incidencia');
-                console.error(error.message);
+            alert('Hubo un problema al traer la info de pieza');
+            console.error(error.message);
         }
-    };
+
+    }
 
     const handleRechazarIncidencia = async (incidencia) => {
         try {
@@ -1034,10 +1133,15 @@ export const Principal_otro = () => {
             setTecnicoId(tec.data.tecnico);
             setTecnico(tec.data.nombre);
 
+            const r = await axios.post('http://localhost:3000/DuracionServicio',{
+                id_incidencia: incidencia
+            })
+            setServicioDuracion(r.data.duracion);
+
 
             const response = await axios.put('http://localhost:3000/LiberarIncidencia',{
                 id_incidencia: incidencia
-            })
+            });
             alert('Incidencia Liberada exitosamente');
         } catch (error) {
             alert('Hubo un problema al liberar la incidencia');
@@ -1051,15 +1155,8 @@ export const Principal_otro = () => {
         handleDetalleTabla(permisos);
     };
 
-
-
-
-
-
-
     const handleCalificar = async () => {
         try {
-            alert(id_incidencia);
             const response = await axios.put('http://localhost:3000/CalificarIncidencia', {
                 id_incidencia: id_incidencia,
                 selectedRating: selectedRating
@@ -1073,10 +1170,20 @@ export const Principal_otro = () => {
         handleDetalleTabla(permisos);
     }
 
+    const selectTecnico = async (incidencia) => {
+        try {
+            const tec = await axios.post('http://localhost:3000/TecnicoIncidencia', {
+                id_incidencia: incidencia
+            })
 
+            setTecnicoId(tec.data.tecnico);
+            setTecnico(tec.data.nombre);
 
-
-
+        } catch (error) {
+            alert('Hubo un problema al traer el tecnico');
+            console.error(error.message);
+        }
+    }
 
     const handleFinalizar = async  () => {
         try {
@@ -1091,6 +1198,7 @@ export const Principal_otro = () => {
             console.error(error.message);
         }
         handleCloseModal6();
+        handleCloseModal3();
         handleDetalleTabla(permisos);
     }
     
@@ -1125,6 +1233,9 @@ export const Principal_otro = () => {
 
     const handleDiagnostico = () => {
         setShowModal3(false);
+        if(permisos === '5'){
+            handleProcesoPrevio();
+        }
         selectDiagnostico();
         selectPieza();
         setShowModal5(true);
@@ -1134,6 +1245,11 @@ export const Principal_otro = () => {
         setShowModal5(false);
         setShowPiezas(false);
     };
+
+    const handleProcesoPrevio = () => {
+        selectCausas();
+        setShowModal8(true);
+    }
 
     const selectServicios = async () => {
         try{
@@ -1149,6 +1265,9 @@ export const Principal_otro = () => {
             const response = await axios.get('http://localhost:3000/DetalleIncidencia',{
                 params: {id_incidencia: incidencia.id_incidencia}
             })
+            
+            selectTecnico(incidencia.id_incidencia);
+
             const detalle = response.data;
                 if (detalle) {
                     setFecha(incidencia.fecha)
@@ -1171,6 +1290,7 @@ export const Principal_otro = () => {
                     setShowModal6(true);
                     setSer(incidencia.serv);
                 }
+                handlePieza(incidencia.id_incidencia);
         } catch (error) {
             alert('Hubo un problema traer el detalle de la incidencia');
                 console.error(error.message);
@@ -1338,14 +1458,201 @@ export const Principal_otro = () => {
             alert('Guardado exitosamente. Debe esperar la autorización');
             handleDetalleTabla(permisos);
             setShowModal5(false);
-            setBtnDiag(false);
         }catch(err){
-            console.error('Error guardar el RFC', err
-            );
+            console.error('Error guardar el RFC', err);
         }
     }
 
+    const handleAgregarProblema = async() => {
+        try {
+            const response = await axios.put('http://localhost:3000/AgregarProblema', {
+                id_incidencia: id_incidencia
+            });
+            alert('Se asignó el problema');
+            setShowModal6(false);
+            setShowModal3(false);
+            setBtnAcyRe(false);
+            handleDetalleTabla(permisos);
+        } catch (error) {
+            console.error('Error guardar el problema', error);
+        }
+    }
 
+    const handleErrorCausa = async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/AltaError', {
+                id_incidencia: id_incidencia, causa: causa, errorEncontrado
+            });
+            alert('Se dió de alta el error');
+            setShowModal8(false);
+        } catch (error) {
+            console.error('Error al dar de alta el error', error);
+        }
+    };
+
+    const handleCloseModal8 = () => {
+        setShowModal8(false);
+        handleDiagnostico();
+    };
+
+    const selectCausas = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/SelectCausa');
+            setCausas(response.data);
+        }catch(error){
+            console.error('Error al obtener las causas', error);
+        }
+    }
+
+    const handleDetalles = async (incidencia) => {
+        try {
+            // Solicitar detalle de la incidencia
+            const detalleResponse = await axios.get('http://localhost:3000/DetalleIncidencia', {
+                params: { id_incidencia: incidencia.id_incidencia }
+            });
+    
+            const detalle = detalleResponse.data;
+
+            selectTecnico(incidencia.id_incidencia);
+
+            if (detalle) {
+                setFecha(incidencia.fecha);
+                setTipoIncidencia(incidencia.tipoIncidencia);
+                setDescripcion(incidencia.descripcion);
+                setHrEnvio(formatTime(detalle.hora_envio));
+                setHrInicio(formatTime(detalle.hora_disponible_inicio));
+                setHrFin(formatTime(detalle.hora_disponible_fin));
+                setNombrePrioridad(detalle.nombre_prioridad);
+                setDescPrioridad(detalle.descripcion_prioridad);
+                setNomEspacio(detalle.nombre_espacio);
+                setUbiEspacio(detalle.ubicacion_esp);
+                setUbiEdificio(detalle.ubicacion_edificio);
+                setResponsable(detalle.responsable);
+                setNomEdificio(detalle.nombre_edificio);
+                setEstado(incidencia.estado);
+                setId_incidencia(detalle.id_incidencia);
+                setAutorizado(incidencia.autorizado);
+                setAutoriza(incidencia.autoriza);
+                setShowModal3(true);
+            }
+    
+            handlePieza(incidencia.id_incidencia);
+    
+            // Realizar múltiples solicitudes en paralelo
+            const [btnDiagRes, btnAutorizacionRes, errorIncidenciaRes, errorConocidoRes] = await Promise.all([
+                axios.get('http://localhost:3000/btnDiag', { params: { id_incidencia: incidencia.id_incidencia } }),
+                axios.get('http://localhost:3000/btnAutorizacion', { params: { id_incidencia: incidencia.id_incidencia } }),
+                axios.get('http://localhost:3000/errorIncidencia', { params: { id_incidencia: incidencia.id_incidencia } }),
+                axios.get('http://localhost:3000/errorConocido', { params: { id_incidencia: incidencia.id_incidencia } })
+            ]);
+    
+            // Configurar los estados
+            setBtnDiag(btnDiagRes.data.btnDiag);
+            setBtnAutorizacion(btnAutorizacionRes.data.btnAutorizacion);
+            setEI(errorIncidenciaRes.data.errorConocido);
+            setEC(errorConocidoRes.data.eC);
+
+            // Realizar la solicitud de solución
+            const solucionResponse = await axios.post('http://localhost:3000/Solucion', {
+                error_incidencia: errorIncidenciaRes.data.errorConocido
+            });
+    
+            const solucion = solucionResponse.data;
+    
+            setIdDiag(solucion.diagnostico);
+            setDiagNom(solucion.diagnom);
+            setIdPza(solucion.pieza);
+            setPzaNom(solucion.pzanom);
+            setSerNom(solucion.sernom);
+            setSerDur(solucion.duracion);
+            setIdSer(solucion.id_servicio);
+            setIdEr(solucion.id_error);
+            serErDes(solucion.descripcion);
+            serIdCau(solucion.id_causa_raiz);
+            setCauNom(solucion.caunom);
+            setCauDes(solucion.caudes);
+    
+        } catch (error) {
+            console.error('Hubo un problema al traer el detalle de la incidencia:', error.message);
+            alert('Hubo un problema traer el detalle de la incidencia');
+        }
+    };
+    
+
+    const selectErroresConocidos = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/selectErroresConocidos');
+            setErroresConocidos(response.data);
+            setErrorConocido('');
+        }catch(error){
+            console.error('Error al obtener los errores conocidos', error);
+        }
+    }
+
+    const handleSolucion = async (e) => {
+        e.preventDefault();
+        try {
+            setExpanded(!expanded);
+            
+        } catch (error) {
+            console.error('Error al dar de alta el error', error);
+        }
+    };
+    
+    const handleLugar = async (e) => {
+        e.preventDefault();
+        try {
+            setExpandedL(!expandedL);
+            
+        } catch (error) {
+            console.error('Error al obtener el lugar', error);
+        }
+    };
+
+    const handlePeticion = async () => {
+        try {
+            const tIncidencia = await axios.post(`http://localhost:3000/tIncidencia`, {
+                id_incidencia: id_incidencia
+            });
+    
+            const tipoIncidencia = tIncidencia.data[0].id_tipoIncidencia;
+
+            const idEquipo = await axios.get(`http://localhost:3000/SelectEquipoDeIncidencia`, {
+                params: {
+                    id_incidencia: id_incidencia
+                }
+            });
+
+            const r = await axios.post(`http://localhost:3000/GuardarRFC`, {
+                id_incidencia: id_incidencia,
+                pieza: idPza,
+                diag: idDiag,
+                tipoIncidencia: tipoIncidencia,
+                id_equipo: idEquipo.data[0].id_equipo
+            });
+
+            const hora_inicial = obtenerHoraActual();
+
+            const r1 = await axios.put('http://localhost:3000/RegistrarServicio', {
+                id_incidencia: id_incidencia,
+                pieza: idPza,
+                servicio: idSer,
+                hora_inicial: hora_inicial
+            })
+
+            const r2 = await axios.post(`http://localhost:3000/cambiarBtnAutorizacion`, {
+                id_incidencia: id_incidencia
+            });
+             setBtnAutorizacion(r2.data.btnAutorizacion);
+
+            alert('Petición solicitada. Debe esperar la autorización');
+            handleDetalleTabla(permisos);
+            setShowModal3(false);
+            
+        } catch (error) {
+            console.error('Error al solicitar petición', error);
+        }
+    };
 
     return (
         <div className="principal-admin-container">
@@ -1433,7 +1740,7 @@ export const Principal_otro = () => {
                                         </button>
                                     )}
                                     {(estados[index] !== 'Enviado') && (
-                                        (permisos === '4' && autorizados[index] === 1) ? (
+                                        ((permisos === '4' || permisos === '5') && autorizados[index] === 1) ? (
                                             <button
                                                 className='pO-orden-trabajo color-blanco'
                                                 onClick={() => handleDetallesServicios({
@@ -1459,7 +1766,8 @@ export const Principal_otro = () => {
                                                     tipoIncidencia: detalles[index]?.tipoIncidencia,
                                                     descripcion: detalles[index]?.descripcion,
                                                     estado: estados[index],
-                                                    autorizado: autorizados[index]
+                                                    autorizado: autorizados[index],
+                                                    autoriza: autorizar[index]
                                                 })}
                                             >
                                                 Detalles
@@ -1545,6 +1853,20 @@ export const Principal_otro = () => {
                                                     <option value={prio.id_prioridad} key={prio.id_prioridad}> {prio.nombre} </option>
                                                 ))}
                                             </select>
+                                            <label htmlFor="inputNewPassword" className="form-label nito">Errores conocidos: </label>
+                                            <select 
+                                                className="form-select" 
+                                                value={errorConocido || ''} 
+                                                onChange={(e) => setErrorConocido(e.target.value)}
+                                            >
+                                                <option value="">Seleccione un error conocido</option>
+                                                {erroresConocidos.map((eC) => (
+                                                    <option value={eC.id_error} key={eC.id_error}>
+                                                        {eC.descripcion}
+                                                    </option>
+                                                ))}
+                                            </select>
+
                                             <label htmlFor="" className="form-label nito">Técnico asignado: </label>
                                             <input type="text" className="form-control" id="inputText" value={tecnico} readOnly />
                                         </div>
@@ -1576,9 +1898,15 @@ export const Principal_otro = () => {
                                             <label htmlFor="inputText" className="form-label pO-hr-solicitud">Hora de Solicitud: </label>
                                             <span> {hrEnvio}</span>
                                             <button type="button" className="btn btn-outline-danger pO-btn-equipo" onClick={handleDetalleEquipo}>Equipo</button>
+                                            {(permisos === '1' && estado === 'En Proceso') && (
+                                                <button type="button" className="btn-AP" onClick={handleAgregarProblema} title="Agregar incidencia a problema">&#10133;</button>
+                                            )}
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Tipo de Incidencia: </label>
                                             <span> {tipoIncidencia}</span>
+                                            <br />
+                                            <label htmlFor="inputText" className="form-label">Técnico Asignado: </label>
+                                            <span> {tecnico}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
                                             <span> {descripcion}</span>
@@ -1592,26 +1920,81 @@ export const Principal_otro = () => {
                                             <label htmlFor="inputText" className="form-label">Descripción Prioridad: </label>
                                             <span> {descPrioridad}</span>
                                             <br />
-                                            <label htmlFor="inputText" className="form-label">Lugar </label>
-                                            <div className='pO-div-lugar'>
-                                                <span>Edificio: {nomEdificio}</span>
-                                                <br />
-                                                <span>Ubicación Edificio: {ubiEdificio}</span>
-                                                <br />
-                                                <span>Nombre Espacio: {nomEspacio}</span>
-                                                <br />
-                                                <span>Ubicación Espacio: {ubiEspacio}</span>
-                                                <br />
-                                                <span>Responsable: {responsable}</span>
+                                            <div className='scrollable'>
+                                                <button className="nito color-naranja custom-buttonEB tam-dI" onClick={handleLugar}>
+                                                    Lugar
+                                                </button>
+                                                {expandedL && (
+                                                    <div>
+                                                        <span>Edificio: {nomEdificio}</span>
+                                                        <br />
+                                                        <span>Ubicación Edificio: {ubiEdificio}</span>
+                                                        <br />
+                                                        <span>Nombre Espacio: {nomEspacio}</span>
+                                                        <br />
+                                                        <span>Ubicación Espacio: {ubiEspacio}</span>
+                                                        <br />
+                                                        <span>Responsable: {responsable}</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
-                                    {(estado === 'En Proceso' && permisos === '4' && btnDiag) && (
+                                    { estado === 'En Proceso' && (permisos === '4' || permisos === '5') &&  btnDiag === false && (
                                         <button type="button" className="tam-letra-17px color-boton-lila color-blanco btn-sin-border btn-tam-diagnostico" onClick={handleDiagnostico}>Diagnóstico</button>
+                                    )}
+                                    {( permisos === '1' && infoPieza) && (
+                                        <>
+                                        <span className='nito'>Pieza que solicita: </span>
+                                        <span>{infoPieza}</span>
+                                        </>
+                                    )}
+                                    {( permisos === '2' && infoPieza) && (
+                                        <>
+                                        <span className='nito'>Cambio de pieza: </span>
+                                        <span>{infoPieza}</span>
+                                        </>
+                                    )}
+                                    {(permisos === '4' || permisos === '5') && eC && (
+                                        <div className="scrollable">
+                                            <button className="nito color-naranja custom-buttonEB tam-dI" onClick={handleSolucion}>
+                                                SOLUCIÓN
+                                            </button>
+                                            {expanded && (
+                                                <div>
+                                                    <span className='nito'>Diagnóstico: </span>
+                                                    <span> {diagNom}</span>
+                                                    <br />
+                                                    <span className='nito'>Pieza: </span>
+                                                    <span> {pzaNom}</span>
+                                                    <br />
+                                                    <span className='nito'>Servicio: </span>
+                                                    <span> {serNom}</span>
+                                                    <br />
+                                                    <span className='nito'>Duración del Servicio: </span>
+                                                    <span> {serDur}</span>
+                                                    <br />
+                                                    <span className='nito'>Error Conocido: </span>
+                                                    <span> {erDes}</span>
+                                                    <br />
+                                                    <span className='nito'>Causa Raíz: </span>
+                                                    <span> {caunom}</span>
+                                                    <br />
+                                                    <span className='nito'>Descripción de causa raíz: </span>
+                                                    <span> {cauDes}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
                                 </form>
                             </div>
                             <div className="modal-footer">
+                                {(permisos === '4' || permisos === '5') && eC && btnAutorizacion === false && (
+                                    <button type="button" className="btn btn-primary" onClick={handlePeticion}>Autorización</button>
+                                )}
+                                {(permisos === '4' || permisos === '5') && eC && autorizado === 1 && estado === 'En Proceso' && (
+                                    <button type="button" className="btn btn-primary" onClick={handleFinalizar}>Finalizar</button>
+                                )}
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal3}>Cancelar</button>
                             </div>
                         </div>
@@ -1820,7 +2203,7 @@ export const Principal_otro = () => {
                                             </div>
                                         )}
                                         {showPiezas && (
-                                            <div className="mb-3">
+                                        <div className="mb-3">
                                             <select className="form-select" value={pieza} onChange={(e) => setPieza(e.target.value)}>
                                                 <option value="" disabled>Seleccione una pieza</option>
                                                 {piezas.map((pza, index) => (
@@ -1859,9 +2242,15 @@ export const Principal_otro = () => {
                                             <label htmlFor="inputText" className="form-label pO-hr-solicitud">Hora de Solicitud: </label>
                                             <span> {hrEnvio}</span>
                                             <button type="button" className="btn btn-outline-danger pO-btn-equipo" onClick={handleDetalleEquipo}>Equipo</button>
+                                            {(permisos === '1' && estado === 'En Proceso') && (
+                                                <button type="button" className="btn-AP" onClick={handleAgregarProblema} title="Agregar incidencia a problema">&#10133;</button>
+                                            )}
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Tipo de Incidencia: </label>
                                             <span> {tipoIncidencia}</span>
+                                            <br />
+                                            <label htmlFor="inputText" className="form-label">Técnico Asignado: </label>
+                                            <span> {tecnico}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
                                             <span> {descripcion}</span>
@@ -1889,25 +2278,31 @@ export const Principal_otro = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {autorizado === 1 && (
+                                    {autorizado === 1 && estado !== 'Liberado' && ser === 0 && (
                                         <>
                                         <label htmlFor="inputNewPassword" className="form-label nito">Servicio: </label>
                                         <select className="form-select" value={servicio} onChange={(e) => setServicio(e.target.value)} disabled={ser === 1} >
-                                            <option value="" disabled>Seleccione una pieza</option>
+                                            <option value="" disabled>Seleccione un servicio</option>
                                             {servicios.map((ser, index) => (
                                                 <option value={ser.id_servicio} key={ser.id_servicio}> {ser.nombre} </option>
                                             ))}
                                         </select>
                                         </>
                                     )}
+                                    {( estado === 'Liberado' && infoPieza) && (
+                                        <>
+                                        <span className='nito'>Cambio de pieza: </span>
+                                        <span>{infoPieza}</span>
+                                        </>
+                                    )}
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                {(permisos === '4' && ser === 0) && (
+                                {( (permisos === '4' || permisos === '5') && ser === 0) && (
                                     <button type="button" className="btn btn-primary" onClick={handleRegistrar}>Registrar</button>
                                 )}
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal6}>Cancelar</button>
-                                {(permisos === '4' && ser === 1 && estado === '2') && (
+                                {( (permisos === '4' || permisos === '5') && ser === 1 && estado === 'En Proceso') && (
                                         <button type="button" className="btn btn-primary" onClick={handleFinalizar}>Finalizar</button>
                                 )}
                             </div>
@@ -1924,13 +2319,26 @@ export const Principal_otro = () => {
                             </div>
                             <div className="modal-body">
                                 <form>
-                                    <div className="mb-3">
-                                        <span className='nito pO-hI-posicion'>Hora Inicial: </span>{horaIncial}
-                                        <span className='nito pO-hF-posicion'>Hora Final: </span>{horaFinal}
-                                        <br />
-                                        <span className='nito nito pO-DM-posicion'>Duración Total en Minutos: </span>{tiempoMinutos}
-                                    </div>
-                                    <hr className='color-lila'/>
+                                    {(detalleHora === true) && (
+                                        <>
+                                        <div className="mb-3">
+                                            <span className='nito pO-hI-posicion'>Hora Inicial: </span>{horaIncial}
+                                            <span className='nito pO-hF-posicion'>Hora Final: </span>{horaFinal}
+                                            <br />
+                                            {servicioDuracion && (
+                                                <>
+                                                <span className='nito nito pO-DM-posicion'>
+                                                    Duración del servicio en Minutos: 
+                                                </span>
+                                                <span> {servicioDuracion}</span>
+                                                </>
+                                            )}
+                                            <br />
+                                            <span className='nito nito pO-DM-posicion'>Duración del técnico en Minutos: </span>{tiempoMinutos}
+                                        </div>
+                                        <hr className='color-lila'/>
+                                        </>
+                                    )}
                                     <span className='color-lila nito pO-ct-posicion'>Califica al Técnico</span>
                                     <div className="btn-group me-2" role="group" aria-label="Second group">
                                         {[1, 2, 3, 4, 5].map((value) => (
@@ -1950,6 +2358,52 @@ export const Principal_otro = () => {
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal7}>Cancelar</button>
                                 <button type="button" className="btn btn-primary" onClick={handleCalificar}>Calificar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModal8 && (
+                <div className="modal-overlay" onClick={handleCloseModal8}>
+                    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Agregar el error</h5>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="mt-2">
+                                        <span className='nito'>Error encontrado:</span>
+                                        <input type="text" className="form-control" value={errorEncontrado} onChange={(e) => setErrorEncontrado(e.target.value)} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <span className='nito'>Causa Raíz</span>
+                                        <select className="form-select" value={causa} onChange={(e) => setCausa(e.target.value)}>
+                                            <option value="" disabled>Seleccione una causa raíz</option>
+                                            {causas.map((c, index) => (
+                                                <option value={c.id_causa_raiz} key={c.id_causa_raiz} > {c.nombre}</option>
+                                            ))}   
+                                        </select>                                        
+                                    </div>
+                                    <div className="mt-2">
+                                        {causa && (
+                                            <>
+                                            <span className='nito'>Descripción</span>
+                                            <input 
+                                                type="text" 
+                                                className="form-control" 
+                                                value={causas.find((c) => c.id_causa_raiz === parseInt(causa))?.descripcion || 'No hay descripción disponible'}
+                                                disabled 
+                                            />
+                                            </>
+                                        )}
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal8}>Cancelar</button>
+                                <button type="button" className="btn btn-primary" onClick={handleErrorCausa}>Continuar</button>
                             </div>
                         </div>
                     </div>

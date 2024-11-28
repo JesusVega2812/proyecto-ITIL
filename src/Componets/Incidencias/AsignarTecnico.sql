@@ -22,7 +22,7 @@ BEGIN
     -- Si hay empate, se elige el técnico con el siguiente ID.
     SELECT TOP 1 @TecnicoAsignadoID = id_usuario
     FROM Tecnico
-    WHERE id_especializacion = @EspecializacionID and id_estadoDisponibilidad = 1
+    WHERE id_especializacion = @EspecializacionID and id_estadoDisponibilidad = 1 AND jefe != 1 
     ORDER BY num_incidencias ASC, id_usuario ASC;  -- Ordenar por número de incidencias y por ID para romper empates
 
 	select t.id_usuario, u.nombre+' '+u.apellido as nombre from TECNICO T
