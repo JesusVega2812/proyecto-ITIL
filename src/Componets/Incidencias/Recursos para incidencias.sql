@@ -36,7 +36,7 @@ INSERT INTO ESTADO_INCIDENCIA (estado_incidencia, color)
 VALUES
 ('En Proceso', '#FF8C00'),  -- Naranja: En Proceso
 ('Terminado', '#32CD32'),   -- Verde: Terminado
-('Liberado', '#ADD8E6'),    -- Azul: Liberado
+('Liberado', '#043C64'),    -- Azul: Liberado
 ('Rechazado', '#FF6347'),   -- Rojo: Rechazado
 ('Enviado', '#C0C0C0');  -- Gris Claro: Enviado
 

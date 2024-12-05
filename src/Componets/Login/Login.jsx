@@ -1,7 +1,7 @@
 import './Login.css';
 import { useState } from 'react';
 import axios from 'axios';
-import logo_tecnm from '../Resources/logo_tecnm.jpg';
+import TR from '../Resources/TR.png';
 import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
@@ -66,25 +66,29 @@ export const Login = () => {
     
     return (
         <form className='formLogin' onSubmit={handledformsubmit}>
-            <div className='Login-div-azul'></div>
             <div className='Login-div-IS'>
-                <img src={logo_tecnm} className='logo-IS' alt="" />
-                <br />
-                <span className='IS-nombres nito tam-letra-28px tipo-letra-arial'>
-                    TechResolve - CULIACÁN
-                </span>
-                <br />
-                <span className='IS-nombres tam-letra-25px tipo-letra-arial'>
-                    Inicio de Sesión
-                </span>
-
-                <div className="form-group">
-                    <label htmlFor="inputText" className="form-label-custom">Usuario</label>
-                    <input type="text" className="input-custom" id="inputText" placeholder="Ingresa el usuario aquí" value={usuario} onChange={(e) => setUsuario(e.target.value)} />
+                <img src={TR} className='logo-IS' alt="" />
+                <div className="form-floating mb-3">
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="floatingInput"
+                        placeholder="Ingresa el usuario aquí"
+                        value={usuario}
+                        onChange={(e) => setUsuario(e.target.value)}
+                    />
+                    <label htmlFor="floatingInput">Usuario</label>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="inputContrasenia" className="form-label-custom">Contraseña</label>
-                    <input type="password" className="input-custom" id="inputContrasenia" placeholder="Ingresa la contraseña aquí" value={contra} onChange={(e) => setContra(e.target.value)} />
+                <div className="form-floating">
+                    <input
+                        type="password"
+                        className="form-control"
+                        id="floatingPassword"
+                        placeholder="Ingresa la contraseña aquí"
+                        value={contra}
+                        onChange={(e) => setContra(e.target.value)}
+                    />
+                    <label htmlFor="floatingPassword">Contraseña</label>
                 </div>
                 <div className="button-group">
                     <button onClick={handleValidar} className='button-custom'>

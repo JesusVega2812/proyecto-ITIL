@@ -2,18 +2,17 @@
     display: flex;
     flex-direction: column; 
     align-items: center;
-    padding: 20px;
-}
-.hr {
-    width: 100%;
-    border: none;
-    border-top: 2px solid #ccc;
-    margin: 10px 0;
+    margin-top: -2%;
+    background: linear-gradient(to bottom, #e2e2e2, #a4d1f1);
+    width: 101%;
+    border-top: 2px dashed #125db3;
+    padding-top: 10px;
 }
 .principal-admin-buttons {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    gap: 7px;
+    margin-left: 60%;
+    margin-top: 3%;
 }
 .principal-admin-btn {
     border: 1px solid #ccc;
@@ -102,11 +101,16 @@
     text-align: center;
 }
 .pO-div-tabla{
-    width: 100%;
-    margin-top: 0.1%;
+    width: 99%;
+    max-height: 613px;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 10px;
+    box-shadow: 10px 10px 15px rgba(56, 89, 171, 0.6);
 }
 .pO-tabla-encabezado{
     background-color: #043c64;
+    opacity: 0.8;
 }
 .pO-folio{
     width: 3%;
@@ -130,15 +134,15 @@
     text-align: center;
 }
 .pO-border-encabezado{
-    border: 1.5px solid rgb(96, 192, 244);
+    border: 1.5px solid rgb(148, 171, 202);
 }
 .pO-border-cuerpo{
-    border: 1.5px solid rgb(96, 192, 244);
-    background-color: #dbe9f7;
+    border: 1px solid rgb(153, 96, 244);
+
 }
 .pO-border-cuerpo-general{
-    border: 1.5px solid rgb(96, 192, 244);
-    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgb(153, 96, 244);
+    box-shadow: 10px 10px 15px rgba(56, 89, 171, 0.1);
 }
 .pO-orden-trabajo{
     border-radius: 3px;

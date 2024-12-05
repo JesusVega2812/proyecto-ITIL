@@ -400,3 +400,24 @@ ADD btnAutorizacion bit default 0 NOT NULL;
 
 ALTER TABLE INCIDENCIA
 ADD det bit default 0 NOT NULL;
+
+
+
+--- Diciembre 12
+select * from estado_incidencia
+
+update estado_incidencia
+set color = '#2E8B57' where id_estado = 2
+
+select * from tecnico
+
+select t.id_usuario, u.nombre+' '+u.apellido as nombre, t.num_incidencias from TECNICO T
+JOIN ESPECIALIZACION E ON e.id_especializacion = t.id_especializacion
+JOIN USUARIO U ON u.id_usuario = t.id_usuario
+WHERE e.id_especializacion = 1 and t.id_estadoDisponibilidad = 1 AND t.jefe != 1;
+
+select * from INCIDENCIA
+
+select * from usuario
+
+select * from SERVICIOS

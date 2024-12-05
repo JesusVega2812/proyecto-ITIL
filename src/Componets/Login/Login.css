@@ -16,35 +16,28 @@ body{
     z-index: -1;
 }
 .formLogin {
-    position: relative;
+    /*position: relative;
+    align-items: center;*/
+    background-image: url('../Resources/fondo.jpeg'); /* Cambia por tu imagen */
+    background-size: cover; /* Para que la imagen cubra todo */
+    background-position: center; /* Centra la imagen */
     width: 100%;
-    height: 100%;
-    display: flex;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    display: flex; /* Para centrar el formulario */
     justify-content: center;
     align-items: center;
 }
 .Login-div-IS {
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
-    width: 48%;
-    max-width: 630px; 
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    box-sizing: border-box; 
-    position: relative; 
-    z-index: 1; 
-    margin-top: 80px;
-    padding-bottom: 35px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 45%;
 }
 .logo-IS {
     width: 70%;
     max-width: 400px;
-    margin-top: 50px;
-    margin-bottom: 15px;
+    margin-left: 16%;
 }
 .IS-nombres {
     width: 100%;
@@ -88,7 +81,6 @@ button:hover {
     background-color: #db5e15;
     cursor: pointer;
 }
-
 .form-group {
     width: 90%;
     margin-bottom: 20px;
@@ -109,7 +101,8 @@ button:hover {
     cursor: pointer;
 }
 .button-group {
-    width: 90%;
+    width: 100%;
+    margin-top: 5%;
 }
 .button-custom {
     width: 100%;

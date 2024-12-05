@@ -24,6 +24,8 @@ export const Principal_otro = () => {
     const [especializacion, setEspecializacion] = useState('');
     const [tecnicoId, setTecnicoId] = useState([]);
     const [tecnico, setTecnico] = useState('');
+    const [tecnicoNom, setTecnicoNom] = useState('');
+    const [tecnicos, setTecnicos] = useState([]);
     const [hrEnvio, setHrEnvio] = useState('');
     const [hrInicio, setHrInicio] = useState('');
     const [hrFin, setHrFin] = useState('');
@@ -942,12 +944,11 @@ export const Principal_otro = () => {
             const response = await axios.get('http://localhost:3000/SelectTecnicos',{
                 params: {id_especializacion: idEspecializacion}
             });
-            console.log(response.data)
-            if(response.data){
-                setTecnicoId(response.data.id_usuario);
-                setTecnico(response.data.nombre);
-            }else{
-                setTecnico('')
+            setTecnicos(response.data);
+            if (response.data.length > 0) {
+                setTecnico(response.data[0].id_usuario);
+            } else {
+                alert('No hay técnicos disponibles para esta especialización.');
             }
         }catch(error){
             console.error('Error al obtener los tecnicos', error);
@@ -1036,7 +1037,7 @@ export const Principal_otro = () => {
                 if (!errorConocido) {
                     const response = await axios.put('http://localhost:3000/AsignarTecnico', {
                         id_incidencia: selectedIncidencia.id_incidencia,
-                        id_usuario: tecnicoId,
+                        id_usuario: tecnico,
                         id_prioridad: prioridad
                     });
                     alert('Técnico asignado exitosamente');
@@ -1045,7 +1046,7 @@ export const Principal_otro = () => {
                 else {
                     const response = await axios.put('http://localhost:3000/AsignarTecnicoError', {
                         id_incidencia: selectedIncidencia.id_incidencia,
-                        id_usuario: tecnicoId,
+                        id_usuario: tecnico,
                         id_prioridad: prioridad,
                         id_error: errorConocido // Incluir errorConocido
                     });
@@ -1131,7 +1132,7 @@ export const Principal_otro = () => {
             })
 
             setTecnicoId(tec.data.tecnico);
-            setTecnico(tec.data.nombre);
+            setTecnicoNom(tec.data.nombre);
 
             const r = await axios.post('http://localhost:3000/DuracionServicio',{
                 id_incidencia: incidencia
@@ -1177,7 +1178,7 @@ export const Principal_otro = () => {
             })
 
             setTecnicoId(tec.data.tecnico);
-            setTecnico(tec.data.nombre);
+            setTecnicoNom(tec.data.nombre);
 
         } catch (error) {
             alert('Hubo un problema al traer el tecnico');
@@ -1656,26 +1657,13 @@ export const Principal_otro = () => {
 
     return (
         <div className="principal-admin-container">
-            <hr className="hr" />
             <div className="principal-admin-buttons">
-                <button type="button" className="btn btn-light principal-admin-btn" onClick={handleHomeClick}>Inicio</button>
                 {(permisos === '1' || permisos === '4') && (
                     <button className="btn btn-primary principal-admin-btn" onClick={handleEquipo}>Equipo</button>
-
                 )}
                 <button type="button" className="btn btn-danger principal-admin-btn" onClick={handleEquipodeIncidencia}>Nueva Solicitud</button>
                 <button type="button" className="btn btn-success principal-admin-btn" onClick={handleChangePasswordClick}>Contraseña</button>
                 <button type="button" className="btn btn-info principal-admin-btn" onClick={handleCerrarSesion}>Cerrar Sesión</button>
-            </div>
-            <div className='pO-div-btns-group'>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleTodos}>Todos</button>
-                {(permisos !== '4') && (
-                    <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleEnviados}>Enviados</button>
-                )}
-                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleEnProceso}>En Proceso</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleTerminados}>Terminados</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleLiberados}>Liberados</button>
-                <button type="button" class="btn btn-outline-light pO-btns-border-color" onClick={handleRechazados}>Rechazados</button>
             </div>
             <div className='pO-div-tabla'>
                 <table class="tabla" className='pO-tabla-centrado'>
@@ -1703,7 +1691,7 @@ export const Principal_otro = () => {
                                     <br />
                                     Descripción Adicional: {detalles[index]?.descripcion}
                                 </td>
-                                <td className='pO-border-cuerpo' style={{ backgroundColor: colores[index] }}>{estados[index]}</td>
+                                <td className='pO-border-cuerpo nito' style={{ color: colores[index] }}>{estados[index]}</td>
                                 <td className='pO-border-cuerpo'> 
                                     {(permisos === '1') && (
                                         <>
@@ -1866,9 +1854,12 @@ export const Principal_otro = () => {
                                                     </option>
                                                 ))}
                                             </select>
-
-                                            <label htmlFor="" className="form-label nito">Técnico asignado: </label>
-                                            <input type="text" className="form-control" id="inputText" value={tecnico} readOnly />
+                                            <label htmlFor="" className="form-label nito">Asignar a: </label>
+                                            <select className="form-select" value={tecnico} onChange={(e) => setTecnico(e.target.value)}>
+                                                {tecnicos.map((tec, index) => (
+                                                    <option value={tec.id_usuario} key={tec.id_usuario}> {tec.nombre} - {tec.num_incidencias}</option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
                                 </form>
@@ -1906,7 +1897,7 @@ export const Principal_otro = () => {
                                             <span> {tipoIncidencia}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Técnico Asignado: </label>
-                                            <span> {tecnico}</span>
+                                            <span> {tecnicoNom}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
                                             <span> {descripcion}</span>
@@ -2250,7 +2241,7 @@ export const Principal_otro = () => {
                                             <span> {tipoIncidencia}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Técnico Asignado: </label>
-                                            <span> {tecnico}</span>
+                                            <span> {tecnicoNom}</span>
                                             <br />
                                             <label htmlFor="inputText" className="form-label">Descripción Adicional: </label>
                                             <span> {descripcion}</span>
@@ -2284,7 +2275,7 @@ export const Principal_otro = () => {
                                         <select className="form-select" value={servicio} onChange={(e) => setServicio(e.target.value)} disabled={ser === 1} >
                                             <option value="" disabled>Seleccione un servicio</option>
                                             {servicios.map((ser, index) => (
-                                                <option value={ser.id_servicio} key={ser.id_servicio}> {ser.nombre} </option>
+                                                <option value={ser.id_servicio} key={ser.id_servicio}> {ser.nombre} - {ser.duracion} minutos</option>
                                             ))}
                                         </select>
                                         </>
@@ -2319,26 +2310,22 @@ export const Principal_otro = () => {
                             </div>
                             <div className="modal-body">
                                 <form>
-                                    {(detalleHora === true) && (
-                                        <>
-                                        <div className="mb-3">
-                                            <span className='nito pO-hI-posicion'>Hora Inicial: </span>{horaIncial}
-                                            <span className='nito pO-hF-posicion'>Hora Final: </span>{horaFinal}
-                                            <br />
-                                            {servicioDuracion && (
-                                                <>
-                                                <span className='nito nito pO-DM-posicion'>
-                                                    Duración del servicio en Minutos: 
-                                                </span>
-                                                <span> {servicioDuracion}</span>
-                                                </>
-                                            )}
-                                            <br />
-                                            <span className='nito nito pO-DM-posicion'>Duración del técnico en Minutos: </span>{tiempoMinutos}
-                                        </div>
-                                        <hr className='color-lila'/>
-                                        </>
-                                    )}
+                                    <div className="mb-3">
+                                        <span className='nito pO-hI-posicion'>Hora Inicial: </span>{horaIncial}
+                                        <span className='nito pO-hF-posicion'>Hora Final: </span>{horaFinal}
+                                        <br />
+                                        {servicioDuracion && (
+                                            <>
+                                            <span className='nito nito pO-DM-posicion'>
+                                                Duración del servicio en Minutos: 
+                                            </span>
+                                            <span> {servicioDuracion}</span>
+                                            </>
+                                        )}
+                                        <br />
+                                        <span className='nito nito pO-DM-posicion'>Duración del técnico en Minutos: </span>{tiempoMinutos}
+                                    </div>
+                                    <hr className='color-lila'/>
                                     <span className='color-lila nito pO-ct-posicion'>Califica al Técnico</span>
                                     <div className="btn-group me-2" role="group" aria-label="Second group">
                                         {[1, 2, 3, 4, 5].map((value) => (
@@ -2352,7 +2339,7 @@ export const Principal_otro = () => {
                                             </button>
                                         ))}
                                     </div>
-                                    <span className='nito color-naranja'>Técnico: </span> {tecnico}
+                                    <span className='nito color-naranja'>Técnico: </span> {tecnicoNom}
                                 </form>
                             </div>
                             <div className="modal-footer">

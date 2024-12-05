@@ -1,4 +1,10 @@
 .footer-espacios{
-    margin-top: 50px;
     text-align: center;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    background: linear-gradient(to top, #e2e2e2, #99c4e2);
+    width: 101%;
+}
+.tam-letra-9px{
+    font-size: 12px;
 }

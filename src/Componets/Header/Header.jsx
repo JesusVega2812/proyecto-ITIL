@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
-import logo_culiacan from '../Resources/logo_tecnm_culiacan.jpg';
+import logo_tr from '../Resources/TechResolve.jpg';
 import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
@@ -30,18 +30,17 @@ export const Header = () => {
     };
 
     return (
-        <div>
+        <div className='div-general'>
             <div className='div-nombre-logo'>
-                <span className='tam-letra-45px'>TechResolve</span>
-                <br />
-                <span className='tam-letra-28px nombre-escuela'>Instituto Tecnológico de Culiacán</span>
-                <img src={logo_culiacan} className='loco-culiacan' alt="" />
+                <span className='tam-letra nito'>T</span>
+                <span className='tam-letra-17px'>ech</span>
+                <span className='tam-letra nito'>R</span>
+                <span className='tam-letra-17px'>esolve</span>
             </div>
             <div className='div-inf-actual tam-letra-18px'>
                 <div className='div-usuario-header'>
-                    <button className='tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleEditarPermisos}>&#x1f589;</button>
-                    <span>Usuario: </span>
-                    <span>{usuario}</span>
+                    <button className='nito tam-letra-17px color-boton-lila color-blanco btn-sin-border tam-btn-header header-editar-btn' onClick={handleEditarPermisos}>&#x1f589;</button>
+                    <span className='nito'>{usuario}</span>
                 </div>
             </div>
         </div>
